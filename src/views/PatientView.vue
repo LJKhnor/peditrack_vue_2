@@ -6,13 +6,21 @@ import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
 export default {
   components: {},
   setup() {
-    return {}
+    let isNewPatient = false
+    function onClickNewPatient() {
+      isNewPatient = !isNewPatient
+      console.log(isNewPatient)
+    }
+    return { onClickNewPatient }
   }
 }
 </script>
 <template>
   <div class="patient">
     <h1>Patient</h1>
+    <template v-if="!isNewPatient">
+      <button class="btn" @click="onClickNewPatient">Ajouter</button>
+    </template>
   </div>
 </template>
 
@@ -26,5 +34,9 @@ export default {
 }
 .patient {
   text-align: center;
+}
+.btn {
+  background-color: lightgreen;
+  color: black;
 }
 </style>

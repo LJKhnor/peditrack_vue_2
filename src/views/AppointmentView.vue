@@ -152,8 +152,8 @@ export default {
   <div class="appointment">
     <h1>Rendez-vous</h1>
     <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize_button" @click="handleAuthClick">Authoriser</button>
-    <button id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
+    <button class="btn" id="authorize_button" @click="handleAuthClick">Authoriser</button>
+    <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
     <vue-cal
       class="green"
       id="calendarEvents"
@@ -188,5 +188,9 @@ export default {
 }
 .vuecal__title-bar {
   background-color: currentColor;
+}
+.btn {
+  background-color: lightgreen;
+  color: black;
 }
 </style>
