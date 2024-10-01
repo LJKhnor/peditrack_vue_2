@@ -9,7 +9,7 @@ export default {
     let isNewPatient = false
     function onClickNewPatient() {
       isNewPatient = !isNewPatient
-      console.log(isNewPatient)
+      document.getElementsByClassName('btn').console.log(isNewPatient)
     }
     return { onClickNewPatient }
   }
@@ -20,6 +20,9 @@ export default {
     <h1>Patient</h1>
     <template v-if="!isNewPatient">
       <button class="btn" @click="onClickNewPatient">Ajouter</button>
+    </template>
+    <template v-else>
+      <button>NOpe</button>
     </template>
   </div>
 </template>
