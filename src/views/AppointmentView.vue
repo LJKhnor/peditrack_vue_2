@@ -1,28 +1,63 @@
+<template>
+  <div class="appointment">
+    <h1>Rendez-vous</h1>
+    <!--pre id="content" style="white-space: pre-wrap"></pre-->
+    <!-- cette ligne ⬆️ permet de montrer les events éventuellement pour le debug-->
+
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button class="btn" id="authorize_button" @click="handleAuthClick">Authoriser</button>
+    <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
+    <vue-cal
+      class="green"
+      id="calendarEvents"
+      :events="eventsVueCal"
+      active-view="week"
+      events-count-on-year-view
+      :disable-views="['years']"
+      :time-from="8 * 60"
+      :time-to="19 * 60"
+      :snap-to-time="15"
+      :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }"
+      @event-drag-create="createEvent('event-create', $event)"
+      @event-title-change="updateEvent('event-update', $event)"
+      @event-duration-change="updateEvent('event-update', $event)"
+      @event-delete="deleteEvent('event-delete', $event)"
+      @event-click="onEventClick"
+    ></vue-cal>
+    <VueModale
+      v-bind:revele="showDialog"
+      v-bind:toggleModale="onEventClick"
+      v-bind:contents="content"
+    ></VueModale>
+  </div>
+</template>
+
 <script>
 import { onMounted, ref, watch } from 'vue'
 import { gapi } from 'gapi-script'
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
+import VueModale from '@/components/Modale.vue'
 
 export default {
   name: 'GoogleCalendar',
   components: {
-    VueCal
+    VueCal,
+    VueModale
   },
   setup() {
     const CLIENT_ID = '518378740822-k41s9sjqojak05ttc7orpdskpbafmi1p.apps.googleusercontent.com'
     const API_KEY = 'AIzaSyBu_rCoaIMF9HhSPeizb-fsQJ-rDRfxplc'
     const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
     const SCOPES = 'https://www.googleapis.com/auth/calendar'
-    const CALENDAR_LINK =
-      'https://calendar.google.com/calendar/u/0?cid=a2hub3JsZWpldW5lQGdtYWlsLmNvbQ'
 
     let tokenClient
     let gapiInited = false
     let gisInited = false
+    let showDialog = ref(false)
+    let content = ref('')
 
     let events = ref([])
-    let eventsToDisplay = ref([])
     let eventsVueCal = ref(new Array())
 
     // Initialiser Google API au montage du composant
@@ -39,15 +74,17 @@ export default {
           id: newVal[i].id,
           start: vueCalformattedDate(newVal[i].start.dateTime),
           end: vueCalformattedDate(newVal[i].end.dateTime),
-          title: newVal[i].summary
+          title: newVal[i].summary,
+          description: newVal[i].description,
+          location: newVal[i].location
         })
       }
     })
-    watch(eventsVueCal, (newVal, oldVal) => {
+    /*watch(eventsVueCal, (newVal, oldVal) => {
       if (newVal != oldVal) {
-        console.log('eventsVueCal updated')
+        console.log('eventsVueCal updated', newVal)
       }
-    })
+    })*/
 
     /**
      * Callback after the API client is loaded. Loads the
@@ -115,7 +152,7 @@ export default {
       if (token !== null) {
         google.accounts.oauth2.revoke(token.access_token)
         gapi.client.setToken('')
-        document.getElementById('content').innerText = ''
+        // document.getElementById('content').innerText = ''
         document.getElementById('authorize_button').innerText = 'Authorize'
         document.getElementById('signout_button').style.visibility = 'hidden'
       }
@@ -134,7 +171,7 @@ export default {
           timeMin: new Date().toISOString(),
           showDeleted: false,
           singleEvents: true,
-          maxResults: 10,
+          maxResults: 250,
           orderBy: 'startTime'
         }
         response = await gapi.client.calendar.events.list(request)
@@ -144,16 +181,19 @@ export default {
       }
 
       events.value = response.result.items
-      if (!events.value || events.value.length == 0) {
+      /**if (!events.value || events.value.length == 0) {
         document.getElementById('content').innerText = 'No events found.'
         return
-      }
-      // Flatten to string to display
+      }*/
+
+      /**
+       * // Flatten to string to display
       const output = events.value.reduce(
         (str, event) => `${str}${event.summary} (${event.start.dateTime || event.start.date})\n`,
         'Events:\n'
       )
       // document.getElementById('content').innerText = output
+       */
     }
 
     function vueCalformattedDate(str) {
@@ -171,16 +211,34 @@ export default {
       const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`
       return formattedDate
     }
-    function createEvent() {
-      console.log('event created dabord')
-    }
-    function logEvents(str, event) {
-      console.log(event)
-    }
     function updateEvent(str, event) {
-      let startDate = event.event.start
-      let newEndDate = event.event.end
-      let newTitle = event.event.title
+      console.debug('updated')
+      try {
+        let startDate = event.event.start
+        let newEndDate = event.event.end
+        let newTitle = event.event.title
+
+        let newEvent = {
+          start: { dateTime: startDate },
+          end: { dateTime: newEndDate },
+          summary: newTitle
+        }
+        gapi.client.calendar.events
+          .update({
+            eventId: event.event.id,
+            calendarId: 'primary',
+            resource: newEvent
+          })
+          .execute()
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    function createEvent(str, event) {
+      console.debug('creation')
+      let startDate = event.start
+      let newEndDate = event.end
+      let newTitle = event.title
 
       let newEvent = {
         start: { dateTime: startDate },
@@ -188,15 +246,22 @@ export default {
         summary: newTitle
       }
       gapi.client.calendar.events
-        .update({
-          eventId: event.event.id,
+        .insert({
           calendarId: 'primary',
           resource: newEvent
         })
-        .execute()
+        .execute((response) => {
+          let newEvent = {
+            id: response.id,
+            start: event.start,
+            end: event.end,
+            summary: newTitle
+          }
+          eventsVueCal.value.push(newEvent)
+        })
     }
     function deleteEvent(str, event) {
-      console.log(event)
+      console.debug('deleted')
       gapi.client.calendar.events
         .delete({
           eventId: event.id,
@@ -205,46 +270,26 @@ export default {
         .execute()
     }
 
+    function onEventClick(e, event) {
+      content.value = { description: e.description, location: e.location }
+      showDialog.value = !showDialog.value
+    }
+
     return {
+      showDialog,
+      content,
       handleAuthClick,
       handleSignoutClick,
       eventsVueCal,
       vueCalformattedDate,
-      createEvent,
-      logEvents,
       updateEvent,
-      deleteEvent
+      createEvent,
+      deleteEvent,
+      onEventClick
     }
   }
 }
 </script>
-
-<template>
-  <div class="appointment">
-    <h1>Rendez-vous</h1>
-    <!--pre id="content" style="white-space: pre-wrap"></pre-->
-    <!-- cette ligne ⬆️ permet de montrer les events éventuellement pour le debug-->
-
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button class="btn" id="authorize_button" @click="handleAuthClick">Authoriser</button>
-    <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
-    <vue-cal
-      class="green"
-      id="calendarEvents"
-      :events="eventsVueCal"
-      active-view="week"
-      events-count-on-year-view
-      :disable-views="['years']"
-      :time-from="8 * 60"
-      :time-to="19 * 60"
-      :snap-to-time="15"
-      :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }"
-      @event-title-change="updateEvent('event-update', $event)"
-      @event-duration-change="updateEvent('event-update', $event)"
-      @event-delete="deleteEvent('event-delete', $event)"
-    ></vue-cal>
-  </div>
-</template>
 
 <style>
 @media (min-width: 1024px) {
