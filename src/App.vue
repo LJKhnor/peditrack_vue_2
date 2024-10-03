@@ -5,17 +5,18 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <template>
   <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo_pedicure_val.png"
-      width="125"
-      height="125"
-    />
+    <div class="logo-and-title">
+      <img
+        alt="Vue logo"
+        class="logo"
+        src="@/assets/logo_pedicure_val.png"
+        width="125"
+        height="125"
+      />
+      <HelloWorld class="helloworld" msg="Peditrack" />
+    </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="Peditrack" />
-
+    <div class="nav-bar">
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/appointment">Rendez-vous</RouterLink>
@@ -25,26 +26,38 @@ import HelloWorld from './components/HelloWorld.vue'
       </nav>
     </div>
   </header>
-
   <RouterView />
+  <footer>
+    <small
+      >Conformément au règlement général relatif à la protection des données (RGPD du 25/05/2018),
+      les données personnelles des patients ne sont jamais communiquées à des tiers</small
+    >
+  </footer>
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
+.logo-and-title {
+  display: flex;
+  align-items: center; /* Aligne le logo et HelloWorld verticalement */
+  justify-content: center; /* Centre horizontalement le logo et HelloWorld */
+}
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
+  margin-right: 10px; /* Un petit espace entre le logo et le texte */
 }
 
 nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+nav-bar {
+  margin-top: 20px;
 }
 
 nav a.router-link-exact-active {
@@ -56,9 +69,7 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  margin: 0 15px;
 }
 
 nav a:first-of-type {

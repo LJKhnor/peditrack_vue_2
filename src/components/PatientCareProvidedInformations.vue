@@ -2,7 +2,7 @@
   <div class="care-provided">
     <div class="info-block">
       <p>Date</p>
-      <input class="info-block-input" type="text" id="date" />
+      <input class="info-block-input" type="date" id="date" />
     </div>
     <div class="info-block">
       <p>Soins</p>

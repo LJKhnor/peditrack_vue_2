@@ -4,13 +4,13 @@
       <h2>Informations personnelles</h2>
       <PatientPersonalInformations></PatientPersonalInformations>
     </div>
-    <div class="container patient-health-infos">
+    <div class="container patient-infos">
       <h2>Informations médicales</h2>
       <PatientMedicalHealthInformations></PatientMedicalHealthInformations>
       <hr />
       <PatientMedicalTypeInformations></PatientMedicalTypeInformations>
     </div>
-    <div class="container patient-record-comment">
+    <div class="container patient-infos">
       <h2>Soins Prodigués</h2>
       <CareProvided></CareProvided>
     </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import CareProvided from './CareProvided.vue'
+import CareProvided from './PatientCareProvidedInformations.vue'
 import PatientMedicalHealthInformations from './PatientMedicalHealthInformations.vue'
 import PatientPersonalInformations from './PatientPersonalInformations.vue'
 import PatientMedicalTypeInformations from './PatientMedicalTypeInformations.vue'
@@ -43,39 +43,31 @@ export default {
 
 <style>
 .main-container {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .container {
   position: relative;
   border: 2px solid white;
-  width: 50%;
+  align-items: center;
   margin: 4px;
   border-radius: 12px;
   height: 100%;
-}
-.patient-infos {
-  flex: 0;
-}
-.patient-health-infos {
-  flex: 1;
-}
-.patient-record-comment {
-  flex: 2;
 }
 h2 {
   background-color: rgba(0, 180, 0, 0.3);
   color: black;
 }
+.patient-infos {
+  width: 50%;
+}
 .info-block {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   margin: 5%;
   place-content: center;
-}
-.info-block,
-p {
-  margin-right: 12px;
-}
-.info-block-input {
-  border-radius: 12px;
+  justify-content: space-between;
 }
 </style>

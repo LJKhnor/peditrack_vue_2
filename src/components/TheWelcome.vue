@@ -7,7 +7,7 @@ import SupportIcon from './icons/IconSupport.vue'
 </script>
 
 <template>
-  <WelcomeItem>
+  <WelcomeItem class="welcome-item">
     <template #icon>
       <DocumentationIcon />
     </template>
@@ -39,3 +39,5 @@ import SupportIcon from './icons/IconSupport.vue'
     Visualiser vos données sur une carte.
   </WelcomeItem>
 </template>
+
+<style></style>
