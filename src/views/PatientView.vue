@@ -3,8 +3,10 @@
     <h1>Patient</h1>
     <template v-if="!isNewPatient">
       <button class="btn" @click="onClickNewPatient">Ajouter un nouveau patient</button>
+      <button class="btn">Editer un patient</button>
     </template>
     <template v-else>
+      <MdiComponent v-bind:mdiValue="pathArrowLeft" @click="onClickNewPatient" />
       <PatientRecord></PatientRecord>
     </template>
   </div>
@@ -12,16 +14,19 @@
 
 <script>
 import { ref } from 'vue'
-import PatientRecord from '@/components/PatientRecord.vue'
+import PatientRecord from '@/components/NewPatientRecord.vue'
+import MdiComponent from '@/components/icons/MdiComponent.vue'
+import { mdiArrowLeft } from '@mdi/js'
 export default {
   name: 'PatientVue',
-  components: { PatientRecord },
+  components: { PatientRecord, MdiComponent },
   setup() {
     let isNewPatient = ref(false)
+    let pathArrowLeft = mdiArrowLeft
     function onClickNewPatient() {
       isNewPatient.value = !isNewPatient.value
     }
-    return { isNewPatient, onClickNewPatient }
+    return { isNewPatient, onClickNewPatient, pathArrowLeft }
   }
 }
 </script>

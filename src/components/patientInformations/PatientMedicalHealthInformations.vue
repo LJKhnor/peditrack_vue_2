@@ -10,7 +10,7 @@
       <p>Diabète</p>
       <div class="info-block-input-checkbox">
         <template v-for="diabeteType in diabeteTypes" :key="diabeteType">
-          <input class="" type="checkbox" id="diabetes" name="diabetes" />
+          <input class="" type="radio" id="diabetes" name="diabetes" />
           <label class="info-block-input-checkbox-label" for="diabetes">{{ diabeteType }}</label>
         </template>
       </div>
