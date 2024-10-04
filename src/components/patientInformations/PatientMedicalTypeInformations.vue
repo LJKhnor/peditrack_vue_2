@@ -91,7 +91,9 @@
         </option>
       </select>
     </div>
+
     <hr />
+
     <!-- déformation du pied et affection unguéales-->
     <div class="info-block">
       <p>Déformation du pied</p>
@@ -108,6 +110,24 @@
           :key="footDeformityType"
         >
           {{ footDeformityType }}
+        </option>
+      </select>
+    </div>
+    <div class="info-block">
+      <p>Affections unguéales</p>
+      <select
+        name="select-foot-nail-condition"
+        class="info-block-input"
+        type="text"
+        id="nail-condition-{{nailConditionType}}"
+      >
+        <option></option>
+        <option
+          v-for="nailConditionType in nailConditionsTypes"
+          value="{{ footDeformityType }}"
+          :key="nailConditionType"
+        >
+          {{ nailConditionType }}
         </option>
       </select>
     </div>

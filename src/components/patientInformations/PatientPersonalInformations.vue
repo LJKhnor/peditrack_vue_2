@@ -21,7 +21,7 @@
       <input class="info-block-input" type="text" id="birthdate" />
     </div>
     <div class="info-block">
-      <p>email</p>
+      <p>Email</p>
       <input class="info-block-input" type="text" id="email" />
     </div>
     <div class="info-block">

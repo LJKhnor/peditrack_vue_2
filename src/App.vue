@@ -26,8 +26,11 @@ import HelloWorld from './components/HelloWorld.vue'
       </nav>
     </div>
   </header>
-  <RouterView />
-  <footer>
+  <div class="content">
+    <RouterView />
+  </div>
+
+  <footer class="footer">
     <small
       >Conformément au règlement général relatif à la protection des données (RGPD du 25/05/2018),
       les données personnelles des patients ne sont jamais communiquées à des tiers</small
@@ -36,13 +39,6 @@ import HelloWorld from './components/HelloWorld.vue'
 </template>
 
 <style scoped>
-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .logo-and-title {
   display: flex;
   align-items: center; /* Aligne le logo et HelloWorld verticalement */
@@ -75,30 +71,35 @@ nav a {
 nav a:first-of-type {
   border: 0;
 }
-
+.content {
+  flex: 1; /* Cela permet à la section de contenu de prendre tout l'espace disponible */
+}
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
 @media (min-width: 1024px) {
-  header {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Pour s'assurer que le body couvre toute la hauteur de la fenêtre */
+  }
+  body {
     display: flex;
-    place-items: center;
+    flex-direction: column;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .content {
+    flex: 1; /* Cela permet à la section de contenu de prendre tout l'espace disponible */
   }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  .footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
   }
 }
 </style>

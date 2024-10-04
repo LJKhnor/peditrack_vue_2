@@ -3,6 +3,7 @@
     <div class="info-block">
       <p>Groupe</p>
       <select name="select-group" class="info-block-input" type="text" id="group">
+        <option></option>
         <option v-for="group in groups" value="{{ group }}" :key="group">{{ group }}</option>
       </select>
     </div>

@@ -1,5 +1,10 @@
 <template>
-  <h3>Création</h3>
+  <h3>Edition</h3>
+  <form>
+    <div>
+      <input type="search" id="mySearch" name="searchName" placeholder="patient" />
+    </div>
+  </form>
   <form>
     <div class="main-container record">
       <div class="container patient-infos">
@@ -30,7 +35,7 @@ import PatientMedicalHealthInformations from './patientInformations/PatientMedic
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 
 export default {
-  name: 'NewPatientRecord',
+  name: 'EditPatientRecord',
   components: {
     PatientPersonalInformations,
     PatientMedicalHealthInformations,
@@ -72,7 +77,7 @@ h2 {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 5%;
+
   place-content: center;
   justify-content: space-between;
 }
