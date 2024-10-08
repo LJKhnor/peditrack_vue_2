@@ -2,7 +2,19 @@
   <h3>Edition</h3>
   <form>
     <div>
-      <input type="search" id="mySearch" name="searchName" placeholder="patient" />
+      <!--<input type="combobox" id="mySearch" name="searchName" placeholder="patient" />-->
+      <select
+        name="select-foot"
+        class="info-block-input"
+        type="text"
+        id="patient-select"
+        @change="handleSelectionChange"
+      >
+        <option></option>
+        <option v-for="patient in patients" :value="patient.id" :key="patient.id">
+          {{ patient.name }}
+        </option>
+      </select>
     </div>
   </form>
   <form>
@@ -23,13 +35,19 @@
       </div>
     </div>
     <div class="patient-record-validation">
-      <input type="submit" class="btn patient-record-validation" value="Valider" />
+      <input
+        type="submit"
+        class="btn patient-record-validation"
+        value="Valider"
+        @click.prevent="updatePatient"
+      />
     </div>
   </form>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
@@ -43,19 +61,81 @@ export default {
     PatientMedicalTypeInformations,
     CareProvided
   },
-  props: {},
-  setup() {
+  props: [],
+  setup(props, { emit }) {
     let formData = ref({
       name: '',
       firstname: '',
-      numTel: '',
+      phoneNum: '',
       birthdate: '',
       personOfcontact: '',
       personOfcontactNumTel: '',
       referenceBy: '',
       doctor: ''
     })
-    return { formData }
+    let patients = ref([])
+    const urlGetAllPatient = 'http://localhost:8085/patients'
+    const urlPostPatient = 'http://localhost:8085/patients'
+    const optionsGet = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
+        // Add any other headers if needed
+      }
+    }
+    onMounted(() => {
+      getAllPatient()
+    })
+
+    async function getAllPatient() {
+      const response = await axios.get(urlGetAllPatient, optionsGet)
+      response.data.forEach((element) => {
+        patients.value.push({
+          id: element.id,
+          name: element.name + ' ' + element.firstname
+        })
+      })
+    }
+    async function handleSelectionChange() {
+      const selectElement = document.getElementById('patient-select')
+      const patientId = selectElement.value
+      const url = `${urlPostPatient}/${patientId}`
+
+      const response = await axios.get(url, optionsGet)
+      let previousPatientInfos = response.data
+
+      formData.value = previousPatientInfos
+    }
+
+    async function updatePatient() {
+      console.log('Update old patient')
+      const selectElement = document.getElementById('patient-select')
+      const patientId = selectElement.value
+      const patientData = {
+        name: formData.value.name,
+        firstname: formData.value.firstname,
+        numTel: formData.value.phoneNum,
+        birthdate: new Date(formData.value.birthdate)
+      }
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
+          // Add any other headers if needed
+        }
+      }
+      try {
+        const response = await axios.put(`${urlPostPatient}/${patientId}`, patientData, options)
+        emit('closePanel')
+        console.log(response)
+      } catch (error) {
+        console.error('There was an error!', error.response ? error.response.data : error.message)
+      }
+    }
+
+    return { formData, patients, handleSelectionChange, updatePatient }
   }
 }
 </script>
