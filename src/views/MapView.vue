@@ -1,4 +1,6 @@
 <script>
+import { onMounted } from 'vue'
+import axios from 'axios'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { LMap, LTileLayer, LMarker, LTooltip, LIcon, LCircle } from '@vue-leaflet/vue-leaflet'
@@ -12,18 +14,45 @@ export default {
     LIcon,
     LCircle
   },
-  iconUrl() {
-    return `https://placekitten.com/${this.iconWidth}/${this.iconHeight}`
-  },
-  iconSize() {
-    return [this.iconWidth, this.iconHeight]
-  },
-  data() {
-    return {
-      zoom: 13,
-      iconWidth: 25,
-      iconHeight: 40
+  setup() {
+    let zoom = 13
+    let iconWidth = 25
+    let iconHeight = 40
+    const urlGetAllPatient = 'http://localhost:8085/patients'
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
+        // Add any other headers if needed
+      }
     }
+    function iconUrl() {
+      return `https://placekitten.com/${this.iconWidth}/${this.iconHeight}`
+    }
+    function iconSize() {
+      return [this.iconWidth, this.iconHeight]
+    }
+    onMounted(() => {
+      getAllPatient()
+    })
+
+    async function getAllPatient() {
+      const response = await axios.get(urlGetAllPatient, options)
+
+      console.log(response.data)
+      response.data.forEach((element) => {
+        rowData.value.push({
+          lastName: element.name,
+          firstname: element.firstname,
+          phoneNum: element.phoneNum,
+          birthdate: element.birthdate,
+          address: element.address
+        })
+      })
+      console.log('rowData', rowData)
+    }
+    return { iconUrl, iconSize, zoom, iconWidth, iconHeight }
   }
 }
 </script>

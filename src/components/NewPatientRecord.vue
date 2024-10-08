@@ -4,30 +4,37 @@
     <div class="main-container record">
       <div class="container patient-infos">
         <h2>Informations personnelles</h2>
-        <PatientPersonalInformations></PatientPersonalInformations>
+        <PatientPersonalInformations v-bind:formData="formData" @update:formData="formData" />
       </div>
       <div class="container patient-infos">
         <h2>Informations médicales</h2>
-        <PatientMedicalHealthInformations></PatientMedicalHealthInformations>
+        <PatientMedicalHealthInformations v-bind:formData="formData" @update:formData="formData" />
         <hr />
-        <PatientMedicalTypeInformations></PatientMedicalTypeInformations>
+        <PatientMedicalTypeInformations v-bind:formData="formData" @update:formData="formData" />
       </div>
       <div class="container patient-infos">
         <h2>Soins Prodigués</h2>
-        <CareProvided></CareProvided>
+        <CareProvided v-bind:formData="formData" @update:formData="formData" />
       </div>
     </div>
     <div class="patient-record-validation">
-      <input type="submit" class="btn patient-record-validation" value="Valider" />
+      <input
+        type="submit"
+        class="btn patient-record-validation"
+        value="Valider"
+        @click.prevent="createPatient"
+      />
     </div>
   </form>
 </template>
 
 <script>
+import { ref } from 'vue'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
+import axios from 'axios'
 
 export default {
   name: 'NewPatientRecord',
@@ -37,9 +44,52 @@ export default {
     PatientMedicalTypeInformations,
     CareProvided
   },
-  props: {},
-  setup() {
-    return {}
+  props: [],
+  emits: ['closePanel'],
+  setup(props, { emit }) {
+    let formData = ref({
+      name: '',
+      firstname: '',
+      phoneNum: '',
+      birthdate: '',
+      personOfcontact: '',
+      personOfcontactNumTel: '',
+      referenceBy: '',
+      doctor: ''
+    })
+    function convertToDate(dateStr) {
+      const [year, month, day] = dateString.split('/')
+      return new Date(year, month - 1, day)
+    }
+    async function createPatient() {
+      // Créer un nouveau patient
+      console.log('Creating new patient with data:', formData)
+
+      const urlCreationPAtient = 'http://localhost:8085/patients'
+
+      const patientData = {
+        name: formData.value.name,
+        firstname: formData.value.firstname,
+        numTel: formData.value.phoneNum,
+        birthdate: new Date(formData.value.birthdate)
+      }
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
+          // Add any other headers if needed
+        }
+      }
+      try {
+        const response = await axios.post(urlCreationPAtient, patientData, options)
+        emit('closePanel')
+        console.log(response)
+      } catch (error) {
+        console.error('There was an error!', error.response ? error.response.data : error.message)
+      }
+    }
+    return { createPatient, formData }
   }
 }
 </script>

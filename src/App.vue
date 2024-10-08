@@ -10,8 +10,8 @@ import HelloWorld from './components/HelloWorld.vue'
         alt="Vue logo"
         class="logo"
         src="@/assets/logo_pedicure_val.png"
-        width="125"
-        height="125"
+        width="75"
+        height="75"
       />
       <HelloWorld class="helloworld" msg="Peditrack" />
     </div>

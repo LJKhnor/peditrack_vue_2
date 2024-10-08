@@ -9,17 +9,17 @@
     <div class="main-container record">
       <div class="container patient-infos">
         <h2>Informations personnelles</h2>
-        <PatientPersonalInformations></PatientPersonalInformations>
+        <PatientPersonalInformations v-bind:formData="formData" @update:formData="formData" />
       </div>
       <div class="container patient-infos">
         <h2>Informations médicales</h2>
-        <PatientMedicalHealthInformations></PatientMedicalHealthInformations>
+        <PatientMedicalHealthInformations v-bind:formData="formData" @update:formData="formData" />
         <hr />
-        <PatientMedicalTypeInformations></PatientMedicalTypeInformations>
+        <PatientMedicalTypeInformations v-bind:formData="formData" @update:formData="formData" />
       </div>
       <div class="container patient-infos">
         <h2>Soins Prodigués</h2>
-        <CareProvided></CareProvided>
+        <CareProvided v-bind:formData="formData" @update:formData="formData" />
       </div>
     </div>
     <div class="patient-record-validation">
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
@@ -44,7 +45,17 @@ export default {
   },
   props: {},
   setup() {
-    return {}
+    let formData = ref({
+      name: '',
+      firstname: '',
+      numTel: '',
+      birthdate: '',
+      personOfcontact: '',
+      personOfcontactNumTel: '',
+      referenceBy: '',
+      doctor: ''
+    })
+    return { formData }
   }
 }
 </script>

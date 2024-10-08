@@ -1,42 +1,3 @@
-<script>
-import { ref } from 'vue'
-import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
-import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
-import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
-export default {
-  components: {
-    AgGridVue
-  },
-  setup() {
-    const columnDefs = ref([
-      { field: 'Nom' },
-      { field: 'Prénom' },
-      { field: 'Téléphone' },
-      { field: 'Date de naissance' },
-      { field: 'Adresse' },
-      { field: 'Option' }
-    ])
-    const rowData = ref([
-      {
-        lastName: 'Lejeune',
-        firstname: 'Joachim',
-        phoneNum: '0474893021',
-        birthdate: '18/12/1987',
-        address: 'Chaussée de marche 250'
-      },
-      {
-        lastName: 'Lizen',
-        firstname: 'Val',
-        phoneNum: '0477886853',
-        birthdate: '22/06/1987',
-        address: 'Chaussée de marche 250'
-      }
-    ])
-
-    return { rowData, columnDefs }
-  }
-}
-</script>
 <template>
   <div class="data">
     <h1>Données</h1>
@@ -50,6 +11,60 @@ export default {
     ></ag-grid-vue>
   </div>
 </template>
+
+<script>
+import { onMounted, ref } from 'vue'
+import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
+import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
+import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
+import axios from 'axios'
+export default {
+  components: {
+    AgGridVue
+  },
+  setup() {
+    const urlGetAllPatient = 'http://localhost:8085/patients'
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
+        // Add any other headers if needed
+      }
+    }
+    const columnDefs = ref([
+      { field: 'lastName' },
+      { field: 'firstname' },
+      { field: 'phoneNum' },
+      { field: 'birthdate' },
+      { field: 'address' },
+      { field: 'Option' }
+    ])
+    const rowData = ref([])
+    onMounted(() => {
+      getAllPatient()
+    })
+
+    async function getAllPatient() {
+      const response = await axios.get(urlGetAllPatient, options)
+
+      console.log(response.data)
+      response.data.forEach((element) => {
+        rowData.value.push({
+          lastName: element.name,
+          firstname: element.firstname,
+          phoneNum: element.phoneNum,
+          birthdate: element.birthdate,
+          address: element.address
+        })
+      })
+      console.log('rowData', rowData)
+    }
+
+    return { rowData, columnDefs }
+  }
+}
+</script>
 
 <style>
 @media (min-width: 1024px) {

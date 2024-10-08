@@ -8,11 +8,11 @@
 
     <template v-if="isNewPatient">
       <MdiComponent v-bind:mdiValue="pathArrowLeft" @click="onCreatePatient" />
-      <NewPatientRecord @submit="handleSubmit" />
+      <NewPatientRecord @close-panel="onValidatePatientCreation" />
     </template>
     <template v-if="isEditPatient">
       <MdiComponent v-bind:mdiValue="pathArrowLeft" @click="onEditPatient" />
-      <EditPatientRecord :patient-data="currentPatientData" @submit="handleSubmit" />
+      <EditPatientRecord @close-panel="onValidatePatientUpdate" />
     </template>
   </div>
 </template>
@@ -37,14 +37,17 @@ export default {
     function onEditPatient() {
       isEditPatient.value = !isEditPatient.value
     }
-    function handleSubmit(formData) {
+    function onValidatePatientCreation() {
+      isNewPatient.value = !isNewPatient.value
+    }
+    function onValidatePatientUpdate() {
+      isEditPatient.value = !isEditPatient.value
+    }
+    async function handleSubmit(formData) {
       // Gérer la soumission du formulaire ici (création ou édition)
       if (isEditPatient.value) {
         // Mettre à jour le patient existant
         console.log('Updating patient with data:', formData)
-      } else {
-        // Créer un nouveau patient
-        console.log('Creating new patient with data:', formData)
       }
     }
     return {
@@ -54,7 +57,9 @@ export default {
       currentPatientData,
       onCreatePatient,
       onEditPatient,
-      handleSubmit
+      handleSubmit,
+      onValidatePatientCreation,
+      onValidatePatientUpdate
     }
   }
 }
