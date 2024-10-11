@@ -1,6 +1,6 @@
 <template>
   <h3>Création</h3>
-  <form>
+  <form id="creation-form">
     <div class="main-container record">
       <div class="container patient-infos">
         <h2>Informations personnelles</h2>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
@@ -47,47 +47,56 @@ export default {
   props: [],
   emits: ['closePanel'],
   setup(props, { emit }) {
-    let formData = ref({
-      name: '',
-      firstname: '',
-      phoneNum: '',
-      birthdate: '',
-      personOfcontact: '',
-      personOfcontactNumTel: '',
-      referenceBy: '',
-      doctor: ''
-    })
-    function convertToDate(dateStr) {
-      const [year, month, day] = dateString.split('/')
-      return new Date(year, month - 1, day)
-    }
+    let formData = ref({})
+
     async function createPatient() {
       // Créer un nouveau patient
       console.log('Creating new patient with data:', formData)
-
-      const urlCreationPAtient = 'http://localhost:8085/patients'
-
-      const patientData = {
-        name: formData.value.name,
-        firstname: formData.value.firstname,
-        numTel: formData.value.phoneNum,
-        birthdate: new Date(formData.value.birthdate)
-      }
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
-          // Add any other headers if needed
+      let isOkToContinue = handleFormMissingData()
+      if (isOkToContinue) {
+        const urlCreationPAtient = 'http://localhost:8085/patients'
+        const patientData = { ...formData.value, birthdate: new Date(formData.value.birthdate) }
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': 'http://localhost:5173'
+          }
         }
+        try {
+          await axios.post(urlCreationPAtient, patientData, options)
+          emit('closePanel')
+        } catch (error) {
+          console.error('There was an error!', error.response ? error.response.data : error.message)
+        }
+      } else {
+        alert('Il est nécessaire de remplir le nom et le prénom du patient')
       }
-      try {
-        const response = await axios.post(urlCreationPAtient, patientData, options)
-        emit('closePanel')
-        console.log(response)
-      } catch (error) {
-        console.error('There was an error!', error.response ? error.response.data : error.message)
+    }
+    function handleFormMissingData() {
+      let nameInput = document.getElementById('name')
+      let nameInputParent = nameInput.parentNode.firstChild
+
+      let firstnameInput = document.getElementById('firstname')
+
+      let isValidNameForm = false
+      let isValidFirstnameForm = false
+
+      if (nameInput.value === '') {
+        nameInput.classList.add('missing')
+        nameInputParent.innerText += ' *'
+      } else {
+        nameInput.classList.remove('missing')
+        isValidNameForm = true
       }
+      if (firstnameInput.value === '') {
+        firstnameInput.classList.add('missing')
+        nameInputParent.innerText += ' *'
+      } else {
+        firstnameInput.classList.remove('missing')
+        isValidFirstnameForm = true
+      }
+      return isValidNameForm && isValidFirstnameForm
     }
     return { createPatient, formData }
   }
@@ -125,6 +134,9 @@ h2 {
   margin: 5%;
   place-content: center;
   justify-content: space-between;
+}
+.missing {
+  border-color: red;
 }
 @media (max-width: 480px) {
   .patient-infos {

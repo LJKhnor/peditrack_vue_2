@@ -17,7 +17,7 @@
       </select>
     </div>
   </form>
-  <form>
+  <form id="update-form">
     <div class="main-container record">
       <div class="container patient-infos">
         <h2>Informations personnelles</h2>
@@ -63,16 +63,7 @@ export default {
   },
   props: [],
   setup(props, { emit }) {
-    let formData = ref({
-      name: '',
-      firstname: '',
-      phoneNum: '',
-      birthdate: '',
-      personOfcontact: '',
-      personOfcontactNumTel: '',
-      referenceBy: '',
-      doctor: ''
-    })
+    let formData = ref({})
     let patients = ref([])
     const urlGetAllPatient = 'http://localhost:8085/patients'
     const urlPostPatient = 'http://localhost:8085/patients'
@@ -112,12 +103,7 @@ export default {
       console.log('Update old patient')
       const selectElement = document.getElementById('patient-select')
       const patientId = selectElement.value
-      const patientData = {
-        name: formData.value.name,
-        firstname: formData.value.firstname,
-        numTel: formData.value.phoneNum,
-        birthdate: new Date(formData.value.birthdate)
-      }
+      const patientData = { ...formData.value }
       const options = {
         method: 'PUT',
         headers: {

@@ -2,11 +2,24 @@
   <div class="personal-infos">
     <div class="info-block">
       <p>Nom</p>
-      <input class="info-block-input" type="text" id="name" v-model="formData.name" />
+      <input
+        class="info-block-input"
+        name="name"
+        type="text"
+        id="name"
+        v-model="formData.name"
+        required
+      />
     </div>
     <div class="info-block">
       <p>Prénom</p>
-      <input class="info-block-input" type="text" id="firstname" v-model="formData.firstname" />
+      <input
+        class="info-block-input"
+        type="text"
+        id="firstname"
+        v-model="formData.firstname"
+        required
+      />
     </div>
     <div class="info-block">
       <p>Téléphone</p>
@@ -61,7 +74,7 @@
     </div>
     <div class="info-block">
       <p>Commentaires</p>
-      <input class="info-block-input" type="text" id="comments" v-model="formData.comment" />
+      <input class="info-block-input" type="text" id="comments" v-model="formData.comments" />
     </div>
   </div>
 </template>

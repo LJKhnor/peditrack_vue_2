@@ -2,9 +2,15 @@
   <div class="medical-infos">
     <div class="info-block">
       <p>Peau</p>
-      <select name="select-skin" class="info-block-input" type="text" id="skin-{{skinType}}">
+      <select
+        name="select-skin"
+        class="info-block-input"
+        type="text"
+        id="skin-{{skinType}}"
+        v-model="formData.skinType"
+      >
         <option></option>
-        <option v-for="skinType in skinTypes" value="{{ skinType }}" :key="skinType">
+        <option v-for="skinType in skinTypes" :value="skinType.id" :key="skinType">
           {{ skinType }}
         </option>
       </select>
@@ -12,9 +18,15 @@
 
     <div class="info-block">
       <p>Pieds</p>
-      <select name="select-foot" class="info-block-input" type="text" id="foot-{{footType}}">
+      <select
+        name="select-foot"
+        class="info-block-input"
+        type="text"
+        id="foot-{{footType}}"
+        v-model="formData.footType"
+      >
         <option></option>
-        <option v-for="footType in footTypes" value="{{ footType }}" :key="footType">
+        <option v-for="footType in footTypes" :value="footType" :key="footType">
           {{ footType }}
         </option>
       </select>
@@ -27,11 +39,12 @@
         class="info-block-input"
         type="text"
         id="transpiration-{{transpiration}}"
+        v-model="formData.transpiration"
       >
         <option></option>
         <option
           v-for="transpirationType in transpirationTypes"
-          value="{{ transpirationType }}"
+          :value="transpirationType"
           :key="transpirationType"
         >
           {{ transpirationType }}
@@ -46,9 +59,10 @@
         class="info-block-input"
         type="text"
         id="comment-{{commentType}}"
+        v-model="formData.commentType"
       >
         <option></option>
-        <option v-for="commentType in commentTypes" value="{{ commentType }}" :key="commentType">
+        <option v-for="commentType in commentTypes" :value="commentType" :key="commentType">
           {{ commentType }}
         </option>
       </select>
@@ -61,11 +75,12 @@
         class="info-block-input"
         type="text"
         id="circulation-{{circulationType}}"
+        v-model="formData.circulation"
       >
         <option></option>
         <option
           v-for="circulationType in circulationTypes"
-          value="{{ circulationType }}"
+          :value="circulationType"
           :key="circulationType"
         >
           {{ circulationType }}
@@ -80,13 +95,10 @@
         class="info-block-input"
         type="text"
         id="dermatose-{{dermatoseType}}"
+        v-model="formData.dermatosisType"
       >
         <option></option>
-        <option
-          v-for="dermatoseType in dermatoseTypes"
-          value="{{ dermatoseType }}"
-          :key="dermatoseType"
-        >
+        <option v-for="dermatoseType in dermatoseTypes" :value="dermatoseType" :key="dermatoseType">
           {{ dermatoseType }}
         </option>
       </select>
@@ -102,11 +114,12 @@
         class="info-block-input"
         type="text"
         id="dermatose-{{footDeformityType}}"
+        v-model="formData.footDeformityType"
       >
         <option></option>
         <option
           v-for="footDeformityType in footDeformityTypes"
-          value="{{ footDeformityType }}"
+          :value="footDeformityType"
           :key="footDeformityType"
         >
           {{ footDeformityType }}
@@ -120,11 +133,12 @@
         class="info-block-input"
         type="text"
         id="nail-condition-{{nailConditionType}}"
+        v-model="formData.nailConditionType"
       >
         <option></option>
         <option
           v-for="nailConditionType in nailConditionsTypes"
-          value="{{ footDeformityType }}"
+          :value="footDeformityType"
           :key="nailConditionType"
         >
           {{ nailConditionType }}
@@ -137,7 +151,7 @@
 <script>
 export default {
   name: 'PatientMedicalTypeInformations',
-  props: {},
+  props: ['formData'],
   components: {},
   setup() {
     let skinTypes = ['Normale', 'Pale', 'Cyanosée', 'Sèche', 'Grasse']

@@ -2,27 +2,37 @@
   <div class="care-provided">
     <div class="info-block">
       <p>Date</p>
-      <input class="info-block-input" type="date" id="date" />
+      <input class="info-block-input" type="date" id="date" v-model="formData.date" />
     </div>
     <div class="info-block">
       <p>Soins</p>
-      <input class="info-block-input" type="text" id="care" />
+      <input class="info-block-input" type="text" id="care" v-model="formData.care" />
     </div>
     <div class="info-block">
       <p>Produits utilisés</p>
-      <input class="info-block-input" type="text" id="used-product" />
+      <input
+        class="info-block-input"
+        type="text"
+        id="used-product"
+        v-model="formData.usedProduct"
+      />
     </div>
     <div class="info-block">
       <p>Matériels utilisés</p>
-      <input class="info-block-input" type="text" id="used-stuff" />
+      <input class="info-block-input" type="text" id="used-stuff" v-model="formData.usedStuff" />
     </div>
     <div class="info-block">
       <p>Blessures possibles</p>
-      <input class="info-block-input" type="text" id="possible-wounds" />
+      <input
+        class="info-block-input"
+        type="text"
+        id="possible-wounds"
+        v-model="formData.possibleWounds"
+      />
     </div>
     <div class="info-block">
       <p>Conseils données</p>
-      <input class="info-block-input" type="text" id="advices" />
+      <input class="info-block-input" type="text" id="advices" v-model="formData.advices" />
     </div>
   </div>
 </template>
@@ -31,7 +41,7 @@
 export default {
   name: 'CareProvided',
   component: {},
-  props: {},
+  props: ['formData'],
   setup() {
     return {}
   }
