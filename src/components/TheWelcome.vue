@@ -23,7 +23,7 @@ import SupportIcon from './icons/IconSupport.vue'
     Gérer la fiche patient.
   </WelcomeItem>
 
-  <WelcomeItem>
+  <!-- <WelcomeItem>
     <template #icon>
       <CommunityIcon />
     </template>
@@ -37,7 +37,7 @@ import SupportIcon from './icons/IconSupport.vue'
     </template>
     <template #heading>Map</template>
     Visualiser vos données sur une carte.
-  </WelcomeItem>
+  </WelcomeItem> -->
 </template>
 
 <style></style>

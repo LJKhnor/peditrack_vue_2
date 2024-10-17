@@ -94,16 +94,27 @@ export default {
       const url = `${urlPostPatient}/${patientId}`
 
       const response = await axios.get(url, optionsGet)
-      let previousPatientInfos = response.data
+      let previousPatientInfos = response.data.patientDto
+      let previousHealthInfos = response.data.healthDto
 
-      formData.value = previousPatientInfos
+      formData.value = { ...previousPatientInfos, ...previousHealthInfos }
     }
 
     async function updatePatient() {
       console.log('Update old patient')
       const selectElement = document.getElementById('patient-select')
       const patientId = selectElement.value
-      const patientData = { ...formData.value }
+      const patientData = Object.fromEntries(
+        Object.entries(formData.value)
+          .filter(([key, value]) => value !== null)
+          .map(([key, value]) => {
+            // Vérifier si la valeur est une chaîne de caractères qui semble être une date
+            if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+              return [key, new Date(value)] // Convertir en objet Date
+            }
+            return [key, value] // Sinon, laisser la valeur telle quelle
+          })
+      )
       const options = {
         method: 'PUT',
         headers: {
@@ -115,7 +126,9 @@ export default {
       try {
         const response = await axios.put(`${urlPostPatient}/${patientId}`, patientData, options)
         emit('closePanel')
-        console.log(response)
+        // console.log(response)
+        console.log(typeof patientData)
+        console.log(patientData)
       } catch (error) {
         console.error('There was an error!', error.response ? error.response.data : error.message)
       }

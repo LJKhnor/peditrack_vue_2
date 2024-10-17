@@ -21,8 +21,8 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/appointment">Rendez-vous</RouterLink>
         <RouterLink to="/patient">Patient</RouterLink>
-        <RouterLink to="/data">Données</RouterLink>
-        <RouterLink to="/map">Map</RouterLink>
+        <!-- <RouterLink to="/data">Données</RouterLink>
+        <RouterLink to="/map">Map</RouterLink> -->
       </nav>
     </div>
   </header>

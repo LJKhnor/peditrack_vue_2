@@ -10,7 +10,7 @@
         v-model="formData.skinType"
       >
         <option></option>
-        <option v-for="skinType in skinTypes" :value="skinType.id" :key="skinType">
+        <option v-for="skinType in skinTypes" :value="skinType" :key="skinType">
           {{ skinType }}
         </option>
       </select>
@@ -138,7 +138,7 @@
         <option></option>
         <option
           v-for="nailConditionType in nailConditionsTypes"
-          :value="footDeformityType"
+          :value="nailConditionType"
           :key="nailConditionType"
         >
           {{ nailConditionType }}
