@@ -1,14 +1,18 @@
 <template>
   <div class="appointment">
-    <h1>Rendez-vous</h1>
+    <h1 class="color-theme">Rendez-vous</h1>
     <!--pre id="content" style="white-space: pre-wrap"></pre-->
     <!-- cette ligne ⬆️ permet de montrer les events éventuellement pour le debug-->
 
     <!--Add buttons to initiate auth sequence and sign out-->
-    <button class="btn" id="authorize_button" @click="handleAuthClick">Authoriser</button>
-    <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
+    <button class="btn color-theme" id="authorize_button" @click="handleAuthClick">
+      Authoriser
+    </button>
+    <button class="btn color-theme" id="signout_button" @click="handleSignoutClick">
+      Se déconnecter
+    </button>
     <vue-cal
-      class="green"
+      class="color-theme"
       id="calendarEvents"
       :events="eventsVueCal"
       active-view="week"
@@ -307,13 +311,13 @@ export default {
   text-align: center;
 }
 .vuecal__now-line {
-  color: #06c;
+  color: var(--color-theme);
 }
 .vuecal__title-bar {
   background-color: currentColor;
 }
 .btn {
-  background-color: lightgreen;
+  background-color: var(--color-theme);
   color: black;
 }
 </style>

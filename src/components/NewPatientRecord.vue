@@ -118,7 +118,6 @@ export default {
   height: 100%;
 }
 h2 {
-  background-color: rgba(0, 180, 0, 0.3);
   color: black;
 }
 .patient-infos {

@@ -1,19 +1,21 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --vt-c-white: #ffffff;
+  --vt-c-white: #fafaf7;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  --vt-c-black: #1e1f2b;
+  --vt-c-black-soft: #323447;
+  --vt-c-black-mute: #5f6286;
 
   --vt-c-indigo: #2c3e50;
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vt-c-color-light-3: hsla(160, 100%, 37%, 1);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --vt-c-color-dark-3: rgb(214, 63, 156);
 
   --vt-c-text-light-1: var(--vt-c-indigo);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
@@ -32,6 +34,7 @@
 
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
+  --color-theme: var(--vt-c-color-light-3);
 
   --section-gap: 160px;
 }
@@ -47,6 +50,7 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+    --color-theme: var(--vt-c-color-dark-3);
   }
 }
 
@@ -83,4 +87,11 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+a,
+.color-theme {
+  text-decoration: none;
+  color: var(--color-theme);
+  transition: 0.4s;
+  padding: 3px;
 }

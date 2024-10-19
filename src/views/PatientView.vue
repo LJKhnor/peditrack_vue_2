@@ -1,6 +1,6 @@
 <template>
   <div class="patient">
-    <h1>Patient</h1>
+    <h1 class="color-theme">Patient</h1>
     <div class="btn-control" :hidden="isNewPatient || isEditPatient">
       <button class="btn" @click="onCreatePatient">Ajouter un nouveau patient</button>
       <button class="btn" @click="onEditPatient">Editer un patient</button>
@@ -79,7 +79,14 @@ export default {
   text-align: center;
 }
 .btn {
-  background-color: lightgreen;
+  background-color: var(--color-theme);
+  border: none;
+  padding: 2px;
+  margin: 2px;
+  border-radius: 8px;
   color: black;
+}
+.btn:hover {
+  box-shadow: 0 0 20px 0px var(--color-theme);
 }
 </style>

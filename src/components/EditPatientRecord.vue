@@ -154,7 +154,7 @@ export default {
   height: 100%;
 }
 h2 {
-  background-color: rgba(0, 180, 0, 0.3);
+  background-color: var(--color-theme);
   color: black;
 }
 .patient-infos {
