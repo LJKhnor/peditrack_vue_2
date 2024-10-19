@@ -66,27 +66,49 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  position: relative;
+  border: 2px solid;
+  border-color: var(--color-border);
+  align-items: center;
+  margin: 4px;
+  border-radius: 12px;
+  height: 100%;
+}
+h2 {
+  background-color: var(--color-theme);
+  color: black;
+}
+.patient-infos {
+  width: 80vw;
+  max-width: 70vw;
+  min-width: 50vw;
+  padding: 1rem;
+}
+.info-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 4px;
+  place-content: center;
+  justify-content: space-between;
 }
 .patient {
   display: flex;
   flex-direction: column;
   text-align: center;
 }
-.btn {
-  background-color: var(--color-theme);
-  border: none;
-  padding: 2px;
-  margin: 2px;
-  border-radius: 8px;
-  color: black;
-}
-.btn:hover {
-  box-shadow: 0 0 20px 0px var(--color-theme);
+@media (min-width: 1024px) {
+  .patient-infos {
+    width: 0vw;
+    max-width: 70vw;
+    min-width: 50vw;
+    padding: 1rem;
+  }
 }
 </style>

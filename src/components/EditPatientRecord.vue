@@ -140,37 +140,6 @@ export default {
 </script>
 
 <style>
-.main-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.container {
-  position: relative;
-  border: 2px solid white;
-  align-items: center;
-  margin: 4px;
-  border-radius: 12px;
-  height: 100%;
-}
-h2 {
-  background-color: var(--color-theme);
-  color: black;
-}
-.patient-infos {
-  width: 80vw;
-  max-width: 70vw;
-  min-width: 50vw;
-  padding: 1rem; /* Un padding fluide basé sur la taille de la police */
-}
-.info-block {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  place-content: center;
-  justify-content: space-between;
-}
 @media (max-width: 480px) {
   .patient-infos {
     width: 90vw; /* Sur petits écrans, prend 90% de la largeur du viewport */

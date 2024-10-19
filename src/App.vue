@@ -13,7 +13,7 @@ import HelloWorld from './components/HelloWorld.vue'
         width="75"
         height="75"
       /> -->
-      <HelloWorld class="helloworld" msg="Peditrack" />
+      <HelloWorld class="pedimed" msg="PediMed" />
     </div>
 
     <div class="nav-bar">

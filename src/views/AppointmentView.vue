@@ -5,18 +5,17 @@
     <!-- cette ligne ⬆️ permet de montrer les events éventuellement pour le debug-->
 
     <!--Add buttons to initiate auth sequence and sign out-->
-    <button class="btn color-theme" id="authorize_button" @click="handleAuthClick">
-      Authoriser
-    </button>
-    <button class="btn color-theme" id="signout_button" @click="handleSignoutClick">
-      Se déconnecter
-    </button>
+    <button class="btn" id="authorize_button" @click="handleAuthClick">Authoriser</button>
+    <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
     <vue-cal
       class="color-theme"
       id="calendarEvents"
-      :events="eventsVueCal"
       active-view="week"
       events-count-on-year-view
+      locale="fr"
+      todayButton="true"
+      small="true"
+      :events="eventsVueCal"
       :disable-views="['years']"
       :time-from="8 * 60"
       :time-to="19 * 60"
@@ -315,9 +314,5 @@ export default {
 }
 .vuecal__title-bar {
   background-color: currentColor;
-}
-.btn {
-  background-color: var(--color-theme);
-  color: black;
 }
 </style>
