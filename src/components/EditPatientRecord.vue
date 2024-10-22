@@ -99,7 +99,12 @@ export default {
       console.log(previousPatientInfos)
       console.log(previousHealthInfos)
 
-      formData.value = { ...previousPatientInfos, ...previousHealthInfos }
+      formData.value = {
+        ...previousPatientInfos,
+        ...previousHealthInfos,
+        birthdate: new Date(previousPatientInfos.birthdate).toISOString().slice(0, 10),
+        date: new Date(previousHealthInfos.careDate).toISOString().slice(0, 10)
+      }
     }
 
     async function updatePatient() {
