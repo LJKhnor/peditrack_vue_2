@@ -96,6 +96,8 @@ export default {
       const response = await axios.get(url, optionsGet)
       let previousPatientInfos = response.data.patientDto
       let previousHealthInfos = response.data.healthDto
+      console.log(previousPatientInfos)
+      console.log(previousHealthInfos)
 
       formData.value = { ...previousPatientInfos, ...previousHealthInfos }
     }

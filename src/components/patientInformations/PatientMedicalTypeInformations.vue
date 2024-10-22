@@ -39,7 +39,7 @@
         class="info-block-input"
         type="text"
         id="transpiration-{{transpiration}}"
-        v-model="formData.transpiration"
+        v-model="formData.sweatType"
       >
         <option></option>
         <option
@@ -59,7 +59,7 @@
         class="info-block-input"
         type="text"
         id="comment-{{commentType}}"
-        v-model="formData.commentType"
+        v-model="formData.remarkType"
       >
         <option></option>
         <option v-for="commentType in commentTypes" :value="commentType" :key="commentType">
@@ -75,7 +75,7 @@
         class="info-block-input"
         type="text"
         id="circulation-{{circulationType}}"
-        v-model="formData.circulation"
+        v-model="formData.circulationType"
       >
         <option></option>
         <option

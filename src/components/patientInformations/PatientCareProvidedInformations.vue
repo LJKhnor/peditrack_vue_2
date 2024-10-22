@@ -14,12 +14,12 @@
         class="info-block-input"
         type="text"
         id="used-product"
-        v-model="formData.usedProduct"
+        v-model="formData.usedProducts"
       />
     </div>
     <div class="info-block">
       <p>Matériels utilisés</p>
-      <input class="info-block-input" type="text" id="used-stuff" v-model="formData.usedStuff" />
+      <input class="info-block-input" type="text" id="used-stuff" v-model="formData.usedTools" />
     </div>
     <div class="info-block">
       <p>Blessures possibles</p>
@@ -32,7 +32,7 @@
     </div>
     <div class="info-block">
       <p>Conseils données</p>
-      <input class="info-block-input" type="text" id="advices" v-model="formData.advices" />
+      <input class="info-block-input" type="text" id="advices" v-model="formData.advice" />
     </div>
   </div>
 </template>

@@ -6,7 +6,7 @@
         name="select-group"
         class="info-block-input"
         type="text"
-        id="group"
+        id="groupType"
         v-model="formData.groupType"
       >
         <option></option>
@@ -19,7 +19,7 @@
         name="select-group"
         class="info-block-input"
         type="text"
-        id="group"
+        id="diabeteType"
         v-model="formData.diabeteType"
       >
         <option></option>
@@ -34,8 +34,8 @@
         <input
           class="info-block-input"
           type="checkbox"
-          id="hearth-diseases"
-          v-model="formData.heartDisease"
+          id="isWithHeartDisorder"
+          v-model="formData.withHeartDisorder"
         />
         <span class="slider round"></span>
       </label>
@@ -46,8 +46,8 @@
         <input
           class="info-block-input"
           type="checkbox"
-          id="bleeding-disorder"
-          v-model="formData.bleedingDisorder"
+          id="isWithBleedingDisorder"
+          v-model="formData.withBleedingDisorder"
         />
         <span class="slider round"></span>
       </label>
@@ -58,20 +58,32 @@
         <input
           class="info-block-input"
           type="checkbox"
-          id="thyroide-disorder"
-          v-model="formData.thyroideDisorder"
+          id="isWithThyroidDisorder"
+          v-model="formData.withThyroideDisorder"
         />
         <span class="slider round"></span>
       </label>
     </div>
     <div class="info-block">
-      <p>Prothèse genou / hanche</p>
+      <p>Prothèse hanche</p>
       <label class="switch">
         <input
           class="info-block-input"
           type="checkbox"
-          id="prosthesis"
-          v-model="formData.prosthesis"
+          id="hasHipProthesis"
+          v-model="formData.hasHipProsthesis"
+        />
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div class="info-block">
+      <p>Prothèse genou</p>
+      <label class="switch">
+        <input
+          class="info-block-input"
+          type="checkbox"
+          id="hasKneeProthesis"
+          v-model="formData.hasKneeProsthesis"
         />
         <span class="slider round"></span>
       </label>
@@ -79,7 +91,12 @@
     <div class="info-block">
       <p>Maladies</p>
       <label class="switch">
-        <input class="info-block-input" type="checkbox" id="diseases" v-model="formData.diseases" />
+        <input
+          class="info-block-input"
+          type="checkbox"
+          id="hasRecentDiseases"
+          v-model="formData.hasRecentDiseases"
+        />
         <span class="slider round"></span>
       </label>
     </div>
@@ -89,8 +106,8 @@
         <input
           class="info-block-input"
           type="checkbox"
-          id="operation"
-          v-model="formData.operation"
+          id="hasRecentOperation"
+          v-model="formData.hasRecentOperations"
         />
         <span class="slider round"></span>
       </label>

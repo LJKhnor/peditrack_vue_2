@@ -35,7 +35,7 @@
     </div>
     <div class="info-block">
       <p>Email</p>
-      <input class="info-block-input" type="text" id="email" v-model="formData.email" />
+      <input class="info-block-input" type="email" id="email" v-model="formData.email" />
     </div>
     <div class="info-block">
       <p>Personne de contact</p>

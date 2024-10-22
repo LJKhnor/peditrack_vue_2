@@ -83,6 +83,7 @@ export default {
 h2 {
   background-color: var(--color-theme);
   color: black;
+  border-radius: 8px;
 }
 .patient-infos {
   width: 80vw;
