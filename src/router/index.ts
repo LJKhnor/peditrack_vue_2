@@ -10,12 +10,20 @@ const router = createRouter({
       component: HomeView
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/Login.vue')
+    },
+    {
       path: '/appointment',
       name: 'appointment',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AppointmentView.vue')
+      component: () => import('../views/AppointmentView.vue'),
+      meta: {
+        requiresAuth: true // Add meta field to indicate protected route
+      }
     },
     {
       path: '/patient',
@@ -23,7 +31,10 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/PatientView.vue')
+      component: () => import('../views/PatientView.vue'),
+      meta: {
+        requiresAuth: true // Add meta field to indicate protected route
+      }
     },
     {
       path: '/data',
@@ -31,7 +42,10 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/DataView.vue')
+      component: () => import('../views/DataView.vue'),
+      meta: {
+        requiresAuth: true // Add meta field to indicate protected route
+      }
     },
     {
       path: '/map',
@@ -39,9 +53,28 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/MapView.vue')
+      component: () => import('../views/MapView.vue'),
+      meta: {
+        requiresAuth: true // Add meta field to indicate protected route
+      }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    const token = localStorage.getItem('token')
+    if (token) {
+      // User is authenticated, proceed to the route
+      next()
+    } else {
+      // User is not authenticated, redirect to login
+      next('/login')
+    }
+  } else {
+    // Non-protected route, allow access
+    next()
+  }
 })
 
 export default router

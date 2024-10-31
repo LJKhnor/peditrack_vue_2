@@ -1,30 +1,13 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <header>
-    <div class="logo-and-title">
-      <!-- <img
-        alt="Vue logo"
-        class="logo"
-        src="@/assets/logo_pedicure_val.png"
-        width="75"
-        height="75"
-      /> -->
-      <HelloWorld class="pedimed" msg="PediMed" />
-    </div>
-
-    <div class="nav-bar">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/appointment">Rendez-vous</RouterLink>
-        <RouterLink to="/patient">Patient</RouterLink>
-        <!-- <RouterLink to="/data">Données</RouterLink>
-        <RouterLink to="/map">Map</RouterLink> -->
-      </nav>
-    </div>
+    <NavBar class="pedimed" msg="PediMed" />
+    <nav class="navbar navbar-expand navbar-light fixed-top">
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/appointment">Rendez-vous</RouterLink>
+      <RouterLink to="/patient">Patient</RouterLink>
+      <!-- <RouterLink to="/data">Données</RouterLink>
+      <RouterLink to="/map">Map</RouterLink> -->
+    </nav>
   </header>
   <main>
     <div class="content">
@@ -40,16 +23,12 @@ import HelloWorld from './components/HelloWorld.vue'
   </footer>
 </template>
 
-<style scoped>
-.logo-and-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-/* .logo {
-  margin-right: 10px;
-} */
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router'
+import NavBar from './components/NavBar.vue'
+</script>
 
+<style scoped>
 nav {
   display: flex;
   justify-content: center;
@@ -60,6 +39,8 @@ nav a {
 }
 
 .footer {
+  align-content: flex-end;
+  height: 50%;
   text-align: center;
   padding: 10px;
 }

@@ -64,7 +64,6 @@ export default {
           }
         }
         try {
-          debugger
           await axios.post(urlCreationPAtient, patientData, options)
           emit('closePanel')
         } catch (error) {
