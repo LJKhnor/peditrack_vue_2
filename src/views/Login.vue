@@ -1,18 +1,18 @@
 <template>
   <div class="login">
-    <div>
-      <form>
+    <div clas="container-form">
+      <form class="login-form">
         <div>
-          <label for="username">Username:</label>
+          <label for="username">Nom d'utilisateur :</label>
           <input type="text" name="username" v-model="form.username" />
         </div>
         <div>
-          <label for="password">Password:</label>
+          <label for="password">Mot de passe:</label>
           <input type="password" name="password" v-model="form.password" />
         </div>
         <input
           type="submit"
-          class="btn patient-record-validation"
+          class="btn login-connection"
           value="Se connecter"
           @click.prevent="login"
         />
@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import router from '@/router'
+import AuthService from '@/services/AuthService.js'
 export default {
   name: 'LoginVue',
   setup() {
@@ -35,29 +36,14 @@ export default {
 
     async function login() {
       // Send login request and handle authentication token
-      const urlLogin = 'http://localhost:8085/api/auth/signin'
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:5173'
-        }
-      }
-      try {
-        const response = await axios.post(
-          urlLogin,
-          {
-            username: this.username,
-            password: this.password
-          },
-          options
-        )
-        // Store token in local storage
-        localStorage.setItem('token', response.data.token)
-        this.$router.push('/')
-      } catch (error) {
-        console.error('Login failed : ', error)
-      }
+      AuthService.login(this.form)
+        .then(() => {
+          router.push('/') // Redirige après la connexion
+        })
+        .catch((error) => {
+          this.message = 'Invalid username or password'
+          console.error(error)
+        })
     }
 
     return { form, showError, login }
@@ -65,30 +51,82 @@ export default {
 }
 </script>
 <style>
+/* Global Reset */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--color-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.login {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px var(--color-theme);
+  padding: 20px;
+}
+
+.container-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-form div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 label {
-  padding: 12px 12px 12px 0;
-  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--color-text);
 }
-button[type='submit'] {
-  background-color: var(--color-theme);
-  color: white;
-  padding: 12px 20px;
-  cursor: pointer;
-  border-radius: 30px;
-}
-button[type='submit']:hover {
-  background-color: #45a049;
-}
-input {
-  margin: 5px;
-  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
+
+input[type='text'],
+input[type='password'] {
   padding: 10px;
-  border-radius: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
 }
+
+input[type='text']:focus,
+input[type='password']:focus {
+  border-color: var(--color-theme);
+}
+
+.btn {
+  background-color: var(--color-theme);
+  color: #fff;
+  margin: 16px 0 0;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: var(--color-theme);
+}
+
 #error {
-  color: red;
+  color: #d9534f;
+  font-size: 0.9rem;
+  text-align: center;
 }
 </style>

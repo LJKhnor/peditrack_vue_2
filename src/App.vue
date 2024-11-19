@@ -38,11 +38,20 @@ nav a {
   margin: 0 15px;
 }
 
-.footer {
+/* .footer {
   align-content: flex-end;
   height: 50%;
   text-align: center;
   padding: 10px;
+} */
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  text-align: center;
 }
 @media (min-width: 1024px) {
   html,

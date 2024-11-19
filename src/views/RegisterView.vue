@@ -1,59 +1,192 @@
 <template>
-  <div class="register"></div>
+  <div class="register-page">
+    <div class="register-container">
+      <h2>Créer un compte</h2>
+      <form @submit.prevent="register">
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur</label>
+          <input
+            type="text"
+            id="username"
+            v-model="form.username"
+            placeholder="Entrez votre nom d'utilisateur"
+          />
+        </div>
+        <div class="form-group">
+          <label for="mail">Email</label>
+          <input
+            type="email"
+            id="mail"
+            v-model="form.mail"
+            placeholder="Entrez votre adresse email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input
+            type="password"
+            id="password"
+            v-model="form.password"
+            placeholder="Créez un mot de passe"
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">Confirmer le mot de passe</label>
+          <input
+            type="password"
+            id="confirm-password"
+            v-model="form.confirmPassword"
+            placeholder="Confirmez votre mot de passe"
+          />
+        </div>
+        <button type="submit" class="btn register-btn">S'inscrire</button>
+      </form>
+      <p class="redirect-login">Déjà inscrit ? <a href="/login">Connectez-vous ici</a>.</p>
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import axios from 'axios'
 export default {
-  name: 'RegisterView',
-  components: {},
   setup() {
     let form = {
       username: '',
-      full_name: '',
-      password: ''
+      mail: '',
+      password: '',
+      confirmPassword: ''
     }
-    let showError = false
-    async function submit() {
-      try {
-        await this.Register(this.form)
-        this.$router.push('/posts')
-        this.showError = false
-      } catch (error) {
-        this.showError = true
+    async function register() {
+      if (this.form.password !== this.form.confirmPassword) {
+        alert('Les mots de passe ne correspondent pas !')
+        return
       }
+      // Appeler une API pour envoyer les données utilisateur
+      const urlLogin = 'http://localhost:8085/api/users/register'
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:5173'
+          // Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+      try {
+        const response = await axios.post(
+          urlLogin,
+          {
+            username: this.form.username,
+            mail: this.form.mail,
+            password: this.form.password
+          },
+          options
+        )
+        console.log(response)
+        router.push('/login')
+      } catch (error) {
+        console.error('Register failed : ', error)
+      }
+      console.log("Données d'inscription :", this.form)
     }
-
-    return { ...mapActions(['Register']), showError, submit, form }
+    return {
+      form,
+      register
+    }
   }
 }
 </script>
 
 <style>
+/* Global Reset */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--color-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.register-page {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 2px 6px var(--color-theme);
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 label {
-  padding: 12px 12px 12px 0;
-  display: inline-block;
+  font-size: 0.9rem;
+  color: #555;
 }
-button[type='submit'] {
-  background-color: #4caf50;
-  color: white;
-  padding: 12px 20px;
-  cursor: pointer;
-  border-radius: 30px;
-}
-button[type='submit']:hover {
-  background-color: #45a049;
-}
+
 input {
-  margin: 5px;
-  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
   padding: 10px;
-  border-radius: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
 }
-#error {
-  color: red;
+
+input:focus {
+  border-color: var(--color-theme);
+}
+
+.btn {
+  background-color: var(--color-theme);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: var(--color-theme);
+}
+
+.redirect-login {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.redirect-login a {
+  color: var(--color-theme);
+  text-decoration: none;
+}
+
+.redirect-login a:hover {
+  text-decoration: underline;
 }
 </style>

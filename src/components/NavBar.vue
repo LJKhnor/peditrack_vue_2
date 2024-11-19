@@ -66,7 +66,7 @@ a:hover {
   cursor: pointer;
 }
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: var(--color-text);
 }
 @media (min-width: 1024px) {
   .greetings h1,
