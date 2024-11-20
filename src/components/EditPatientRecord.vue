@@ -52,6 +52,7 @@ import CareProvided from './patientInformations/PatientCareProvidedInformations.
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
+import AuthService from '@/services/AuthService.js'
 
 export default {
   name: 'EditPatientRecord',
@@ -71,8 +72,7 @@ export default {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
-        // Add any other headers if needed
+        Authorization: 'Bearer ' + AuthService.getCurrentToken()
       }
     }
     onMounted(() => {
@@ -124,8 +124,7 @@ export default {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
-          // Add any other headers if needed
+          Authorization: 'Bearer ' + AuthService.getCurrentToken()
         }
       }
       try {

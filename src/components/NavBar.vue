@@ -5,7 +5,7 @@
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
     <div id="nav">
-      <span v-if="isConnected()">
+      <span v-if="isLogin">
         <a @click="logout">Logout</a>
       </span>
       <span v-else>

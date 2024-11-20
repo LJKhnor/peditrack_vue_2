@@ -28,6 +28,9 @@ class AuthService {
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'))
   }
+  getCurrentToken() {
+    return JSON.parse(localStorage.getItem('token'))
+  }
   isCurrentUserConnected() {
     return JSON.parse(localStorage.getItem('token')) !== null
   }
