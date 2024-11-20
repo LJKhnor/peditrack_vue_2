@@ -4,11 +4,11 @@
       <form class="login-form">
         <div>
           <label for="username">Nom d'utilisateur :</label>
-          <input type="text" name="username" v-model="form.username" />
+          <input class="input-login" type="text" name="username" v-model="form.username" />
         </div>
         <div>
           <label for="password">Mot de passe:</label>
-          <input type="password" name="password" v-model="form.password" />
+          <input class="input-login" type="password" name="password" v-model="form.password" />
         </div>
         <input
           type="submit"
@@ -17,13 +17,14 @@
           @click.prevent="login"
         />
       </form>
-      <p v-if="showError" id="error">Username or Password is incorrect</p>
+      <p v-if="showError" id="error">{{ this.message }}</p>
     </div>
   </div>
 </template>
 
 <script>
 import router from '@/router'
+import { ref } from 'vue'
 import AuthService from '@/services/AuthService.js'
 export default {
   name: 'LoginVue',
@@ -32,7 +33,7 @@ export default {
       username: '',
       password: ''
     }
-    let showError = false
+    let showError = ref(false)
 
     async function login() {
       // Send login request and handle authentication token
@@ -41,6 +42,7 @@ export default {
           router.push('/') // Redirige après la connexion
         })
         .catch((error) => {
+          showError.value = true
           this.message = 'Invalid username or password'
           console.error(error)
         })
@@ -60,9 +62,9 @@ export default {
 body {
   font-family: 'Arial', sans-serif;
   background-color: var(--color-background);
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
   height: 100vh;
   margin: 0;
 }
@@ -73,6 +75,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 2px 6px var(--color-theme);
   padding: 20px;
+  margin: 25vh auto;
 }
 
 .container-form {
@@ -92,8 +95,8 @@ label {
   color: var(--color-text);
 }
 
-input[type='text'],
-input[type='password'] {
+.input-login[type='text'],
+.input-login[type='password'] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -105,19 +108,6 @@ input[type='password'] {
 input[type='text']:focus,
 input[type='password']:focus {
   border-color: var(--color-theme);
-}
-
-.btn {
-  background-color: var(--color-theme);
-  color: #fff;
-  margin: 16px 0 0;
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
 }
 
 .btn:hover {

@@ -20,17 +20,17 @@
   <form id="update-form">
     <div class="main-container record">
       <div class="container patient-infos">
-        <h2>Informations personnelles</h2>
+        <h2 class="h2-patient">Informations personnelles</h2>
         <PatientPersonalInformations v-bind:formData="formData" @update:formData="formData" />
       </div>
       <div class="container patient-infos">
-        <h2>Informations médicales</h2>
+        <h2 class="h2-patient">Informations médicales</h2>
         <PatientMedicalHealthInformations v-bind:formData="formData" @update:formData="formData" />
         <hr />
         <PatientMedicalTypeInformations v-bind:formData="formData" @update:formData="formData" />
       </div>
       <div class="container patient-infos">
-        <h2>Soins Prodigués</h2>
+        <h2 class="h2-patient">Soins Prodigués</h2>
         <CareProvided v-bind:formData="formData" @update:formData="formData" />
       </div>
     </div>

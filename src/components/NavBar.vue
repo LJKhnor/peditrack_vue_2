@@ -5,7 +5,7 @@
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
     <div id="nav">
-      <span v-if="isLoggedIn">
+      <span v-if="isConnected()">
         <a @click="logout">Logout</a>
       </span>
       <span v-else>
@@ -17,19 +17,25 @@
 </template>
 
 <script>
+import router from '@/router'
+import { ref, watch } from 'vue'
+import { isAuthenticated } from '../middlewares/auth.js'
+import AuthService from '@/services/AuthService.js'
+import StorageService from '../services/StorageService.js'
 export default {
   name: 'NavBar',
   props: ['msg'],
   setup() {
-    let isLogIn = isLoggedIn
-    function isLoggedIn() {
-      return this.$store.getters.isAuthenticated
-    }
+    const isLogIn = ref(AuthService.isCurrentUserConnected())
     async function logout() {
-      await this.$store.dispatch('LogOut')
-      this.$router.push('/login')
+      console.log('logout')
+      AuthService.logout()
+      await router.push('/login')
     }
-    return { isLogIn, logout }
+    function isConnected() {
+      return AuthService.isCurrentUserConnected()
+    }
+    return { isLogIn, logout, isConnected }
   }
 }
 </script>

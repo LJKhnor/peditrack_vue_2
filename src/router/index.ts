@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isAuthenticated } from '../middlewares/auth.js'
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -67,18 +68,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth) {
-    const token = localStorage.getItem('token')
-    if (token) {
-      // User is authenticated, proceed to the route
-      next()
-    } else {
-      // User is not authenticated, redirect to login
-      next('/login')
-    }
+  if (to.meta.requiresAuth && !isAuthenticated()) {
+    next('/login') // Redirige vers la page de login si non authentifié
   } else {
-    // Non-protected route, allow access
-    next()
+    next() // Autorise l'accès
   }
 })
 

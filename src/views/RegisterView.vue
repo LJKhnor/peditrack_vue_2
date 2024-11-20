@@ -1,11 +1,12 @@
 <template>
   <div class="register-page">
     <div class="register-container">
-      <h2>Créer un compte</h2>
+      <h2 class="h2-register">Créer un compte</h2>
       <form @submit.prevent="register">
         <div class="form-group">
           <label for="username">Nom d'utilisateur</label>
           <input
+            class="input-register"
             type="text"
             id="username"
             v-model="form.username"
@@ -15,6 +16,7 @@
         <div class="form-group">
           <label for="mail">Email</label>
           <input
+            class="input-register"
             type="email"
             id="mail"
             v-model="form.mail"
@@ -24,6 +26,7 @@
         <div class="form-group">
           <label for="password">Mot de passe</label>
           <input
+            class="input-register"
             type="password"
             id="password"
             v-model="form.password"
@@ -33,6 +36,7 @@
         <div class="form-group">
           <label for="confirm-password">Confirmer le mot de passe</label>
           <input
+            class="input-register"
             type="password"
             id="confirm-password"
             v-model="form.confirmPassword"
@@ -107,9 +111,9 @@ export default {
 body {
   font-family: 'Arial', sans-serif;
   background-color: var(--color-background);
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
   height: 100vh;
   margin: 0;
 }
@@ -120,6 +124,8 @@ body {
   background: var(--color-background);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  margin: 12vh auto;
 }
 
 .register-container {
@@ -130,10 +136,10 @@ body {
   padding: 20px;
 }
 
-h2 {
+.h2-register {
   text-align: center;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--color-text);
 }
 
 .form-group {
@@ -144,10 +150,10 @@ h2 {
 
 label {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--color-text);
 }
 
-input {
+.input-register {
   padding: 10px;
   border: 1px solid var(--color-border);
   border-radius: 5px;
@@ -156,20 +162,8 @@ input {
   transition: border-color 0.3s ease-in-out;
 }
 
-input:focus {
+.input-register:focus {
   border-color: var(--color-theme);
-}
-
-.btn {
-  background-color: var(--color-theme);
-  color: var(--color-text);
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
 }
 
 .btn:hover {

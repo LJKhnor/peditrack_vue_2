@@ -80,7 +80,7 @@ export default {
   border-radius: 12px;
   height: 100%;
 }
-h2 {
+.h2-patient {
   background-color: var(--color-theme);
   color: black;
   border-radius: 8px;
