@@ -5,7 +5,9 @@
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
     <div id="nav">
-      <span v-if="isLogin">
+      <span class="span-logout" v-if="isLogIn">
+        <p>Pepito</p>
+        |
         <a @click="logout">Logout</a>
       </span>
       <span v-else>
@@ -32,10 +34,7 @@ export default {
       AuthService.logout()
       await router.push('/login')
     }
-    function isConnected() {
-      return AuthService.isCurrentUserConnected()
-    }
-    return { isLogIn, logout, isConnected }
+    return { isLogIn, logout }
   }
 }
 </script>
@@ -57,7 +56,13 @@ h1 {
 h3 {
   font-size: 1.2rem;
 }
-
+.span-logout {
+  display: flex;
+  width: 115%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+}
 .greetings h1,
 .greetings h3 {
   text-align: center;

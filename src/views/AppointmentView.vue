@@ -65,7 +65,16 @@ export default {
 
     // Initialiser Google API au montage du composant
     onMounted(() => {
-      gapi.load('client', initializeGapiClient)
+      gapi.load('client', async () => {
+        await initializeGapiClient()
+        const savedToken = localStorage.getItem('google_access_token')
+        if (savedToken) {
+          gapi.client.setToken({ access_token: savedToken })
+          listUpcomingEvents() // Charger les événements sans nécessiter une nouvelle authentification
+          document.getElementById('signout_button').style.visibility = 'visible'
+          document.getElementById('authorize_button').innerText = 'Refresh'
+        }
+      })
       gapi.load('client', gisLoaded)
     })
     watch(events, (newVal) => {
@@ -132,6 +141,7 @@ export default {
         if (resp.error !== undefined) {
           throw resp
         }
+        localStorage.setItem('google_access_token', gapi.client.getToken().access_token)
         document.getElementById('signout_button').style.visibility = 'visible'
         document.getElementById('authorize_button').innerText = 'Refresh'
         await listUpcomingEvents()
@@ -155,6 +165,7 @@ export default {
       if (token !== null) {
         google.accounts.oauth2.revoke(token.access_token)
         gapi.client.setToken('')
+        localStorage.removeItem('google_access_token')
         // document.getElementById('content').innerText = ''
         document.getElementById('authorize_button').innerText = 'Authorize'
         document.getElementById('signout_button').style.visibility = 'hidden'

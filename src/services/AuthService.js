@@ -4,6 +4,7 @@ import StorageService from './StorageService'
 const API_URL = 'http://localhost:8085/api/auth/'
 
 class AuthService {
+  isLogin = false
   login(form) {
     const user = {
       username: form.username,
