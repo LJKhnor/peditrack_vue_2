@@ -144,6 +144,11 @@ export default {
 </script>
 
 <style>
+.info-block-input {
+  width: 50%;
+  border-radius: 12px;
+  padding: 0 8px;
+}
 @media (max-width: 480px) {
   .patient-infos {
     width: 90vw; /* Sur petits écrans, prend 90% de la largeur du viewport */

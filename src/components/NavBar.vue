@@ -20,18 +20,19 @@
 
 <script>
 import router from '@/router'
-import { ref, watch } from 'vue'
-import { isAuthenticated } from '../middlewares/auth.js'
+import { onMounted, ref, watch } from 'vue'
 import AuthService from '@/services/AuthService.js'
-import StorageService from '../services/StorageService.js'
 export default {
   name: 'NavBar',
   props: ['msg'],
   setup() {
-    const isLogIn = ref(AuthService.isCurrentUserConnected())
+    onMounted(() => {
+      isLogIn.value = AuthService.isCurrentUserConnected()
+    })
+    const isLogIn = ref(false)
     async function logout() {
       console.log('logout')
-      AuthService.logout()
+      isLogIn.value = false
       await router.push('/login')
     }
     return { isLogIn, logout }

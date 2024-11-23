@@ -137,10 +137,6 @@ export default {
 </script>
 
 <style>
-.info-block-input {
-  width: 50%;
-  border-radius: 12px;
-}
 .info-block-input-checkbox {
   width: 50%;
 }
