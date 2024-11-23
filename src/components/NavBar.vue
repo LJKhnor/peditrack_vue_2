@@ -6,7 +6,7 @@
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
     <div id="nav">
       <span class="span-logout" v-if="isLogIn">
-        <p>Pepito</p>
+        <p class="username">{{ username }}</p>
         |
         <a @click="logout">Logout</a>
       </span>
@@ -20,22 +20,26 @@
 
 <script>
 import router from '@/router'
-import { onMounted, ref, watch } from 'vue'
+import { ref } from 'vue'
 import AuthService from '@/services/AuthService.js'
 export default {
   name: 'NavBar',
   props: ['msg'],
   setup() {
-    onMounted(() => {
-      isLogIn.value = AuthService.isCurrentUserConnected()
-    })
+    let username = ref('')
     const isLogIn = ref(false)
+
+    if (AuthService.isCurrentUserConnected()) {
+      isLogIn.value = true
+      username.value = AuthService.getCurrentUser().username
+    }
     async function logout() {
       console.log('logout')
       isLogIn.value = false
+      AuthService.logout()
       await router.push('/login')
     }
-    return { isLogIn, logout }
+    return { isLogIn, username, logout }
   }
 }
 </script>
@@ -79,6 +83,9 @@ a:hover {
 }
 #nav a.router-link-exact-active {
   color: var(--color-text);
+}
+.username {
+  font-size: larger;
 }
 @media (min-width: 1024px) {
   .greetings h1,
