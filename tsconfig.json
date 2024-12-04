@@ -1,5 +1,6 @@
 {
   "files": [],
+  "include": ["*.js"],
   "references": [
     {
       "path": "./tsconfig.node.json"
