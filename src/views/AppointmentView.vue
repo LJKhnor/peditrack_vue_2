@@ -284,7 +284,7 @@ export default {
         .execute()
     }
 
-    function onEventClick(e, event) {
+    function onEventClick(e) {
       content.value = { description: e.description, location: e.location }
       showDialog.value = !showDialog.value
     }

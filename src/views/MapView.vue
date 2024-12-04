@@ -1,17 +1,14 @@
 <script>
 import { onMounted } from 'vue'
 import axios from 'axios'
-import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { LMap, LTileLayer, LMarker, LTooltip, LIcon, LCircle } from '@vue-leaflet/vue-leaflet'
+import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
 
 export default {
   components: {
     LMap,
     LTileLayer,
     LMarker,
-    LTooltip,
-    LIcon,
     LCircle
   },
   setup() {

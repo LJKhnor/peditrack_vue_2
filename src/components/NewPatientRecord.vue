@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue'
+import { ref } from 'vue'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
