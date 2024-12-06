@@ -53,6 +53,7 @@
 <script>
 import axios from 'axios'
 import router from '@/router'
+import apiClient from '../axios'
 export default {
   setup() {
     let form = {
@@ -76,7 +77,7 @@ export default {
         }
       }
       try {
-        const response = await axios.post(
+        const response = await apiClient.post(
           urlLogin,
           {
             username: this.form.username,
