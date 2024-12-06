@@ -3,7 +3,7 @@ name: Deploy Vue.js App
 on:
   push:
     branches:
-      - master # Déclenche le déploiement sur un push vers la branche master
+      - main # Déclenche le déploiement sur un push vers la branche main
 
 jobs:
   build:
