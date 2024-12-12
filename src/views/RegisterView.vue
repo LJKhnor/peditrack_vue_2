@@ -67,8 +67,9 @@ export default {
         alert('Les mots de passe ne correspondent pas !')
         return
       }
+
       // Appeler une API pour envoyer les données utilisateur
-      const urlLogin = 'http://localhost:8085/api/users/register'
+      const urlRegister = '/users/register'
       const options = {
         method: 'POST',
         headers: {
@@ -78,7 +79,7 @@ export default {
       }
       try {
         const response = await apiClient.post(
-          urlLogin,
+          urlRegister,
           {
             username: this.form.username,
             mail: this.form.mail,
@@ -86,7 +87,7 @@ export default {
           },
           options
         )
-        console.log(response)
+        console.log('apiClient repsone : ', response)
         router.push('/login')
       } catch (error) {
         console.error('Register failed : ', error)
