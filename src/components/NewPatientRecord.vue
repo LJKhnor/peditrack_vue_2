@@ -34,7 +34,7 @@ import CareProvided from './patientInformations/PatientCareProvidedInformations.
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
-import axios from 'axios'
+import apiClient from '../axios'
 
 import AuthService from '@/services/AuthService.js'
 
@@ -56,7 +56,7 @@ export default {
       console.log('Creating new patient with data:', formData)
       let isOkToContinue = handleFormMissingData()
       if (isOkToContinue) {
-        const urlCreationPatient = 'http://localhost:8085/patients'
+        const urlCreationPatient = '/patients'
         const patientData = { ...formData.value, birthdate: new Date(formData.value.birthdate) }
         const options = {
           method: 'POST',
@@ -66,7 +66,7 @@ export default {
           }
         }
         try {
-          await axios.post(urlCreationPatient, patientData, options)
+          await apiClient.post(urlCreationPatient, patientData, options)
           emit('closePanel')
         } catch (error) {
           console.error('There was an error!', error.response ? error.response.data : error.message)

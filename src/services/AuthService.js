@@ -1,7 +1,8 @@
-import axios from 'axios'
 import StorageService from './StorageService'
+import apiClient from '../axios'
 
-const API_URL = 'http://localhost:8085/api/auth/'
+// const API_URL = 'http://localhost:8085/api/auth/'
+const urlLogin = '/auth/signin'
 
 class AuthService {
   isLogin = false
@@ -10,8 +11,8 @@ class AuthService {
       username: form.username,
       password: form.password
     }
-    return axios
-      .post(API_URL + 'signin', { username: user.username, password: user.password })
+    return apiClient
+      .post(urlLogin, { username: user.username, password: user.password })
       .then((response) => {
         if (response.data.token) {
           StorageService.setItem('user', user)

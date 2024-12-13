@@ -1,6 +1,6 @@
 <script>
 import { onMounted } from 'vue'
-import axios from 'axios'
+import apiClient from '../axios'
 import 'leaflet/dist/leaflet.css'
 import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
 
@@ -15,7 +15,7 @@ export default {
     let zoom = 13
     let iconWidth = 25
     let iconHeight = 40
-    const urlGetAllPatient = 'http://localhost:8085/patients'
+    const urlGetAllPatient = '/patients'
     const options = {
       method: 'GET',
       headers: {
@@ -35,7 +35,7 @@ export default {
     })
 
     async function getAllPatient() {
-      const response = await axios.get(urlGetAllPatient, options)
+      const response = await apiClient.get(urlGetAllPatient, options)
 
       console.log(response.data)
       response.data.forEach((element) => {

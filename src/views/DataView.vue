@@ -17,13 +17,13 @@ import { onMounted, ref } from 'vue'
 import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
-import axios from 'axios'
+import apiClient from '../axios'
 export default {
   components: {
     AgGridVue
   },
   setup() {
-    const urlGetAllPatient = 'http://localhost:8085/patients'
+    const urlGetAllPatient = '/patients'
     const options = {
       method: 'GET',
       headers: {
@@ -46,7 +46,7 @@ export default {
     })
 
     async function getAllPatient() {
-      const response = await axios.get(urlGetAllPatient, options)
+      const response = await apiClient.get(urlGetAllPatient, options)
 
       console.log(response.data)
       response.data.forEach((element) => {

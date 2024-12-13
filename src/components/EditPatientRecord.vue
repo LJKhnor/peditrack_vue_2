@@ -47,12 +47,12 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 import AuthService from '@/services/AuthService.js'
+import apiClient from '../axios'
 
 export default {
   name: 'EditPatientRecord',
@@ -66,8 +66,8 @@ export default {
   setup(props, { emit }) {
     let formData = ref({})
     let patients = ref([])
-    const urlGetAllPatient = 'http://localhost:8085/patients'
-    const urlPostPatient = 'http://localhost:8085/patients'
+    const urlGetAllPatient = '/patients'
+    const urlPostPatient = '/patients'
     const optionsGet = {
       method: 'GET',
       headers: {
@@ -80,7 +80,7 @@ export default {
     })
 
     async function getAllPatient() {
-      const response = await axios.get(urlGetAllPatient, optionsGet)
+      const response = await apiClient.get(urlGetAllPatient, optionsGet)
       response.data.forEach((element) => {
         patients.value.push({
           id: element.id,
@@ -93,7 +93,7 @@ export default {
       const patientId = selectElement.value
       const url = `${urlPostPatient}/${patientId}`
 
-      const response = await axios.get(url, optionsGet)
+      const response = await apiClient.get(url, optionsGet)
       let previousPatientInfos = response.data.patientDto
       let previousHealthInfos = response.data.healthDto
 
@@ -128,7 +128,7 @@ export default {
         }
       }
       try {
-        const response = await axios.put(`${urlPostPatient}/${patientId}`, patientData, options)
+        const response = await apiClient.put(`${urlPostPatient}/${patientId}`, patientData, options)
         emit('closePanel')
         // console.log(response)
         console.log(typeof patientData)
