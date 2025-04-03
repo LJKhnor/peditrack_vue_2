@@ -3,7 +3,7 @@
     <h1 class="color-theme">Patient</h1>
     <div class="btn-control" :hidden="isNewPatient || isEditPatient">
       <button class="btn" @click="onCreatePatient">Ajouter un nouveau patient</button>
-      <button class="btn" @click="onEditPatient">Editer un patient</button>
+      <button class="btn" @click="onEditPatient">Encoder le soin</button>
     </div>
 
     <template v-if="isNewPatient">

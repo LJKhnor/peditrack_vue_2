@@ -1,8 +1,7 @@
 <template>
-  <h3>Edition</h3>
+  <h3>Nouveau soin</h3>
   <form>
     <div>
-      <!--<input type="combobox" id="mySearch" name="searchName" placeholder="patient" />-->
       <select
         name="select-foot"
         class="info-block-input"
@@ -18,22 +17,35 @@
     </div>
   </form>
   <form id="update-form">
-    <div class="main-container record">
-      <div class="container patient-infos">
-        <h2 class="h2-patient">Informations personnelles</h2>
-        <PatientPersonalInformations v-bind:formData="formData" @update:formData="formData" />
-      </div>
-      <div class="container patient-infos">
-        <h2 class="h2-patient">Informations médicales</h2>
-        <PatientMedicalHealthInformations v-bind:formData="formData" @update:formData="formData" />
-        <hr />
-        <PatientMedicalTypeInformations v-bind:formData="formData" @update:formData="formData" />
-      </div>
-      <div class="container patient-infos">
-        <h2 class="h2-patient">Soins Prodigués</h2>
-        <CareProvided v-bind:formData="formData" @update:formData="formData" />
-      </div>
-    </div>
+    <Tabs :activeTab="activeTab" @update:activeTab="activeTab = $event">
+      <Tab name="Informations personnelles" value="personal" :activeTab="activeTab">
+        <div class="container patient-infos">
+          <h2 class="h2-patient">Informations personnelles</h2>
+          <PatientPersonalInformations v-bind:formData="formData" @update:formData="formData" />
+        </div>
+      </Tab>
+      <Tab name="Informations médicales" value="medical" :activeTab="activeTab">
+        <div class="container patient-infos">
+          <h2 class="h2-patient">Informations médicales</h2>
+          <PatientMedicalHealthInformations
+            v-bind:formData="formData"
+            @update:formData="formData"
+          />
+        </div>
+      </Tab>
+      <Tab name="Informations médicales (suite)" value="type" :activeTab="activeTab">
+        <div class="container patient-infos">
+          <h2 class="h2-patient">Informations médicales (suites)</h2>
+          <PatientMedicalTypeInformations v-bind:formData="formData" @update:formData="formData" />
+        </div>
+      </Tab>
+      <Tab name="Soins Prodigués" value="care" :activeTab="activeTab">
+        <div class="container patient-infos">
+          <h2 class="h2-patient">Soins Prodigués</h2>
+          <CareProvided v-bind:formData="formData" @update:formData="formData" />
+        </div>
+      </Tab>
+    </Tabs>
     <div class="patient-record-validation">
       <input
         type="submit"
@@ -47,6 +59,8 @@
 
 <script>
 import { ref, onMounted } from 'vue'
+import Tabs from '@/components/Tabs.vue'
+import Tab from '@/components/Tab.vue'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
@@ -57,6 +71,8 @@ import apiClient from '../axios'
 export default {
   name: 'EditPatientRecord',
   components: {
+    Tabs,
+    Tab,
     PatientPersonalInformations,
     PatientMedicalHealthInformations,
     PatientMedicalTypeInformations,
@@ -64,6 +80,7 @@ export default {
   },
   props: [],
   setup(props, { emit }) {
+    const activeTab = ref('personal')
     let formData = ref({})
     let patients = ref([])
     const urlGetAllPatient = '/patients'
@@ -138,7 +155,7 @@ export default {
       }
     }
 
-    return { formData, patients, handleSelectionChange, updatePatient }
+    return { activeTab, formData, patients, handleSelectionChange, updatePatient }
   }
 }
 </script>
