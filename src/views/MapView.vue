@@ -54,10 +54,6 @@ export default {
     let zoom = 13
     let iconWidth = 25
     let iconHeight = 40
-    let listPoints = [
-      [50.4526514, 4.8884249],
-      [50.45, 4.88]
-    ]
     const urlGetAllPatientPosition = '/data/map'
     const options = {
       method: 'GET',
@@ -92,10 +88,17 @@ export default {
     async function getAllPatientPositions(map) {
       createCatchmentArea(map)
       const response = await apiClient.get(urlGetAllPatientPosition, options)
-      for (const key in response.data) {
-        let point = response.data[key]
-        L.marker([point.x, point.y]).addTo(map)
+      let points = []
+      let pointsBody = response.data
+      for (const key in pointsBody) {
+        let value = pointsBody[key]
+        let point = L.latLng(value.x, value.y)
+        points.push(point)
       }
+      for (const key in points) {
+        L.marker(points[key]).addTo(map)
+      }
+      map.fitBounds(points)
     }
     function createCatchmentArea(map) {
       let circle1 = L.circle([50.4526514, 4.8884249], {
