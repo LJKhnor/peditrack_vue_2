@@ -41,6 +41,7 @@ import apiClient from '../axios'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
+import AuthService from '@/services/AuthService.js'
 
 export default {
   components: {
@@ -62,8 +63,9 @@ export default {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173' // Allow requests from your Vue.js frontend
+        'Access-Control-Allow-Origin': 'http://localhost:5173', // Allow requests from your Vue.js frontend
         // Add any other headers if needed
+        Authorization: 'Bearer ' + AuthService.getCurrentToken()
       }
     }
     function iconUrl() {
@@ -79,20 +81,21 @@ export default {
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map)
-      let iconStartingPoint = L.icon({
+      L.icon({
         iconUrl: 'logo_pedicure_val.png'
       })
-      let startingPoint = L.marker([50.4526514, 4.8884249], { icon: iconStartingPoint }).addTo(map)
+      L.marker([50.4526514, 4.8884249]).addTo(map)
 
       getAllPatientPositions(map)
     })
 
     async function getAllPatientPositions(map) {
       createCatchmentArea(map)
-      // const response = await apiClient.get(urlGetAllPatient, options)
-      // for (const point in listPoints) {
-      //   L.marker(listPoints[point]).addTo(map)
-      // }
+      const response = await apiClient.get(urlGetAllPatientPosition, options)
+      for (const key in response.data) {
+        let point = response.data[key]
+        L.marker([point.x, point.y]).addTo(map)
+      }
     }
     function createCatchmentArea(map) {
       let circle1 = L.circle([50.4526514, 4.8884249], {
