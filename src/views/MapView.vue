@@ -54,6 +54,10 @@ export default {
     let zoom = 13
     let iconWidth = 25
     let iconHeight = 40
+    const pedicureStartPoint = [50.4526514, 4.8884249]
+    let markers = []
+    let points = []
+    let osm, osmHOT, openTopoMap, map, markersLayer, circlesLayer, layerControl
     const urlGetAllPatientPosition = '/data/map'
     const options = {
       method: 'GET',
@@ -71,52 +75,84 @@ export default {
       return [this.iconWidth, this.iconHeight]
     }
     onMounted(() => {
-      // on créé le layer pour acceuillir la map et on lui passe les infos de centrage et de zoom
-      let map = L.map('mapContainer').setView([50.4526514, 4.8884249], zoom)
-      // on lui passe les tuilles de la map
-      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map)
-      L.icon({
-        iconUrl: 'logo_pedicure_val.png'
+      initLayers()
+      getAllPatientPositions().then(() => {
+        addAllPatientsPositionsToMap()
+        map.fitBounds(points)
       })
-      L.marker([50.4526514, 4.8884249]).addTo(map)
-
-      getAllPatientPositions(map)
     })
 
-    async function getAllPatientPositions(map) {
+    function initLayers() {
+      // on lui passe les tuilles de la map
+      osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      })
+      // on créé le layer pour acceuillir la map et on lui passe les infos de centrage et de zoom
+
+      osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution:
+          '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
+      })
+      openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution:
+          'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
+      })
+      let baseMaps = {
+        OpenStreetMap: osm,
+        'OpenStreetMap.HOT': osmHOT,
+        OpenTopoMap: openTopoMap
+      }
+      map = L.map('mapContainer', { layers: [osm] }).setView(pedicureStartPoint, zoom)
+      layerControl = L.control.layers(baseMaps).addTo(map)
+
       createCatchmentArea(map)
-      const response = await apiClient.get(urlGetAllPatientPosition, options)
-      let points = []
-      let pointsBody = response.data
-      for (const key in pointsBody) {
-        let value = pointsBody[key]
-        let point = L.latLng(value.x, value.y)
-        points.push(point)
-      }
-      for (const key in points) {
-        L.marker(points[key]).addTo(map)
-      }
-      map.fitBounds(points)
+
+      L.marker(pedicureStartPoint).addTo(map)
     }
+
     function createCatchmentArea(map) {
-      let circle1 = L.circle([50.4526514, 4.8884249], {
+      let circle1 = L.circle(pedicureStartPoint, {
         color: 'green',
         fillOpacity: 0.0,
         radius: 5000
-      }).addTo(map)
-      let circle2 = L.circle([50.4526514, 4.8884249], {
+      })
+      let circle2 = L.circle(pedicureStartPoint, {
         color: 'yellow',
         fillOpacity: 0.0,
         radius: 10000
-      }).addTo(map)
-      let circle3 = L.circle([50.4526514, 4.8884249], {
+      })
+      let circle3 = L.circle(pedicureStartPoint, {
         color: 'red',
         fillOpacity: 0.0,
         radius: 15000
-      }).addTo(map)
+      })
+      circlesLayer = L.layerGroup([circle1, circle2, circle3])
+      layerControl.addOverlay(circlesLayer, 'Zone de chalendise')
     }
+    async function getAllPatientPositions() {
+      await apiClient.get(urlGetAllPatientPosition, options).then((result) => {
+        let pointsBody = result.data
+        for (const key in pointsBody) {
+          let value = pointsBody[key]
+          let point = L.latLng(value.x, value.y)
+          points.push(point)
+        }
+      })
+
+      return points
+    }
+
+    function addAllPatientsPositionsToMap() {
+      for (const key in points) {
+        let marker = L.marker(points[key])
+        markers.push(marker)
+      }
+      markersLayer = L.layerGroup(markers).addTo(map)
+      layerControl.addOverlay(markersLayer, 'patients')
+    }
+
     return { iconUrl, iconSize, zoom, iconWidth, iconHeight }
   }
 }
