@@ -11,6 +11,7 @@
             id="username"
             v-model="form.username"
             placeholder="Entrez votre nom d'utilisateur"
+            required
           />
         </div>
         <div class="form-group">
@@ -21,6 +22,7 @@
             id="mail"
             v-model="form.mail"
             placeholder="Entrez votre adresse email"
+            required
           />
         </div>
         <div class="form-group">
@@ -31,6 +33,7 @@
             id="password"
             v-model="form.password"
             placeholder="Créez un mot de passe"
+            required
           />
         </div>
         <div class="form-group">
@@ -41,6 +44,7 @@
             id="confirm-password"
             v-model="form.confirmPassword"
             placeholder="Confirmez votre mot de passe"
+            required
           />
         </div>
         <button type="submit" class="btn register-btn">S'inscrire</button>
@@ -87,7 +91,7 @@ export default {
           },
           options
         )
-        console.log('apiClient repsone : ', response)
+        console.log('apiClient respone : ', response)
         router.push('/login')
       } catch (error) {
         console.error('Register failed : ', error)
@@ -119,7 +123,10 @@ body {
   height: 100vh;
   margin: 0;
 }
-
+.register-btn {
+  width: 10vw;
+  height: 4vh;
+}
 .register-page {
   width: 100%;
   max-width: 400px;
