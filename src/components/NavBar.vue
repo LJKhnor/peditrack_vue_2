@@ -9,6 +9,9 @@
         <p class="username">{{ username }}</p>
         |
         <a @click="logout">Logout</a>
+        <router-link to="/update">
+          <MdiComponent v-bind:mdiValue="cogIcon" />
+        </router-link>
       </span>
       <span v-else>
         <router-link to="/login">Login</router-link> |
@@ -20,26 +23,33 @@
 
 <script>
 import router from '@/router'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import AuthService from '@/services/AuthService.js'
+import MdiComponent from '@/components/icons/MdiComponent.vue'
+import { mdiCog } from '@mdi/js'
+import { RouterLink } from 'vue-router'
 export default {
   name: 'NavBar',
+  components: { MdiComponent },
   props: ['msg'],
   setup() {
     let username = ref('')
+    let cogIcon = mdiCog
     const isLogIn = ref(false)
 
     if (AuthService.isCurrentUserConnected()) {
-      isLogIn.value = true
       username.value = AuthService.getCurrentUser().username
+      isLogIn.value = true
     }
+
     async function logout() {
       console.log('logout')
-      isLogIn.value = false
       AuthService.logout()
       await router.push('/login')
+      isLogIn.value = false
     }
-    return { isLogIn, username, logout }
+
+    return { isLogIn, username, cogIcon, logout }
   }
 }
 </script>

@@ -147,9 +147,6 @@ export default {
       try {
         const response = await apiClient.put(`${urlPostPatient}/${patientId}`, patientData, options)
         emit('closePanel')
-        // console.log(response)
-        console.log(typeof patientData)
-        console.log(patientData)
       } catch (error) {
         console.error('There was an error!', error.response ? error.response.data : error.message)
       }

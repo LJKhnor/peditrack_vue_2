@@ -9,7 +9,10 @@ class AuthService {
   login(form) {
     const user = {
       username: form.username,
-      password: form.password
+      password: form.password,
+      street: form.street,
+      postalCode: form.postalCode,
+      city: form.city
     }
     return apiClient
       .post(urlLogin, { username: user.username, password: user.password })

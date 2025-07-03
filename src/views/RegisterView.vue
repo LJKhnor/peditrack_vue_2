@@ -49,6 +49,7 @@
         </div>
         <button type="submit" class="btn register-btn">S'inscrire</button>
       </form>
+      <p v-if="showError" id="error">{{ this.message }}</p>
       <p class="redirect-login">Déjà inscrit ? <a href="/login">Connectez-vous ici</a>.</p>
     </div>
   </div>
@@ -57,6 +58,7 @@
 <script>
 import axios from 'axios'
 import router from '@/router'
+import { ref } from 'vue'
 import apiClient from '../axios'
 export default {
   setup() {
@@ -66,6 +68,8 @@ export default {
       password: '',
       confirmPassword: ''
     }
+    let message = ''
+    let showError = ref(false)
     async function register() {
       if (this.form.password !== this.form.confirmPassword) {
         alert('Les mots de passe ne correspondent pas !')
@@ -94,12 +98,14 @@ export default {
         console.log('apiClient respone : ', response)
         router.push('/login')
       } catch (error) {
+        showError.value = true
+        this.message = error.response.data
         console.error('Register failed : ', error)
       }
-      console.log("Données d'inscription :", this.form)
     }
     return {
       form,
+      message,
       register
     }
   }

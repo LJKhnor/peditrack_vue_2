@@ -21,6 +21,11 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue')
     },
     {
+      path: '/update',
+      name: 'update',
+      component: () => import('../views/EditUserAccountView.vue')
+    },
+    {
       path: '/appointment',
       name: 'appointment',
       // route level code-splitting

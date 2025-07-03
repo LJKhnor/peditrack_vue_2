@@ -28,7 +28,8 @@ import { ref } from 'vue'
 import AuthService from '@/services/AuthService.js'
 export default {
   name: 'LoginVue',
-  setup() {
+  props: [],
+  setup(props, { emit }) {
     let form = {
       username: '',
       password: ''
@@ -42,9 +43,11 @@ export default {
           router.push('/') // Redirige après la connexion
         })
         .catch((error) => {
-          showError.value = true
-          this.message = 'Invalid username or password'
-          console.error(error)
+          if (error.response !== undefined) {
+            showError.value = true
+            this.message = error.response.data
+            console.error(error)
+          }
         })
     }
 
