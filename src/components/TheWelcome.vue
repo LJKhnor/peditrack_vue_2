@@ -27,13 +27,13 @@ let mapIcon = mdiMap
     <template #heading>Patient</template>
     Gérer la fiche patient.
   </WelcomeItem>
-  <WelcomeItem>
+  <!-- <WelcomeItem>
     <template #icon>
       <MdiComponent v-bind:mdiValue="mapIcon" />
     </template>
     <template #heading>Map</template>
     Voir sur la carte la localisation de vos patients.
-  </WelcomeItem>
+  </WelcomeItem> -->
 
   <!-- <WelcomeItem>
     <template #icon>
