@@ -47,6 +47,16 @@
             required
           />
         </div>
+        <div class="form-group">
+          <label>Code d'activation</label>
+          <input
+            type="text"
+            class="input-register"
+            v-model="form.activationCode"
+            placeholder="Entrez le code d'activation de votre licence"
+            required
+          />
+        </div>
         <button type="submit" class="btn register-btn">S'inscrire</button>
       </form>
       <p v-if="showError" id="error">{{ this.message }}</p>
@@ -92,6 +102,7 @@ export default {
             username: this.form.username,
             mail: this.form.mail,
             password: this.form.password
+            // developper l'utilisation du code d'activation
           },
           options
         )

@@ -13,7 +13,7 @@
           <MdiComponent v-bind:mdiValue="cogIcon" />
         </router-link>
       </span>
-      <span v-else>
+      <span class="span-login" v-else>
         <router-link to="/login">Login</router-link> |
         <router-link to="/register">Register</router-link>
       </span>
@@ -78,13 +78,18 @@ h3 {
   align-items: center;
   padding: 4px;
 }
+.span-login {
+  display: flex;
+  width: 115%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+}
 .greetings h1,
 .greetings h3 {
   text-align: center;
 }
-#nav {
-  padding: 0px;
-}
+
 #nav a {
   font-weight: bold;
 }
