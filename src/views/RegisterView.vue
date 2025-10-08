@@ -52,7 +52,7 @@
           <input
             type="text"
             class="input-register"
-            v-model="form.activationCode"
+            v-model="form.registrationKey"
             placeholder="Entrez le code d'activation de votre licence"
             required
           />
@@ -76,7 +76,8 @@ export default {
       username: '',
       mail: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      registrationKey: ''
     }
     let message = ''
     let showError = ref(false)
@@ -87,7 +88,7 @@ export default {
       }
 
       // Appeler une API pour envoyer les données utilisateur
-      const urlRegister = '/users/register'
+      const urlRegister = '/api/users/register'
       const options = {
         method: 'POST',
         headers: {
@@ -101,8 +102,9 @@ export default {
           {
             username: this.form.username,
             mail: this.form.mail,
-            password: this.form.password
+            password: this.form.password,
             // developper l'utilisation du code d'activation
+            registrationKey: this.form.registrationKey
           },
           options
         )
