@@ -61,6 +61,7 @@
       </form>
       <p v-if="showError" id="error">{{ this.message }}</p>
       <p class="redirect-login">Déjà inscrit ? <a href="/login">Connectez-vous ici</a>.</p>
+      <p class="">Pas encore de clé ? Faites-en la demande via<a href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed.">mail</a>.</p>
     </div>
   </div>
 </template>
