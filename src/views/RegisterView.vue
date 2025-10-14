@@ -88,7 +88,7 @@ export default {
       }
 
       // Appeler une API pour envoyer les données utilisateur
-      const urlRegister = '/api/users/register'
+      const urlRegister = '/users/register'
       const options = {
         method: 'POST',
         headers: {

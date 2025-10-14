@@ -1,12 +1,7 @@
 <template>
   <header>
-    <NavBar class="pedimed" msg="PediMed" />
     <nav class="navbar navbar-expand navbar-light fixed-top">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/appointment">Rendez-vous</RouterLink>
-      <RouterLink to="/patient">Patient</RouterLink>
-      <!-- <RouterLink to="/map">Map</RouterLink> -->
-      <!-- <RouterLink to="/data">Données</RouterLink> -->
+      <NavBar class="pedimed" msg="PediMed" />
     </nav>
   </header>
   <main>

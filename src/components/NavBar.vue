@@ -4,6 +4,14 @@
   </div> -->
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
+    <div class="routerlink">
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/appointment">Rendez-vous</RouterLink>
+      <RouterLink to="/patient">Patient</RouterLink>
+      <!-- <RouterLink to="/map">Map</RouterLink> -->
+      <!-- <RouterLink to="/data">Données</RouterLink> -->
+    </div>
+
     <div id="nav">
       <span class="span-logout" v-if="isLogIn">
         <p class="username">{{ username }}</p>
@@ -62,34 +70,36 @@ export default {
   flex: 1;
 }
 h1 {
-  font-weight: 500;
+  /* font-weight: 500;
   font-size: 2.6rem;
   position: relative;
-  top: -10px;
+  top: -10px; */
 }
 
 h3 {
   font-size: 1.2rem;
 }
 .span-logout {
-  display: flex;
+  /* display: flex;
   width: 115%;
   justify-content: space-between;
   align-items: center;
-  padding: 4px;
+  padding: 4px; */
 }
 .span-login {
-  display: flex;
+  /* display: flex;
   width: 115%;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
+  padding: 8px; */
 }
 .greetings h1,
 .greetings h3 {
-  text-align: center;
+  /* text-align: center; */
 }
-
+.routerlink{
+/* margin: 0 6vw; */
+}
 #nav a {
   font-weight: bold;
 }

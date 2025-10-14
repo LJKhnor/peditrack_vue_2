@@ -2,7 +2,7 @@
   <div class="patient">
     <h1 class="color-theme">Patient</h1>
     <div class="btn-control" :hidden="isNewPatient || isEditPatient">
-      <button class="btn" @click="onCreatePatient">Ajouter un nouveau patient</button>
+      <button class="btn" @click="onCreatePatient">Nouveau patient</button>
       <button class="btn" @click="onEditPatient">Encoder le soin</button>
     </div>
 
@@ -66,19 +66,11 @@ export default {
 </script>
 
 <style>
-.main-container {
+
+.patient {
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-.container {
-  position: relative;
-  border: 2px solid;
-  border-color: var(--color-border);
-  align-items: center;
-  margin: 4px;
-  border-radius: 12px;
-  height: 100%;
+  text-align: center;
 }
 .h2-patient {
   background-color: var(--color-theme);
@@ -91,19 +83,7 @@ export default {
   min-width: 50vw;
   padding: 1rem;
 }
-.info-block {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: 4px;
-  place-content: center;
-  justify-content: space-between;
-}
-.patient {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
+
 @media (min-width: 1024px) {
   .patient-infos {
     width: 0vw;

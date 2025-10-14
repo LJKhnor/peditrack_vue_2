@@ -3,20 +3,57 @@
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2em 4em;
   font-weight: normal;
+  width: 100%;
+}
+header {
   width: 100%;
 }
 .btn {
   background-color: var(--color-theme);
+  width: 10rem;
+  height: 2rem;
   border: none;
   padding: 2px;
-  margin: 2px;
-  border-radius: 8px;
-  color: black;
+  margin: 2% 2%;
+  border-radius: 2em;
+  color: dark;
 }
 .btn:hover {
   box-shadow: 0 0 20px 0px var(--color-theme);
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  position: relative;
+  border: 2px solid;
+  border-color: var(--color-border);
+  align-items: center;
+  margin: 4px;
+  border-radius: 2em;
+  height: 100%;
+}
+
+.info-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 4px;
+  place-content: center;
+  justify-content: space-between;
+}
+.info-block p {
+  width:50%;
+}
+.info-block-input {
+  width: 25vw;
+  height: 2em;
+  border-radius: 2em;
+  padding: 0 2%;
 }
 
 @media (hover: hover) {
