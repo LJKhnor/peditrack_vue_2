@@ -5,26 +5,26 @@
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
     <div class="routerlink">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/appointment">Rendez-vous</RouterLink>
-      <RouterLink to="/patient">Patient</RouterLink>
+      <span><RouterLink to="/">Home</RouterLink></span>
+      <span><RouterLink to="/appointment">Rendez-vous</RouterLink></span>
+      <span><RouterLink to="/patient">Patient</RouterLink></span>
       <!-- <RouterLink to="/map">Map</RouterLink> -->
       <!-- <RouterLink to="/data">Données</RouterLink> -->
     </div>
 
     <div id="nav">
-      <span class="span-logout" v-if="isLogIn">
+      <div class="user-info logout" v-if="isLogIn">
         <p class="username">{{ username }}</p>
         |
         <a @click="logout">Logout</a>
         <router-link to="/update">
           <MdiComponent v-bind:mdiValue="cogIcon" />
         </router-link>
-      </span>
-      <span class="span-login" v-else>
+      </div>
+      <div class="user-info login" v-else>
         <router-link to="/login">Login</router-link> |
         <router-link to="/register">Register</router-link>
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -65,10 +65,38 @@ export default {
 <style scoped>
 .container-nav {
   display: flex;
+  width:100%;
+  border: 1px solid red;
 }
 .container-nav-title {
-  flex: 1;
+  width: 15%;
+  border: 1px solid red;
 }
+.routerlink{
+  margin: 0 15vw;
+  flex: 1;
+  align-self: center;
+  align-items: center;
+  display: flex;
+  border: 1px solid red;
+  height:100%
+}
+.routerlink > span {
+  width: 100%;
+  text-align: center;
+  border: 1px solid red;
+}
+.nav{
+  width: 25%;
+  border: 1px solid red;
+}
+.user-info {
+  display: flex;
+  align-self: center;
+  border: 1px solid green;
+
+}
+
 h1 {
   /* font-weight: 500;
   font-size: 2.6rem;
@@ -97,9 +125,7 @@ h3 {
 .greetings h3 {
   /* text-align: center; */
 }
-.routerlink{
-/* margin: 0 6vw; */
-}
+
 #nav a {
   font-weight: bold;
 }

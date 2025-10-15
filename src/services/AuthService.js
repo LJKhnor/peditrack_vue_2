@@ -2,7 +2,7 @@ import StorageService from './StorageService'
 import apiClient from '../axios'
 
 // const API_URL = 'http://localhost:8085/api/auth/'
-const urlLogin = '/api/auth/signin'
+const urlLogin = '/auth/signin'
 
 class AuthService {
   isLogin = false
