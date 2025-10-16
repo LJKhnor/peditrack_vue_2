@@ -8,9 +8,9 @@ import TheWelcome from '../components/TheWelcome.vue'
   </main>
 </template>
 <style>
-.welcome-main {
+/* .welcome-main {
   display: flex;
   flex-direction: column;
   margin: 24px;
-}
+} */
 </style>

@@ -57,20 +57,20 @@ export default {
 </script>
 <style>
 /* Global Reset */
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-body {
+} */
+/* body {
   font-family: 'Arial', sans-serif;
-  background-color: var(--color-background);
-  /* display: flex;
+  background-color: var(--color-background); */
+/* display: flex;
   justify-content: center;
   align-items: center; */
-  height: 100vh;
+/* height: 100vh;
   margin: 0;
-}
+} */
 .login {
   width: 100%;
   max-width: 400px;

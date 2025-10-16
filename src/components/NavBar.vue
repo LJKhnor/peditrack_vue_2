@@ -65,36 +65,36 @@ export default {
 <style scoped>
 .container-nav {
   display: flex;
-  width:100%;
+  width: 100%;
   border: 1px solid red;
 }
 .container-nav-title {
   width: 15%;
   border: 1px solid red;
 }
-.routerlink{
+.routerlink {
   margin: 0 15vw;
   flex: 1;
   align-self: center;
   align-items: center;
   display: flex;
   border: 1px solid red;
-  height:100%
+  height: 100%;
 }
 .routerlink > span {
   width: 100%;
   text-align: center;
   border: 1px solid red;
 }
-.nav{
+.nav {
   width: 25%;
   border: 1px solid red;
 }
 .user-info {
   display: flex;
   align-self: center;
+  height: 100%;
   border: 1px solid green;
-
 }
 
 h1 {
