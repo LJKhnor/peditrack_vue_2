@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login-container">
     <div clas="container-form">
       <form class="login-form">
         <div>
@@ -10,12 +10,9 @@
           <label for="password">Mot de passe:</label>
           <input class="input-login" type="password" name="password" v-model="form.password" />
         </div>
-        <input
-          type="submit"
-          class="btn login-connection"
-          value="Se connecter"
-          @click.prevent="login"
-        />
+        <div class="login-connection">
+          <input type="submit" class="btn" value="Se connecter" @click.prevent="login" />
+        </div>
       </form>
       <p v-if="showError" id="error">{{ this.message }}</p>
     </div>
@@ -71,32 +68,32 @@ export default {
 /* height: 100vh;
   margin: 0;
 } */
-.login {
+.login-container {
   width: 100%;
   max-width: 400px;
   background: var(--color-background);
   border-radius: 8px;
   box-shadow: 0 2px 6px var(--color-theme);
-  padding: 20px;
-  margin: 25vh auto;
+  padding: 2em;
+  margin: 20vh 20vw;
 }
 
-.container-form {
+/* .container-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-}
+} */
 
 .login-form div {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 1vh;
 }
 
-label {
+/* label {
   font-size: 0.9rem;
   color: var(--color-text);
-}
+} */
 
 .input-login[type='text'],
 .input-login[type='password'] {
@@ -106,6 +103,9 @@ label {
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s ease-in-out;
+}
+.login-connection {
+  align-items: center;
 }
 
 input[type='text']:focus,

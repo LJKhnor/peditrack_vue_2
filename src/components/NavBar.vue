@@ -12,7 +12,7 @@
       <!-- <RouterLink to="/data">Données</RouterLink> -->
     </div>
 
-    <div id="nav">
+    <div id="conn-option">
       <div class="user-info logout" v-if="isLogIn">
         <p class="username">{{ username }}</p>
         |
@@ -66,67 +66,59 @@ export default {
 .container-nav {
   display: flex;
   width: 100%;
-  border: 1px solid red;
 }
 .container-nav-title {
-  width: 15%;
-  border: 1px solid red;
+  /* width: 15%; */
 }
 .routerlink {
-  margin: 0 15vw;
   flex: 1;
   align-self: center;
-  align-items: center;
   display: flex;
-  border: 1px solid red;
-  height: 100%;
+  justify-content: center;
 }
 .routerlink > span {
-  width: 100%;
   text-align: center;
-  border: 1px solid red;
 }
-.nav {
-  width: 25%;
-  border: 1px solid red;
+#conn-option {
+  align-content: center;
 }
-.user-info {
+/* .user-info {
   display: flex;
   align-self: center;
   height: 100%;
   border: 1px solid green;
-}
+} */
 
 h1 {
-  /* font-weight: 500;
-  font-size: 2.6rem;
+  font-weight: 500;
+  font-size: 3rem;
   position: relative;
-  top: -10px; */
+  /* top: -10px; */
 }
 
-h3 {
+/* h3 {
   font-size: 1.2rem;
-}
-.span-logout {
-  /* display: flex;
+} */
+/* .span-logout {
+  display: flex;
   width: 115%;
   justify-content: space-between;
   align-items: center;
-  padding: 4px; */
-}
-.span-login {
-  /* display: flex;
+  padding: 4px;
+} */
+/* .span-login {
+  display: flex;
   width: 115%;
   justify-content: space-between;
   align-items: center;
-  padding: 8px; */
-}
-.greetings h1,
+  padding: 8px;
+} */
+/* .greetings h1,
 .greetings h3 {
-  /* text-align: center; */
-}
+  text-align: center;
+} */
 
-#nav a {
+/* #nav a {
   font-weight: bold;
 }
 a:hover {
@@ -137,11 +129,11 @@ a:hover {
 }
 .username {
   font-size: larger;
-}
-@media (min-width: 1024px) {
+} */
+/* @media (min-width: 1024px) {
   .greetings h1,
   .greetings h3 {
     text-align: left;
   }
-}
+} */
 </style>
