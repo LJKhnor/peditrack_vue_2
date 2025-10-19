@@ -19,6 +19,10 @@ footer {
   color: var(--color-text);
   text-align: center;
 }
+.content {
+  display: flex;
+  justify-content: center;
+}
 .btn {
   background-color: var(--color-theme);
   width: 10rem;
@@ -58,8 +62,17 @@ footer {
 .info-block p {
   width: 50%;
 }
+.select-block-input {
+  width: 30vw;
+  height: 2em;
+  border-radius: 2em;
+  padding: 0 2%;
+}
+option {
+  border-radius: inherit;
+}
 .info-block-input {
-  width: 2vw;
+  width: 30vw;
   height: 2em;
   border-radius: 2em;
   padding: 0 2%;

@@ -4,7 +4,7 @@
     <div>
       <select
         name="select-foot"
-        class="info-block-input"
+        class="select-block-input"
         type="text"
         id="patient-select"
         @change="handleSelectionChange"
@@ -158,7 +158,6 @@ export default {
 </script>
 
 <style>
-
 @media (max-width: 480px) {
   .patient-infos {
     width: 90vw; /* Sur petits écrans, prend 90% de la largeur du viewport */

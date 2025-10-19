@@ -5,9 +5,9 @@
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
     <div class="routerlink">
-      <span><RouterLink to="/">Home</RouterLink></span>
-      <span><RouterLink to="/appointment">Rendez-vous</RouterLink></span>
-      <span><RouterLink to="/patient">Patient</RouterLink></span>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/appointment">Rendez-vous</RouterLink>
+      <RouterLink to="/patient">Patient</RouterLink>
       <!-- <RouterLink to="/map">Map</RouterLink> -->
       <!-- <RouterLink to="/data">Données</RouterLink> -->
     </div>
@@ -76,10 +76,12 @@ export default {
   display: flex;
   justify-content: center;
 }
-.routerlink > span {
+.routerlink > a {
   text-align: center;
+  margin: 0 2vh 0 0;
 }
 #conn-option {
+  text-align: center;
   align-content: center;
 }
 /* .user-info {

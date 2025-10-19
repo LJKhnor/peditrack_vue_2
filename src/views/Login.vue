@@ -1,14 +1,25 @@
 <template>
   <div class="login-container">
+    <h2 class="h2-register">Se connecter</h2>
     <div clas="container-form">
       <form class="login-form">
         <div>
-          <label for="username">Nom d'utilisateur :</label>
-          <input class="input-login" type="text" name="username" v-model="form.username" />
+          <input
+            class="input-login"
+            type="text"
+            name="username"
+            v-model="form.username"
+            placeholder="Nom d'utilisateur"
+          />
         </div>
         <div>
-          <label for="password">Mot de passe:</label>
-          <input class="input-login" type="password" name="password" v-model="form.password" />
+          <input
+            class="input-login"
+            type="password"
+            name="password"
+            v-model="form.password"
+            placeholder="Mot de passe"
+          />
         </div>
         <div class="login-connection">
           <input type="submit" class="btn" value="Se connecter" @click.prevent="login" />
@@ -72,10 +83,10 @@ export default {
   width: 100%;
   max-width: 400px;
   background: var(--color-background);
-  border-radius: 8px;
+  border-radius: 2em;
   box-shadow: 0 2px 6px var(--color-theme);
   padding: 2em;
-  margin: 20vh 20vw;
+  margin: 15vh 0;
 }
 
 /* .container-form {
@@ -94,18 +105,18 @@ export default {
   font-size: 0.9rem;
   color: var(--color-text);
 } */
-
+.login-connection {
+  align-items: center;
+}
 .input-login[type='text'],
 .input-login[type='password'] {
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  margin: 1vh 0;
+  /* border: 1px solid #ccc; */
+  border-radius: 2em;
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s ease-in-out;
-}
-.login-connection {
-  align-items: center;
 }
 
 input[type='text']:focus,
