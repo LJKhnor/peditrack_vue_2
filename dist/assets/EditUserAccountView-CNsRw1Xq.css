@@ -1,0 +1,1 @@
+.edit-user-page{width:100%;max-width:400px;background:var(--color-background);border-radius:8px;box-shadow:0 4px 6px #0000001a;margin:12vh auto}.edit-user-page-container{display:flex;flex-direction:column;gap:20px;box-shadow:0 2px 6px var(--color-theme);padding:20px}.form-group{display:flex;flex-direction:column;gap:5px}label{font-size:.9rem;color:var(--color-text)}
