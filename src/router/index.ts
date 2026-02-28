@@ -21,6 +21,11 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue')
     },
     {
+      path: '/term_and_condition',
+      name: 'term_and_condition',
+      component: () => import('../views/TermAndConditionView.vue')
+    },
+    {
       path: '/update',
       name: 'update',
       component: () => import('../views/EditUserAccountView.vue')

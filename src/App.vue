@@ -11,10 +11,14 @@
   </main>
 
   <footer>
-    <small
+    <!-- <small
       >Conformément au règlement général relatif à la protection des données (RGPD du 25/05/2018),
       les données personnelles des patients ne sont jamais communiquées à des tiers</small
-    >
+    > -->
+    <p>
+      <small><a href="/term_and_condition">Conditions générales d'utilisation</a></small>
+    </p>
+    <small>© 2024 PediMed. Tous droits réservés.</small>
   </footer>
 </template>
 
