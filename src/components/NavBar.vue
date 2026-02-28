@@ -4,27 +4,30 @@
   </div> -->
   <div class="container-nav">
     <h1 class="container-nav-title color-theme">{{ msg }}</h1>
-    <div class="routerlink">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/appointment">Rendez-vous</RouterLink>
-      <RouterLink to="/patient">Patient</RouterLink>
-      <!-- <RouterLink to="/map">Map</RouterLink> -->
-      <!-- <RouterLink to="/data">Données</RouterLink> -->
-    </div>
-
     <div id="conn-option">
       <div class="user-info logout" v-if="isLogIn">
-        <p class="username">{{ username }}</p>
-        |
-        <a @click="logout">Logout</a>
-        <router-link to="/update">
-          <MdiComponent v-bind:mdiValue="cogIcon" />
-        </router-link>
+        <p class="username">
+          {{ username }}
+          |
+          <a @click="logout">Logout</a>
+          <router-link to="/update">
+            <MdiComponent v-bind:mdiValue="cogIcon" />
+          </router-link>
+        </p>
       </div>
       <div class="user-info login" v-else>
         <router-link to="/login">Login</router-link> |
         <router-link to="/register">Register</router-link>
       </div>
+    </div>
+  </div>
+  <div>
+    <div class="routerlink">
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/appointment">Rendez-vous</RouterLink>
+      <RouterLink to="/patient">Patient</RouterLink>
+      <RouterLink to="/map">Map</RouterLink>
+      <!-- <RouterLink to="/data">Données</RouterLink> -->
     </div>
   </div>
 </template>
@@ -66,23 +69,30 @@ export default {
 .container-nav {
   display: flex;
   width: 100%;
+  /* height: 10vh; */
+  border: 2px solid var(--color-primary);
+  justify-content: space-between;
+  align-items: center;
 }
+
 .container-nav-title {
   /* width: 15%; */
 }
 .routerlink {
   flex: 1;
-  align-self: center;
+  /* align-self: center; */
   display: flex;
   justify-content: center;
+  margin-bottom: 4vh;
 }
 .routerlink > a {
   text-align: center;
   margin: 0 2vh 0 0;
 }
 #conn-option {
-  text-align: center;
-  align-content: center;
+  /* text-align: center;
+  align-content: center; */
+  font-size: 24px;
 }
 /* .user-info {
   display: flex;
@@ -92,15 +102,15 @@ export default {
 } */
 
 h1 {
-  font-weight: 500;
+  /* font-weight: 500;
   font-size: 3rem;
-  position: relative;
-  /* top: -10px; */
+  position: relative; */
 }
 
 /* h3 {
   font-size: 1.2rem;
 } */
+
 /* .span-logout {
   display: flex;
   width: 115%;
@@ -108,6 +118,7 @@ h1 {
   align-items: center;
   padding: 4px;
 } */
+
 /* .span-login {
   display: flex;
   width: 115%;
@@ -115,6 +126,7 @@ h1 {
   align-items: center;
   padding: 8px;
 } */
+
 /* .greetings h1,
 .greetings h3 {
   text-align: center;

@@ -12,22 +12,23 @@ let mapIcon = mdiMap
 </script>
 
 <template>
-  <WelcomeItem class="welcome-item">
-    <template #icon>
-      <MdiComponent v-bind:mdiValue="notebook" />
-    </template>
-    <template #heading>Rendez-vous</template>
-    Gérer vos rendez-vous.
-  </WelcomeItem>
+  <div class="welcome-container">
+    <WelcomeItem class="welcome-item">
+      <template #icon>
+        <MdiComponent v-bind:mdiValue="notebook" />
+      </template>
+      <template #heading>Rendez-vous</template>
+      Gérer vos rendez-vous.
+    </WelcomeItem>
 
-  <WelcomeItem>
-    <template #icon>
-      <MdiComponent v-bind:mdiValue="doctorIcon" />
-    </template>
-    <template #heading>Patient</template>
-    Gérer la fiche patient.
-  </WelcomeItem>
-  <!-- <WelcomeItem>
+    <WelcomeItem>
+      <template #icon>
+        <MdiComponent v-bind:mdiValue="doctorIcon" />
+      </template>
+      <template #heading>Patient</template>
+      Gérer la fiche patient.
+    </WelcomeItem>
+    <!-- <WelcomeItem>
     <template #icon>
       <MdiComponent v-bind:mdiValue="mapIcon" />
     </template>
@@ -35,7 +36,7 @@ let mapIcon = mdiMap
     Voir sur la carte la localisation de vos patients.
   </WelcomeItem> -->
 
-  <!-- <WelcomeItem>
+    <!-- <WelcomeItem>
     <template #icon>
       <CommunityIcon />
     </template>
@@ -50,6 +51,15 @@ let mapIcon = mdiMap
     <template #heading>Map</template>
     Visualiser vos données sur une carte.
   </WelcomeItem> -->
+  </div>
 </template>
 
-<style></style>
+<style>
+.welcome-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 20vh 0;
+}
+</style>
