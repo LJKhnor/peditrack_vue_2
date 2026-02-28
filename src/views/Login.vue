@@ -48,12 +48,17 @@ export default {
       // Send login request and handle authentication token
       AuthService.login(this.form)
         .then(() => {
+          console.log('rediction vers Home')
           router.push('/') // Redirige après la connexion
         })
         .catch((error) => {
           if (error.response !== undefined) {
             showError.value = true
             this.message = error.response.data
+            console.error(error)
+          } else {
+            showError.value = true
+            this.message = error.message
             console.error(error)
           }
         })
