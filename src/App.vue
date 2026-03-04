@@ -27,37 +27,4 @@ import { RouterLink, RouterView } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 </script>
 
-<style scoped>
-/* nav {
-  display: flex;
-  justify-content: center;
-} */
-
-/* nav a {
-  margin: 0 15px;
-} */
-
-/* .footer {
-  align-content: flex-end;
-  height: 50%;
-  text-align: center;
-  padding: 10px;
-} */
-
-/* @media (min-width: 1024px) {
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
-  body {
-    display: flex;
-    flex-direction: column;
-  }
-  .footer {
-    text-align: center;
-    padding: 10px;
-  }
-} */
-</style>
+<style scoped></style>
