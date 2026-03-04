@@ -1,5 +1,6 @@
 import StorageService from './StorageService'
 import apiClient from '../axios'
+import { ref } from 'vue'
 
 // const API_URL = 'http://localhost:8085/api/auth/'
 const urlLogin = '/auth/signin'
@@ -18,7 +19,7 @@ class AuthService {
       .post(urlLogin, { username: user.username, password: user.password })
       .then((response) => {
         if (response.data.token) {
-          StorageService.setItem('user', user)
+          StorageService.setItem('user', { username: user.username })
           StorageService.setItem('token', response.data.token)
         }
         return response.data

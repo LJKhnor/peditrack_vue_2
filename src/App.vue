@@ -16,7 +16,7 @@
       les données personnelles des patients ne sont jamais communiquées à des tiers</small
     > -->
     <p>
-      <small><a href="/term_and_condition">Conditions générales d'utilisation</a></small>
+      <small><a href="/term_and_condition">Conditions générales</a></small>
     </p>
     <small>© 2024 PediMed. Tous droits réservés.</small>
   </footer>

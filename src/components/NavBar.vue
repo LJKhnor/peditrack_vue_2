@@ -22,9 +22,9 @@
     </div>
   </div>
   <div>
-    <div class="routerlink">
+    <div class="routerlink" v-if="isLogIn">
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/appointment">Rendez-vous</RouterLink>
+      <!-- <RouterLink to="/appointment">Rendez-vous</RouterLink> -->
       <RouterLink to="/patient">Patient</RouterLink>
       <RouterLink to="/map">Map</RouterLink>
       <!-- <RouterLink to="/data">Données</RouterLink> -->
@@ -52,7 +52,6 @@ export default {
       username.value = AuthService.getCurrentUser().username
       isLogIn.value = true
     }
-
     async function logout() {
       console.log('logout')
       AuthService.logout()
