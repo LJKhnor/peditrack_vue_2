@@ -62,26 +62,26 @@
                 <div class="health-card">
                   <span class="health-label">Problèmes cardiaques</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.hasHeartDisorder ? '✅' : '❌'
+                    selectedPatientInfo?.healthDto.withHeartDisorder ? '✅' : '❌'
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Problèmes thyroïdiens</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.withThyroidDisorder ? '✅' : '❌'
+                    selectedPatientInfo?.healthDto.withThyroideDisorder ? '✅' : '❌'
                   }}</span>
                 </div>
 
                 <div class="health-card">
                   <span class="health-label">Prothèse de hanche</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.hasHipProsthesisType ? '✅' : '❌'
+                    selectedPatientInfo?.healthDto.hasHipProsthesis ? '✅' : '❌'
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Prothèse de genoux</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.hasKneeProsthesisType ? '✅' : '❌'
+                    selectedPatientInfo?.healthDto.hasKneeProsthesis ? '✅' : '❌'
                   }}</span>
                 </div>
                 <div class="health-card">
