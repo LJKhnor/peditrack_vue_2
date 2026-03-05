@@ -12,10 +12,12 @@
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-color-light-3: hsla(160, 100%, 37%, 1);
+  --vt-c-color-light-3: hsla(160, 100%, 35%, 1);
+  --vt-c-color-light-4: hsla(160, 100%, 65%, 1);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
-  --vt-c-color-dark-3: rgb(214, 63, 156);
+  --vt-c-color-dark-3: hsla(330, 82%, 55%, 1);
+  --vt-c-color-dark-4: hsla(330, 82%, 75%, 1);
 
   --vt-c-text-light-1: var(--vt-c-indigo);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
@@ -35,6 +37,7 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
   --color-theme: var(--vt-c-color-light-3);
+  --color-theme-light: var(--vt-c-color-light-4);
 
   --section-gap: 160px;
 }
@@ -51,6 +54,7 @@
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
     --color-theme: var(--vt-c-color-dark-3);
+    --color-theme-light: var(--vt-c-color-dark-4);
   }
 }
 

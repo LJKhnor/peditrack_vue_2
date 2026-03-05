@@ -1,6 +1,6 @@
 <template>
   <div class="map">
-    <h1>Carte</h1>
+    <h1 class="color-theme">Carte</h1>
     <div id="mapContainer" style="height: 600px; width: 800px">
       <!-- <l-map ref="map" v-model:zoom="zoom" :center="[50.4526514, 4.8884249]">
         <l-tile-layer
