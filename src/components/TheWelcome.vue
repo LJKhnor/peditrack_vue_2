@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mdiDoctor, mdiNotebook, mdiMap } from '@mdi/js'
+import { mdiDoctor, mdiNotebook, mdiMap, mdiDatabaseArrowDown } from '@mdi/js'
 import WelcomeItem from './WelcomeItem.vue'
 import DocumentationIcon from './icons/IconDocumentation.vue'
 import ToolingIcon from './icons/IconTooling.vue'
@@ -21,14 +21,14 @@ let mapIcon = mdiMap
       Gérer vos rendez-vous.
     </WelcomeItem>
 
-    <WelcomeItem>
+    <WelcomeItem class="welcome-item">
       <template #icon>
         <MdiComponent v-bind:mdiValue="doctorIcon" />
       </template>
       <template #heading>Patient</template>
       Gérer la fiche patient.
     </WelcomeItem>
-    <WelcomeItem>
+    <WelcomeItem class="welcome-item">
       <template #icon>
         <MdiComponent v-bind:mdiValue="mapIcon" />
       </template>
@@ -36,21 +36,13 @@ let mapIcon = mdiMap
       Voir sur la carte la localisation de vos patients.
     </WelcomeItem>
 
-    <!-- <WelcomeItem>
-    <template #icon>
-      <CommunityIcon />
-    </template>
-    <template #heading>Données</template>
-    Gérer les données de vos patients.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <SupportIcon />
-    </template>
-    <template #heading>Map</template>
-    Visualiser vos données sur une carte.
-  </WelcomeItem> -->
+    <WelcomeItem class="welcome-item">
+      <template #icon>
+        <MdiComponent v-bind:mdiValue="mdiDatabaseArrowDown" />
+      </template>
+      <template #heading>Données</template>
+      Gérer les données de vos patients.
+    </WelcomeItem>
   </div>
 </template>
 
@@ -61,5 +53,9 @@ let mapIcon = mdiMap
   justify-content: center;
   gap: 20px;
   margin: 20vh 0;
+}
+.welcome-item {
+  flex: 1 1 200px;
+  max-width: 300px;
 }
 </style>
