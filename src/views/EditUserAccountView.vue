@@ -29,7 +29,7 @@
             class="input-register"
             type="text"
             id="postal-code"
-            v-model="form.postalcode"
+            v-model="form.postalCode"
             placeholder="Entrez votre code postal"
           />
         </div>
@@ -93,14 +93,18 @@ export default {
       }
     }
     async function fetchUserInfos() {
-      await apiClient.get(urlGetUserInfo, optionsGet).then((response) => {
-        form.value.username = response.data.name
-      })
+      await apiClient
+        .get(urlGetUserInfo, optionsGet)
+        .then((response: { data: { name: string } }) => {
+          form.value.username = response.data.name
+        })
     }
     async function updateUser() {
-      await apiClient.put('/users/update', formData, optionPut).then((response) => {
-        console.log(response)
-      })
+      await apiClient
+        .put('/users/update', formData, optionPut)
+        .then((response: { data: string }) => {
+          console.log(response)
+        })
     }
     return { form, formData, updateUser }
   }
