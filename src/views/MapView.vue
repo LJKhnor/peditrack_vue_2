@@ -40,7 +40,6 @@ import { onMounted, onUnmounted } from 'vue'
 import apiClient from '../axios'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import markerIcon from 'leaflet/dist/images/marker-icon.png'
 // import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
 import AuthService from '@/services/AuthService.ts'
 
@@ -70,7 +69,7 @@ export default {
       }
     }
     function iconUrl() {
-      return markerIcon
+      return L.Icon.Default.prototype._getIconUrl
     }
     function iconSize() {
       return [this.iconWidth, this.iconHeight]
