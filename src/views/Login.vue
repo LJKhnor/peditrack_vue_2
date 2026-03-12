@@ -32,12 +32,14 @@
 
 <script>
 import router from '@/router'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import AuthService from '@/services/AuthService.ts'
 export default {
   name: 'LoginVue',
   props: [],
   setup(props, { emit }) {
+    const router = useRouter()
     let form = {
       username: '',
       password: ''
@@ -46,21 +48,21 @@ export default {
 
     async function login() {
       // Send login request and handle authentication token
-      AuthService.login(this.form)
+      AuthService.login(form)
         .then(() => {
           console.log('rediction vers Home')
-          router.push('/') // Redirige après la connexion
+          router.push('/').then(() => {
+            window.location.reload()
+          })
         })
         .catch((error) => {
+          showError.value = true
           if (error.response !== undefined) {
-            showError.value = true
-            this.message = error.response.data
-            console.error(error)
+            message.value = error.response.data
           } else {
-            showError.value = true
-            this.message = error.message
-            console.error(error)
+            message.value = error.message
           }
+          console.error(error)
         })
     }
 

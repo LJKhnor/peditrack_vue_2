@@ -69,7 +69,7 @@ export default {
       }
     }
     function iconUrl() {
-      return L.Icon.Default.prototype._getIconUrl
+      return ''
     }
     function iconSize() {
       return [this.iconWidth, this.iconHeight]
