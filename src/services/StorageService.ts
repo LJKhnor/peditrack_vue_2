@@ -1,16 +1,16 @@
 const StorageService = {
-  setItem(key, value) {
+  setItem(key: string, value: any) {
     // Stocke l'objet après l'avoir converti en JSON
     localStorage.setItem(key, JSON.stringify(value))
   },
 
-  getItem(key) {
+  getItem(key: string) {
     // Récupère et parse le JSON en objet
     const item = localStorage.getItem(key)
     return item ? JSON.parse(item) : null // Retourne `null` si la clé n'existe pas
   },
 
-  removeItem(key) {
+  removeItem(key: string) {
     // Supprime l'élément du localStorage
     localStorage.removeItem(key)
   }
