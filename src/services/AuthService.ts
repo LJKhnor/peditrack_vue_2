@@ -7,7 +7,7 @@ const urlLogin = '/auth/signin'
 
 class AuthService {
   isLogin = false
-  login(form) {
+  login(form: any) {
     const user = {
       username: form.username,
       password: form.password,
@@ -17,7 +17,7 @@ class AuthService {
     }
     return apiClient
       .post(urlLogin, { username: user.username, password: user.password })
-      .then((response) => {
+      .then((response: any) => {
         if (response.data.token) {
           StorageService.setItem('user', { username: user.username })
           StorageService.setItem('token', response.data.token)
@@ -32,13 +32,16 @@ class AuthService {
   }
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'))
+    const user = localStorage.getItem('user')
+    return JSON.parse(user ? user : '')
   }
   getCurrentToken() {
-    return JSON.parse(localStorage.getItem('token'))
+    const token = localStorage.getItem('token')
+    return JSON.parse(token ? token : '')
   }
   isCurrentUserConnected() {
-    return JSON.parse(localStorage.getItem('token')) !== null
+    const token = localStorage.getItem('token')
+    return token !== null && JSON.parse(token) !== null
   }
 }
 
