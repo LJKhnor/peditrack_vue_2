@@ -40,15 +40,16 @@ import { onMounted, onUnmounted } from 'vue'
 import apiClient from '../axios'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+// import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
 import AuthService from '@/services/AuthService.ts'
 
 export default {
   components: {
-    LMap,
-    LTileLayer,
-    LMarker,
-    LCircle
+    // LMap,
+    // LTileLayer,
+    // LMarker,
+    // LCircle
   },
   setup() {
     let zoom = 13
@@ -69,7 +70,7 @@ export default {
       }
     }
     function iconUrl() {
-      return `https://placekitten.com/${this.iconWidth}/${this.iconHeight}`
+      return markerIcon
     }
     function iconSize() {
       return [this.iconWidth, this.iconHeight]
@@ -112,7 +113,7 @@ export default {
       L.marker(pedicureStartPoint).addTo(map)
     }
 
-    function createCatchmentArea(map) {
+    function createCatchmentArea() {
       let circle1 = L.circle(pedicureStartPoint, {
         color: 'green',
         fillOpacity: 0.0,
