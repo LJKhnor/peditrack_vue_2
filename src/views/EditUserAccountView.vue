@@ -54,7 +54,7 @@
   </div>
 </template>
 <script lang="ts">
-import AuthService from '@/services/AuthService.ts'
+import AuthService from '@/services/AuthService'
 import apiClient from '../axios'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
