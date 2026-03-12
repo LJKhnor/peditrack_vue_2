@@ -33,7 +33,7 @@
 <script>
 import router from '@/router'
 import { ref } from 'vue'
-import AuthService from '@/services/AuthService.js'
+import AuthService from '@/services/AuthService.ts'
 export default {
   name: 'LoginVue',
   props: [],

@@ -26,7 +26,7 @@ import PatientMedicalHealthInformations from './patientInformations/PatientMedic
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 import apiClient from '../axios'
 
-import AuthService from '@/services/AuthService.js'
+import AuthService from '@/services/AuthService.ts'
 
 export default {
   name: 'NewPatientRecord',

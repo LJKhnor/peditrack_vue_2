@@ -65,7 +65,7 @@ import CareProvided from './patientInformations/PatientCareProvidedInformations.
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
-import AuthService from '@/services/AuthService.js'
+import AuthService from '@/services/AuthService.ts'
 import apiClient from '../axios'
 
 export default {

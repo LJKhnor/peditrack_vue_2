@@ -35,7 +35,7 @@
 <script>
 import router from '@/router'
 import { ref, watch } from 'vue'
-import AuthService from '@/services/AuthService.js'
+import AuthService from '@/services/AuthService.ts'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
 import { mdiCog } from '@mdi/js'
 import { RouterLink } from 'vue-router'

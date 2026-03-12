@@ -41,7 +41,7 @@ import apiClient from '../axios'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
-import AuthService from '@/services/AuthService.js'
+import AuthService from '@/services/AuthService.ts'
 
 export default {
   components: {

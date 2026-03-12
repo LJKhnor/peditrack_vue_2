@@ -206,7 +206,7 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
 import apiClient from '../axios'
-import AuthService from '@/services/AuthService.js'
+import AuthService from '@/services/AuthService.ts'
 import Modale from '@/components/Modale.vue'
 
 export default {
