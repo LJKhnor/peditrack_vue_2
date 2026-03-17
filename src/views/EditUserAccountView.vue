@@ -73,7 +73,8 @@ export default {
       fetchUserInfos().then(() => {})
     })
     let showError = ref(false)
-    const urlGetUserInfo = '/users/info'
+    const urlGetUserInfo = '/users/' + AuthService.getCurrentUserId() + '/info'
+    const urlUpdateUser = '/users/' + AuthService.getCurrentUserId() + '/update'
     const optionsGet = {
       method: 'GET',
       headers: {
@@ -83,8 +84,8 @@ export default {
         Authorization: 'Bearer ' + AuthService.getCurrentToken()
       }
     }
-    const optionPut = {
-      method: 'PUT',
+    const optionPost = {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': 'http://localhost:5173', // Allow requests from your Vue.js frontend
@@ -101,7 +102,7 @@ export default {
     }
     async function updateUser() {
       await apiClient
-        .put('/users/update', formData, optionPut)
+        .post(urlUpdateUser, form.value, optionPost)
         .then((response: { data: string }) => {
           console.log(response)
         })

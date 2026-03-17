@@ -26,6 +26,11 @@ const router = createRouter({
       component: () => import('../views/TermAndConditionView.vue')
     },
     {
+      path: '/privacy_policy',
+      name: 'privacy_policy',
+      component: () => import('../views/PrivacyPolicyView.vue')
+    },
+    {
       path: '/update',
       name: 'update',
       component: () => import('../views/EditUserAccountView.vue')

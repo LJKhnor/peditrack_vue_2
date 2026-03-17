@@ -19,7 +19,7 @@ class AuthService {
       .post(urlLogin, { username: user.username, password: user.password })
       .then((response: any) => {
         if (response.data.token) {
-          StorageService.setItem('user', { username: user.username })
+          StorageService.setItem('user', { id: response.data.id, username: user.username })
           StorageService.setItem('token', response.data.token)
         }
         return response.data
@@ -42,6 +42,9 @@ class AuthService {
   isCurrentUserConnected() {
     const token = localStorage.getItem('token')
     return token !== null && JSON.parse(token) !== null
+  }
+  getCurrentUserId() {
+    return this.getCurrentUser()?.id
   }
 }
 

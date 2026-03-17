@@ -17,6 +17,7 @@
     > -->
     <p>
       <small><a href="/term_and_condition">Conditions générales</a></small>
+      <small><a href="/privacy_policy">Politique de confidentialité</a></small>
     </p>
     <small>© 2024 PediMed. Tous droits réservés.</small>
   </footer>
