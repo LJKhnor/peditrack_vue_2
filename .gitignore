@@ -28,4 +28,10 @@ coverage
 # package-lock.json
 
 *.tsbuildinfo
+
+# Environment variables
+.env
+.env.production
+
+CLAUDE.md
 ''

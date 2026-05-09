@@ -65,7 +65,6 @@ import CareProvided from './patientInformations/PatientCareProvidedInformations.
 import PatientPersonalInformations from './patientInformations/PatientPersonalInformations.vue'
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
-import AuthService from '@/services/AuthService.ts'
 import apiClient from '../axios'
 
 export default {
@@ -85,19 +84,12 @@ export default {
     let patients = ref([])
     const urlGetAllPatient = '/patients'
     const urlPostPatient = '/patients'
-    const optionsGet = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + AuthService.getCurrentToken()
-      }
-    }
     onMounted(() => {
       getAllPatient()
     })
 
     async function getAllPatient() {
-      const response = await apiClient.get(urlGetAllPatient, optionsGet)
+      const response = await apiClient.get(urlGetAllPatient)
       response.data.forEach((element) => {
         patients.value.push({
           id: element.id,
@@ -110,7 +102,7 @@ export default {
       const patientId = selectElement.value
       const url = `${urlPostPatient}/${patientId}`
 
-      const response = await apiClient.get(url, optionsGet)
+      const response = await apiClient.get(url)
       let previousPatientInfos = response.data.patientDto
       let previousHealthInfos = response.data.healthDto
 
@@ -137,15 +129,8 @@ export default {
             return [key, value] // Sinon, laisser la valeur telle quelle
           })
       )
-      const options = {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + AuthService.getCurrentToken()
-        }
-      }
       try {
-        const response = await apiClient.put(`${urlPostPatient}/${patientId}`, patientData, options)
+        const response = await apiClient.put(`${urlPostPatient}/${patientId}`, patientData)
         emit('closePanel')
       } catch (error) {
         console.error('There was an error!', error.response ? error.response.data : error.message)
@@ -157,7 +142,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @media (max-width: 480px) {
   .patient-infos {
     width: 90vw; /* Sur petits écrans, prend 90% de la largeur du viewport */

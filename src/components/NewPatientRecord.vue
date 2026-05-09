@@ -43,7 +43,6 @@ export default {
 
     async function createPatient() {
       // Créer un nouveau patient
-      console.log('Creating new patient with data:', formData)
       let isOkToContinue = handleFormMissingData()
       if (isOkToContinue) {
         const urlCreationPatient = '/patients'
@@ -95,7 +94,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .missing {
   border-color: red;
 }

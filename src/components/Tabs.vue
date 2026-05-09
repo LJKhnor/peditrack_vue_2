@@ -50,13 +50,11 @@ export default {
   methods: {
     nextTab() {
       if (this.activeIndex < this.tabs.length - 1) {
-        console.log('tab suivant')
         this.$emit('update:activeTab', this.tabs[this.activeIndex + 1].value)
       }
     },
     prevTab() {
       if (this.activeIndex > 0) {
-        console.log('tab précédent')
         this.$emit('update:activeTab', this.tabs[this.activeIndex - 1].value)
       }
     }
@@ -64,7 +62,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tabs {
   width: 100%;
   margin-top: 4vh;

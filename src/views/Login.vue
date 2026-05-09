@@ -25,13 +25,12 @@
           <input type="submit" class="btn" value="Se connecter" @click.prevent="login" />
         </div>
       </form>
-      <p v-if="showError" id="error">{{ this.message }}</p>
+      <p v-if="showError" id="error">{{ message }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import router from '@/router'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import AuthService from '@/services/AuthService.ts'
@@ -45,12 +44,12 @@ export default {
       password: ''
     }
     let showError = ref(false)
+    let message = ref('')
 
     async function login() {
       // Send login request and handle authentication token
       AuthService.login(form)
         .then(() => {
-          console.log('rediction vers Home')
           router.push('/').then(() => {
             window.location.reload()
           })
@@ -66,26 +65,11 @@ export default {
         })
     }
 
-    return { form, showError, login }
+    return { form, showError, message, login }
   }
 }
 </script>
-<style>
-/* Global Reset */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-} */
-/* body {
-  font-family: 'Arial', sans-serif;
-  background-color: var(--color-background); */
-/* display: flex;
-  justify-content: center;
-  align-items: center; */
-/* height: 100vh;
-  margin: 0;
-} */
+<style scoped>
 .login-container {
   width: 100%;
   max-width: 400px;

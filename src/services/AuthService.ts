@@ -32,16 +32,25 @@ class AuthService {
   }
 
   getCurrentUser() {
-    const user = localStorage.getItem('user')
-    return JSON.parse(user ? user : '')
+    try {
+      const user = localStorage.getItem('user')
+      return user ? JSON.parse(user) : null
+    } catch {
+      localStorage.removeItem('user')
+      return null
+    }
   }
   getCurrentToken() {
-    const token = localStorage.getItem('token')
-    return JSON.parse(token ? token : '')
+    try {
+      const token = localStorage.getItem('token')
+      return token ? JSON.parse(token) : null
+    } catch {
+      localStorage.removeItem('token')
+      return null
+    }
   }
   isCurrentUserConnected() {
-    const token = localStorage.getItem('token')
-    return token !== null && JSON.parse(token) !== null
+    return this.getCurrentToken() !== null
   }
   getCurrentUserId() {
     return this.getCurrentUser()?.id

@@ -206,7 +206,6 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
 import apiClient from '../axios'
-import AuthService from '@/services/AuthService.ts'
 import Modale from '@/components/Modale.vue'
 
 export default {
@@ -218,15 +217,6 @@ export default {
     const selectedPatientInfo = ref(null)
     const loadingHealth = ref(false)
     const urlGetAllPatient = '/patients'
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173', // Allow requests from your Vue.js frontend
-        // Add any other headers if needed
-        Authorization: 'Bearer ' + AuthService.getCurrentToken()
-      }
-    }
 
     const columnDefs = ref([
       { field: 'lastName', headerName: 'Nom', sortable: true, filter: true },
@@ -247,9 +237,6 @@ export default {
       selectedPatientInfo.value = null
       await getHealthPatient(event.data.id)
 
-      console.log('==============')
-      console.log('selectedPatientInfo', selectedPatientInfo.value.healthDto)
-
       loadingHealth.value = false
     }
 
@@ -262,7 +249,7 @@ export default {
     // async functions
     // -------------------------------------------------------------------
     async function getAllPatient() {
-      const response = await apiClient.get(urlGetAllPatient, options)
+      const response = await apiClient.get(urlGetAllPatient)
 
       // console.log(response.data)
       response.data.forEach((element) => {
@@ -279,7 +266,7 @@ export default {
     }
 
     async function getHealthPatient(patientId) {
-      const response = await apiClient.get(urlGetAllPatient + `/${patientId}`, options)
+      const response = await apiClient.get(urlGetAllPatient + `/${patientId}`)
       selectedPatientInfo.value = response.data
     }
 
@@ -296,16 +283,16 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .data {
   text-align: center;
   width: 100%;
 }
-.ag-header {
+:deep(.ag-header) {
   background-color: var(--color-theme) !important;
   color: white;
 }
-.ag-row {
+:deep(.ag-row) {
   background-color: var(--color-theme-light) !important;
 }
 
@@ -485,13 +472,6 @@ table thead tr {
   border-bottom: 2px solid #4caf50;
 }
 
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
 /* Optional: Responsive Design */
 @media (max-width: 600px) {
   table,

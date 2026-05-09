@@ -136,7 +136,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .info-block-input-checkbox {
   width: 50%;
 }

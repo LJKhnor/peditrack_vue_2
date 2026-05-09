@@ -41,7 +41,6 @@ import apiClient from '../axios'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 // import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
-import AuthService from '@/services/AuthService.ts'
 
 export default {
   components: {
@@ -59,15 +58,6 @@ export default {
     let points = []
     let osm, osmHOT, openTopoMap, map, markersLayer, circlesLayer, layerControl
     const urlGetAllPatientPosition = '/data/map'
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173', // Allow requests from your Vue.js frontend
-        // Add any other headers if needed
-        Authorization: 'Bearer ' + AuthService.getCurrentToken()
-      }
-    }
     function iconUrl() {
       return ''
     }
@@ -132,7 +122,7 @@ export default {
       layerControl.addOverlay(circlesLayer, 'Zone de chalendise')
     }
     async function getAllPatientPositions() {
-      await apiClient.get(urlGetAllPatientPosition, options).then((result) => {
+      await apiClient.get(urlGetAllPatientPosition).then((result) => {
         let pointsBody = result.data
         for (const key in pointsBody) {
           let value = pointsBody[key]
@@ -158,14 +148,7 @@ export default {
 }
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
+<style scoped>
 .map {
   text-align: -webkit-center;
 }

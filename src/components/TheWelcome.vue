@@ -46,7 +46,7 @@ let mapIcon = mdiMap
   </div>
 </template>
 
-<style>
+<style scoped>
 .welcome-container {
   display: flex;
   flex-wrap: wrap;

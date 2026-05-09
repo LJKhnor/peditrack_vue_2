@@ -65,7 +65,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .patient {
   display: flex;
@@ -84,12 +84,4 @@ export default {
   padding: 1rem;
 }
 
-@media (min-width: 1024px) {
-  .patient-infos {
-    width: 0vw;
-    max-width: 70vw;
-    min-width: 50vw;
-    padding: 1rem;
-  }
-}
 </style>

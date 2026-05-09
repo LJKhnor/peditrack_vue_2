@@ -7,10 +7,3 @@ import TheWelcome from '../components/TheWelcome.vue'
     <TheWelcome />
   </main>
 </template>
-<style>
-/* .welcome-main {
-  display: flex;
-  flex-direction: column;
-  margin: 24px;
-} */
-</style>

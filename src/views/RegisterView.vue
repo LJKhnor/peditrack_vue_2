@@ -115,7 +115,6 @@ export default {
           },
           options
         )
-        console.log('apiClient respone : ', response)
         router.push('/login')
       } catch (error) {
         showError.value = true
@@ -132,36 +131,7 @@ export default {
 }
 </script>
 
-<style>
-/* Global Reset */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-} */
-
-/* body {
-  font-family: 'Arial', sans-serif;
-  background-color: var(--color-background);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-} */
-/* .register-btn {
-  text-align: center;
-} */
-/* .register-page {
-  width: 100%;
-  max-width: 400px;
-  background: var(--color-background);
-  border-radius: 2em;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-  margin: 12vh auto;
-} */
-
+<style scoped>
 .register-container {
   width: 100%;
   max-width: 400px;
@@ -195,51 +165,4 @@ input[type='password']:focus {
 .register-btn {
   align-items: center;
 }
-/* .h2-register {
-  text-align: center;
-  font-size: 1.5em;
-  color: var(--color-text);
-} */
-
-/* .form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 1em 0;
-} */
-
-/* label {
-  font-size: 0.9rem;
-  color: var(--color-text);
-} */
-
-/* .input-register {
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 2em;
-  font-size: 1.05rem;
-  outline: none;
-  transition: border-color 0.3s ease-in-out;
-} */
-
-/* .input-register:focus {
-  border-color: var(--color-theme);
-} */
-
-/* .btn:hover {
-  background-color: var(--color-theme);
-} */
-
-/* .redirect-login {
-  text-align: center;
-  font-size: 0.9rem;
-} */
-
-/* .redirect-login a {
-  color: var(--color-theme);
-  text-decoration: none;
-} */
-
-/* .redirect-login a:hover {
-  text-decoration: underline;
-} */
 </style>

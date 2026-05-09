@@ -16,7 +16,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .mdi-component {
   width: 24px; /* Ajuste la taille de l'icône */
   height: 24px;

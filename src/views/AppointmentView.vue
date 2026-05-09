@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { gapi } from 'gapi-script'
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
@@ -49,8 +49,8 @@ export default {
     VueModale
   },
   setup() {
-    const CLIENT_ID = '518378740822-k41s9sjqojak05ttc7orpdskpbafmi1p.apps.googleusercontent.com'
-    const API_KEY = 'AIzaSyBu_rCoaIMF9HhSPeizb-fsQJ-rDRfxplc'
+    const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+    const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY
     const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
     const SCOPES = 'https://www.googleapis.com/auth/calendar'
 
@@ -61,7 +61,16 @@ export default {
     let content = ref('')
 
     let events = ref([])
-    let eventsVueCal = ref(new Array())
+    const eventsVueCal = computed(() =>
+      events.value.map((event) => ({
+        id: event.id,
+        start: vueCalformattedDate(event.start.dateTime),
+        end: vueCalformattedDate(event.end.dateTime),
+        title: event.summary,
+        description: event.description,
+        location: event.location
+      }))
+    )
 
     // Initialiser Google API au montage du composant
     onMounted(() => {
@@ -76,21 +85,6 @@ export default {
         }
       })
       gapi.load('client', gisLoaded)
-    })
-    watch(events, (newVal) => {
-      eventsVueCal.value = []
-      for (let i = 0; i < newVal.length; i++) {
-        // console.log(newVal[i].start.dateTime)
-        // console.log(vueCalformattedDate(newVal[i].start.dateTime))
-        eventsVueCal.value.push({
-          id: newVal[i].id,
-          start: vueCalformattedDate(newVal[i].start.dateTime),
-          end: vueCalformattedDate(newVal[i].end.dateTime),
-          title: newVal[i].summary,
-          description: newVal[i].description,
-          location: newVal[i].location
-        })
-      }
     })
     /*watch(eventsVueCal, (newVal, oldVal) => {
       if (newVal != oldVal) {
@@ -226,7 +220,6 @@ export default {
       return formattedDate
     }
     function updateEvent(str, event) {
-      console.debug('updated')
       try {
         let startDate = event.event.start
         let newEndDate = event.event.end
@@ -245,11 +238,10 @@ export default {
           })
           .execute()
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     }
     function createEvent(str, event) {
-      console.debug('creation')
       let startDate = event.start
       let newEndDate = event.end
       let newTitle = event.title
@@ -265,17 +257,15 @@ export default {
           resource: newEvent
         })
         .execute((response) => {
-          let newEvent = {
+          events.value.push({
             id: response.id,
-            start: event.start,
-            end: event.end,
+            start: { dateTime: event.start },
+            end: { dateTime: event.end },
             summary: newTitle
-          }
-          eventsVueCal.value.push(newEvent)
+          })
         })
     }
     function deleteEvent(str, event) {
-      console.debug('deleted')
       gapi.client.calendar.events
         .delete({
           eventId: event.id,
@@ -305,14 +295,7 @@ export default {
 }
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
+<style scoped>
 #calendarEvents {
   display: flex;
   height: 600px;
@@ -320,10 +303,10 @@ export default {
 .appointment {
   text-align: center;
 }
-.vuecal__now-line {
+:deep(.vuecal__now-line) {
   color: var(--color-theme);
 }
-.vuecal__title-bar {
+:deep(.vuecal__title-bar) {
   background-color: currentColor;
 }
 </style>

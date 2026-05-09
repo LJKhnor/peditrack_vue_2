@@ -48,12 +48,12 @@ export default {
     let cogIcon = mdiCog
     const isLogIn = ref(false)
 
-    if (AuthService.isCurrentUserConnected()) {
-      username.value = AuthService.getCurrentUser().username
+    const user = AuthService.getCurrentUser()
+    if (AuthService.isCurrentUserConnected() && user) {
+      username.value = user.username
       isLogIn.value = true
     }
     async function logout() {
-      console.log('logout')
       AuthService.logout()
       await router.push('/login')
       isLogIn.value = false
@@ -68,18 +68,13 @@ export default {
 .container-nav {
   display: flex;
   width: 100%;
-  /* height: 10vh; */
   border: 2px solid var(--color-primary);
   justify-content: space-between;
   align-items: center;
 }
 
-.container-nav-title {
-  /* width: 15%; */
-}
 .routerlink {
   flex: 1;
-  /* align-self: center; */
   display: flex;
   justify-content: center;
   margin-bottom: 4vh;
@@ -89,64 +84,6 @@ export default {
   margin: 0 2vh 0 0;
 }
 #conn-option {
-  /* text-align: center;
-  align-content: center; */
   font-size: 24px;
 }
-/* .user-info {
-  display: flex;
-  align-self: center;
-  height: 100%;
-  border: 1px solid green;
-} */
-
-h1 {
-  /* font-weight: 500;
-  font-size: 3rem;
-  position: relative; */
-}
-
-/* h3 {
-  font-size: 1.2rem;
-} */
-
-/* .span-logout {
-  display: flex;
-  width: 115%;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px;
-} */
-
-/* .span-login {
-  display: flex;
-  width: 115%;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-} */
-
-/* .greetings h1,
-.greetings h3 {
-  text-align: center;
-} */
-
-/* #nav a {
-  font-weight: bold;
-}
-a:hover {
-  cursor: pointer;
-}
-#nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-.username {
-  font-size: larger;
-} */
-/* @media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
-} */
 </style>

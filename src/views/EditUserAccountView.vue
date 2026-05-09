@@ -75,34 +75,16 @@ export default {
     let showError = ref(false)
     const urlGetUserInfo = '/users/' + AuthService.getCurrentUserId() + '/info'
     const urlUpdateUser = '/users/' + AuthService.getCurrentUserId() + '/update'
-    const optionsGet = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173', // Allow requests from your Vue.js frontend
-        // Add any other headers if needed
-        Authorization: 'Bearer ' + AuthService.getCurrentToken()
-      }
-    }
-    const optionPost = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'http://localhost:5173', // Allow requests from your Vue.js frontend
-        // Add any other headers if needed
-        Authorization: 'Bearer ' + AuthService.getCurrentToken()
-      }
-    }
     async function fetchUserInfos() {
       await apiClient
-        .get(urlGetUserInfo, optionsGet)
+        .get(urlGetUserInfo)
         .then((response: { data: { name: string } }) => {
           form.value.username = response.data.name
         })
     }
     async function updateUser() {
       await apiClient
-        .post(urlUpdateUser, form.value, optionPost)
+        .post(urlUpdateUser, form.value)
         .then((response: { data: string }) => {
           console.log(response)
         })
@@ -111,7 +93,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .edit-user-page {
   width: 100%;
   max-width: 400px;
@@ -136,7 +118,5 @@ export default {
 label {
   font-size: 0.9rem;
   color: var(--color-text);
-}
-.update-user-form {
 }
 </style>
