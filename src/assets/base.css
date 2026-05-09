@@ -1,63 +1,79 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* ═══════════════════════════════════════════════════
+   Primitive design tokens — ne pas utiliser directement
+   ═══════════════════════════════════════════════════ */
 :root {
-  --vt-c-white: #fafaf7;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  --_green-700: #1b6b43;
+  --_green-600: #2a7d4f;
+  --_green-500: #3a9b63;
+  --_green-200: #86efac;
+  --_green-100: #dcfce7;
 
-  --vt-c-black: #1e1f2b;
-  --vt-c-black-soft: #323447;
-  --vt-c-black-mute: #5f6286;
-
-  --vt-c-indigo: #2c3e50;
-
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-color-light-3: hsla(160, 100%, 35%, 1);
-  --vt-c-color-light-4: hsla(160, 100%, 65%, 1);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
-  --vt-c-color-dark-3: hsla(330, 82%, 55%, 1);
-  --vt-c-color-dark-4: hsla(330, 82%, 75%, 1);
-
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --_slate-900: #0f172a;
+  --_slate-800: #1e293b;
+  --_slate-700: #334155;
+  --_slate-500: #64748b;
+  --_slate-400: #94a3b8;
+  --_slate-300: #cbd5e1;
+  --_slate-200: #e2e8f0;
+  --_slate-100: #f1f5f9;
+  --_slate-50:  #f8fafc;
+  --_white:     #ffffff;
 }
 
-/* semantic color variables for this project */
+/* ═══════════════════════════════════════════════════
+   Semantic tokens — thème clair (défaut)
+   Pour un thème personnalisé, surcharger ces variables
+   ═══════════════════════════════════════════════════ */
 :root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
+  --color-background:      var(--_slate-50);
+  --color-surface:         var(--_white);
+  --color-background-soft: var(--_slate-100);
+  --color-background-mute: var(--_slate-200);
 
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
+  --color-border:          var(--_slate-200);
+  --color-border-hover:    var(--_slate-300);
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-  --color-theme: var(--vt-c-color-light-3);
-  --color-theme-light: var(--vt-c-color-light-4);
+  --color-text:            var(--_slate-800);
+  --color-text-secondary:  var(--_slate-500);
+  --color-heading:         var(--_slate-900);
+
+  --color-theme:           var(--_green-600);
+  --color-theme-hover:     var(--_green-700);
+  --color-theme-light:     var(--_green-100);
+
+  --color-shadow:          rgba(15, 23, 42, 0.06);
 
   --section-gap: 160px;
 }
 
+/* ═══════════════════════════════════════════════════
+   Thème sombre
+   ═══════════════════════════════════════════════════ */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+    --color-background:      #0e1620;
+    --color-surface:         #162030;
+    --color-background-soft: #1c2d42;
+    --color-background-mute: #243550;
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+    --color-border:          #243550;
+    --color-border-hover:    #2e4468;
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-    --color-theme: var(--vt-c-color-dark-3);
-    --color-theme-light: var(--vt-c-color-dark-4);
+    --color-text:            #d4e1ef;
+    --color-text-secondary:  #8a9eb8;
+    --color-heading:         #eaf1f8;
+
+    --color-theme:           var(--_green-200);
+    --color-theme-hover:     #a7f3c0;
+    --color-theme-light:     rgba(134, 239, 172, 0.12);
+
+    --color-shadow:          rgba(0, 0, 0, 0.3);
   }
 }
 
+/* ═══════════════════════════════════════════════════
+   Reset & base
+   ═══════════════════════════════════════════════════ */
 *,
 *::before,
 *::after {
@@ -70,10 +86,9 @@ body {
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
+  transition: color 0.3s, background-color 0.3s;
   line-height: 1.6;
+  font-size: 15px;
   font-family:
     Inter,
     -apple-system,
@@ -82,20 +97,15 @@ body {
     Roboto,
     Oxygen,
     Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
     sans-serif;
-  font-size: large;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 a,
 .color-theme {
   text-decoration: none;
   color: var(--color-theme);
-  transition: 0.4s;
-  padding: 3px;
+  transition: color 0.2s;
 }

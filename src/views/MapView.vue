@@ -1,7 +1,7 @@
 <template>
   <div class="map">
-    <h1 class="color-theme">Carte</h1>
-    <div id="mapContainer" style="height: 600px; width: 800px">
+    <h1>Carte</h1>
+    <div id="mapContainer">
       <!-- <l-map ref="map" v-model:zoom="zoom" :center="[50.4526514, 4.8884249]">
         <l-tile-layer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -150,6 +150,23 @@ export default {
 
 <style scoped>
 .map {
-  text-align: -webkit-center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+#mapContainer {
+  width: 100%;
+  height: 600px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
 }
 </style>

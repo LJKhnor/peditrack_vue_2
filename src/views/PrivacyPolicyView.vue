@@ -1,8 +1,8 @@
 <template>
-  <div class="terms-and-conditions">
-    <h1>Terms and Conditions</h1>
-    <p>Welcome to our application. Please read these terms carefully.</p>
-    <section class="terms-content">
+  <div class="legal-page">
+    <h1>Politique de confidentialité</h1>
+    <p class="legal-intro">Veuillez lire attentivement ces conditions avant d'utiliser l'application.</p>
+    <section class="legal-content">
       <h2>1. Avis de Non-Responsabilité Médicale</h2>
       <p>
         Cette application est conçue exclusivement pour un usage professionnel en soins de santé.
@@ -53,20 +53,40 @@
 
 <script>
 export default {
-  name: 'TermAndConditionView',
-  data() {
-    return {}
-  }
+  name: 'PrivacyPolicyView'
 }
 </script>
 
 <style scoped>
-.terms-and-conditions {
-  padding: 20px;
+.legal-page {
+  max-width: 720px;
+  padding: 2rem 0;
 }
 
 h1 {
-  font-size: 24px;
-  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  margin-bottom: 0.5rem;
+}
+
+.legal-intro {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  margin-bottom: 2rem;
+}
+
+.legal-content h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-content p {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  line-height: 1.7;
 }
 </style>

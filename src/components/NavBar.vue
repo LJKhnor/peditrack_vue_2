@@ -1,40 +1,34 @@
 <template>
-  <!-- <div class="greetings">
-    <h1 class="color-theme">{{ msg }}</h1>
-  </div> -->
-  <div class="container-nav">
-    <h1 class="container-nav-title color-theme">{{ msg }}</h1>
-    <div id="conn-option">
-      <div class="user-info logout" v-if="isLogIn">
-        <p class="username">
-          {{ username }}
-          |
-          <a @click="logout">Logout</a>
-          <router-link to="/update">
-            <MdiComponent v-bind:mdiValue="cogIcon" />
-          </router-link>
-        </p>
-      </div>
-      <div class="user-info login" v-else>
-        <router-link to="/login">Login</router-link> |
-        <router-link to="/register">Register</router-link>
-      </div>
+  <div class="navbar">
+    <div class="navbar-brand">
+      <span class="navbar-title">{{ msg }}</span>
     </div>
-  </div>
-  <div>
-    <div class="routerlink" v-if="isLogIn">
-      <RouterLink to="/">Home</RouterLink>
+
+    <nav class="navbar-nav" v-if="isLogIn">
+      <RouterLink to="/">Accueil</RouterLink>
       <RouterLink to="/appointment">Rendez-vous</RouterLink>
-      <RouterLink to="/patient">Patient</RouterLink>
-      <RouterLink to="/map">Map</RouterLink>
+      <RouterLink to="/patient">Patients</RouterLink>
+      <RouterLink to="/map">Carte</RouterLink>
       <RouterLink to="/data">Données</RouterLink>
+    </nav>
+
+    <div class="navbar-user" v-if="isLogIn">
+      <span class="navbar-username">{{ username }}</span>
+      <RouterLink to="/update" class="navbar-icon-btn" title="Préférences">
+        <MdiComponent v-bind:mdiValue="cogIcon" />
+      </RouterLink>
+      <button class="navbar-logout-btn" @click="logout">Déconnexion</button>
+    </div>
+    <div class="navbar-auth" v-else>
+      <RouterLink to="/login">Connexion</RouterLink>
+      <RouterLink to="/register" class="btn">Créer un compte</RouterLink>
     </div>
   </div>
 </template>
 
 <script>
 import router from '@/router'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import AuthService from '@/services/AuthService.ts'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
 import { mdiCog } from '@mdi/js'
@@ -65,25 +59,96 @@ export default {
 </script>
 
 <style scoped>
-.container-nav {
+.navbar {
   display: flex;
-  width: 100%;
-  border: 2px solid var(--color-primary);
-  justify-content: space-between;
   align-items: center;
+  padding: 0 1.5rem;
+  height: 60px;
+  gap: 1.5rem;
 }
 
-.routerlink {
-  flex: 1;
+.navbar-brand {
+  flex-shrink: 0;
+}
+
+.navbar-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-theme);
+  letter-spacing: -0.01em;
+}
+
+.navbar-nav {
   display: flex;
+  gap: 0.125rem;
+  flex: 1;
   justify-content: center;
-  margin-bottom: 4vh;
 }
-.routerlink > a {
-  text-align: center;
-  margin: 0 2vh 0 0;
+
+.navbar-nav a {
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 0.2s, background 0.2s;
 }
-#conn-option {
-  font-size: 24px;
+
+.navbar-nav a:hover,
+.navbar-nav a.router-link-active {
+  color: var(--color-theme);
+  background: var(--color-theme-light);
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+}
+
+.navbar-username {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.navbar-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  transition: color 0.2s, background 0.2s;
+}
+
+.navbar-icon-btn:hover {
+  color: var(--color-theme);
+  background: var(--color-theme-light);
+}
+
+.navbar-logout-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.navbar-logout-btn:hover {
+  border-color: var(--color-theme);
+  color: var(--color-theme);
+  background: var(--color-theme-light);
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 </style>

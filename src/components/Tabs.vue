@@ -65,25 +65,38 @@ export default {
 <style scoped>
 .tabs {
   width: 100%;
-  margin-top: 4vh;
-}
-.tabs button {
-  margin: 1%;
-  padding: 1vw 2vh;
-  border: none;
-  background: var(--color-theme);
-  border-radius: 12px;
-  cursor: pointer;
-}
-.tabs button.active {
-  border: 2px solid white;
-}
-.tab-content {
-  margin: 0px 10vw;
-}
-.tab-navigation {
-  margin-top: 10px;
+  margin-top: 1.5rem;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.75rem;
+}
+
+.tabs button {
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.tabs button:hover {
+  color: var(--color-theme);
+  border-color: var(--color-theme);
+  background: var(--color-theme-light);
+}
+
+.tabs button.active {
+  background: var(--color-theme);
+  border-color: var(--color-theme);
+  color: #fff;
+}
+
+.tab-content {
+  margin-top: 1.25rem;
 }
 </style>

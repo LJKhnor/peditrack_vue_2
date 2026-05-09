@@ -1,14 +1,11 @@
 <template>
   <div class="appointment">
-    <h1 class="color-theme">Rendez-vous</h1>
-    <!--pre id="content" style="white-space: pre-wrap"></pre-->
-    <!-- cette ligne ⬆️ permet de montrer les events éventuellement pour le debug-->
-
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button class="btn" id="authorize_button" @click="handleAuthClick">Authoriser</button>
-    <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
+    <h1>Rendez-vous</h1>
+    <div class="auth-controls">
+      <button class="btn" id="authorize_button" @click="handleAuthClick">Autoriser</button>
+      <button class="btn" id="signout_button" @click="handleSignoutClick">Se déconnecter</button>
+    </div>
     <vue-cal
-      class="color-theme"
       id="calendarEvents"
       active-view="week"
       events-count-on-year-view
@@ -296,17 +293,48 @@ export default {
 </script>
 
 <style scoped>
-#calendarEvents {
-  display: flex;
-  height: 600px;
-}
 .appointment {
-  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.auth-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+#calendarEvents {
+  height: 620px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
 :deep(.vuecal__now-line) {
   color: var(--color-theme);
 }
+
 :deep(.vuecal__title-bar) {
-  background-color: currentColor;
+  background-color: var(--color-theme);
+  color: #fff;
+}
+
+:deep(.vuecal__cell--today) {
+  background-color: var(--color-theme-light);
+}
+
+:deep(.vuecal__event) {
+  background-color: var(--color-theme);
+  border-color: var(--color-theme-hover);
+  color: #fff;
+  border-radius: 4px;
 }
 </style>

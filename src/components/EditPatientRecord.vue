@@ -115,7 +115,6 @@ export default {
     }
 
     async function updatePatient() {
-      console.log('Update old patient')
       const selectElement = document.getElementById('patient-select')
       const patientId = selectElement.value
       const patientData = Object.fromEntries(
@@ -143,10 +142,26 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 480px) {
-  .patient-infos {
-    width: 90vw; /* Sur petits écrans, prend 90% de la largeur du viewport */
-    padding: 0.5rem; /* Réduit le padding sur les petits écrans */
-  }
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 1rem;
+}
+
+.select-block-input {
+  width: 100%;
+  max-width: 320px;
+  height: 2.25rem;
+  border-radius: 6px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.patient-record-validation {
+  margin-top: 1rem;
 }
 </style>

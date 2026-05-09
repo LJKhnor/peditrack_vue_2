@@ -1,17 +1,23 @@
 <template>
   <div class="patient">
-    <h1 class="color-theme">Patient</h1>
-    <div class="btn-control" :hidden="isNewPatient || isEditPatient">
+    <h1>Patients</h1>
+    <div class="btn-control" v-show="!isNewPatient && !isEditPatient">
       <button class="btn" @click="onCreatePatient">Nouveau patient</button>
       <button class="btn" @click="onEditPatient">Encoder le soin</button>
     </div>
 
     <template v-if="isNewPatient">
-      <MdiComponent v-bind:mdiValue="pathArrowLeft" @click="onCreatePatient" />
+      <button class="back-btn" @click="onCreatePatient">
+        <MdiComponent v-bind:mdiValue="pathArrowLeft" />
+        Retour
+      </button>
       <NewPatientRecord @close-panel="onValidatePatientCreation" />
     </template>
     <template v-if="isEditPatient">
-      <MdiComponent v-bind:mdiValue="pathArrowLeft" @click="onEditPatient" />
+      <button class="back-btn" @click="onEditPatient">
+        <MdiComponent v-bind:mdiValue="pathArrowLeft" />
+        Retour
+      </button>
       <EditPatientRecord @close-panel="onValidatePatientUpdate" />
     </template>
   </div>
@@ -47,8 +53,7 @@ export default {
       // Gérer la soumission du formulaire ici (création ou édition)
       if (isEditPatient.value) {
         // Mettre à jour le patient existant
-        console.log('Updating patient with data:', formData)
-      }
+        }
     }
     return {
       isNewPatient,
@@ -66,22 +71,42 @@ export default {
 </script>
 
 <style scoped>
-
 .patient {
   display: flex;
   flex-direction: column;
-  text-align: center;
-}
-.h2-patient {
-  background-color: var(--color-theme);
-  color: black;
-  border-radius: 8px;
-}
-.patient-infos {
-  width: 80vw;
-  max-width: 70vw;
-  min-width: 50vw;
-  padding: 1rem;
+  width: 100%;
 }
 
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 1.25rem;
+}
+
+.btn-control {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.back-btn:hover {
+  color: var(--color-theme);
+  border-color: var(--color-theme);
+}
 </style>

@@ -166,7 +166,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--color-border-hover);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -184,11 +184,11 @@ export default {
 }
 
 input:checked + .slider {
-  background-color: #2196f3;
+  background-color: var(--color-theme);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196f3;
+  box-shadow: 0 0 1px var(--color-theme);
 }
 
 input:checked + .slider:before {

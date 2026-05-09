@@ -1,61 +1,47 @@
 <script setup lang="ts">
-import { mdiDoctor, mdiNotebook, mdiMap, mdiDatabaseArrowDown } from '@mdi/js'
+import { mdiCalendarMonth, mdiAccountGroup, mdiMap, mdiDatabaseArrowDown } from '@mdi/js'
 import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
-// import CommunityIcon from './icons/IconCommunity.vue'
-// import SupportIcon from './icons/IconSupport.vue'
-let notebook = mdiNotebook
-let doctorIcon = mdiDoctor
-let mapIcon = mdiMap
 </script>
 
 <template>
-  <div class="welcome-container">
-    <WelcomeItem class="welcome-item">
-      <template #icon>
-        <MdiComponent v-bind:mdiValue="notebook" />
-      </template>
+  <div class="features-grid">
+    <WelcomeItem to="/appointment">
+      <template #icon><MdiComponent :mdiValue="mdiCalendarMonth" /></template>
       <template #heading>Rendez-vous</template>
-      Gérer vos rendez-vous.
+      Gérez votre agenda et consultez vos prochains rendez-vous.
     </WelcomeItem>
 
-    <WelcomeItem class="welcome-item">
-      <template #icon>
-        <MdiComponent v-bind:mdiValue="doctorIcon" />
-      </template>
-      <template #heading>Patient</template>
-      Gérer la fiche patient.
-    </WelcomeItem>
-    <WelcomeItem class="welcome-item">
-      <template #icon>
-        <MdiComponent v-bind:mdiValue="mapIcon" />
-      </template>
-      <template #heading>Map</template>
-      Voir sur la carte la localisation de vos patients.
+    <WelcomeItem to="/patient">
+      <template #icon><MdiComponent :mdiValue="mdiAccountGroup" /></template>
+      <template #heading>Patients</template>
+      Consultez et mettez à jour les dossiers de vos patients.
     </WelcomeItem>
 
-    <WelcomeItem class="welcome-item">
-      <template #icon>
-        <MdiComponent v-bind:mdiValue="mdiDatabaseArrowDown" />
-      </template>
+    <WelcomeItem to="/map">
+      <template #icon><MdiComponent :mdiValue="mdiMap" /></template>
+      <template #heading>Carte</template>
+      Visualisez la localisation géographique de votre patientèle.
+    </WelcomeItem>
+
+    <WelcomeItem to="/data">
+      <template #icon><MdiComponent :mdiValue="mdiDatabaseArrowDown" /></template>
       <template #heading>Données</template>
-      Gérer les données de vos patients.
+      Exportez et gérez les données médicales de vos patients.
     </WelcomeItem>
   </div>
 </template>
 
 <style scoped>
-.welcome-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin: 20vh 0;
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
 }
-.welcome-item {
-  flex: 1 1 200px;
-  max-width: 300px;
+
+@media (max-width: 640px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

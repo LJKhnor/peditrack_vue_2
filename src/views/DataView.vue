@@ -1,6 +1,6 @@
 <template>
   <div class="data">
-    <h1 class="color-theme">Données</h1>
+    <h1>Données</h1>
     <ag-grid-vue
       :rowData="rowData"
       :columnDefs="columnDefs"
@@ -285,24 +285,25 @@ export default {
 
 <style scoped>
 .data {
-  text-align: center;
   width: 100%;
-}
-:deep(.ag-header) {
-  background-color: var(--color-theme) !important;
-  color: white;
-}
-:deep(.ag-row) {
-  background-color: var(--color-theme-light) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 18px;
-  font-family: Arial, sans-serif;
-  text-align: left;
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+:deep(.ag-header) {
+  background-color: var(--color-theme) !important;
+  color: #fff;
+}
+
+:deep(.ag-row) {
+  background-color: var(--color-theme-light) !important;
 }
 
 /* ── Overlay ── */
@@ -319,13 +320,14 @@ table {
 
 /* ── Fenêtre ── */
 .modal-container {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
   width: min(680px, 92vw);
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 40px var(--color-shadow);
   overflow: hidden;
   animation: slideIn 0.2s ease;
 }
@@ -333,7 +335,7 @@ table {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-16px);
   }
   to {
     opacity: 1;
@@ -346,14 +348,17 @@ table {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  background: var(--color-theme, #4caf50);
-  color: white;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-theme);
+  color: #fff;
 }
+
 .modal-header h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
+
 .modal-header span {
   font-weight: 700;
 }
@@ -361,20 +366,21 @@ table {
 .modal-close {
   background: none;
   border: none;
-  color: white;
-  font-size: 1.2rem;
+  color: #fff;
+  font-size: 1.1rem;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 0.25rem 0.5rem;
   border-radius: 4px;
   transition: background 0.2s;
 }
+
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
 /* ── Body ── */
 .modal-body {
-  padding: 24px;
+  padding: 1.5rem;
   overflow-y: auto;
   flex: 1;
 }
@@ -382,8 +388,8 @@ table {
 .modal-loading,
 .modal-empty {
   text-align: center;
-  color: #888;
-  padding: 40px 0;
+  color: var(--color-text-secondary);
+  padding: 2.5rem 0;
   font-style: italic;
 }
 
@@ -391,104 +397,53 @@ table {
 .health-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 0.875rem;
 }
 
 .health-card {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 14px 18px;
+  padding: 0.875rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-.health-card.full-width {
-  grid-column: 1 / -1;
+  gap: 0.25rem;
 }
 
 .health-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #6c757d;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
 .health-value {
-  font-size: 1rem;
-  color: #212529;
+  font-size: 0.9375rem;
+  color: var(--color-text);
   font-weight: 500;
 }
 
 /* ── Footer ── */
 .modal-footer {
-  padding: 16px 24px;
-  border-top: 1px solid #e9ecef;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: flex-end;
 }
 
 .btn-close {
-  padding: 8px 22px;
-  background: var(--color-theme, #4caf50);
-  color: white;
+  padding: 0.45rem 1.25rem;
+  background: var(--color-theme);
+  color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.95rem;
-  transition: opacity 0.2s;
+  font-size: 0.875rem;
+  transition: background 0.2s;
 }
+
 .btn-close:hover {
-  opacity: 0.85;
-}
-
-th,
-td {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  color: black;
-}
-
-th {
-  background-color: #4caf50;
-  color: white;
-  text-transform: uppercase;
-}
-
-tr {
-  background-color: #f2f2f2;
-  transition: background-color 0.3s ease;
-}
-
-tr:hover {
-  background-color: #e9f5e9;
-}
-
-td {
-  background-color: #fff;
-}
-
-table thead tr {
-  border-bottom: 2px solid #4caf50;
-}
-
-/* Optional: Responsive Design */
-@media (max-width: 600px) {
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
-    display: block;
-    width: 100%;
-  }
-  tr {
-    margin-bottom: 15px;
-  }
-  th {
-    background-color: #4caf50;
-    text-align: center;
-  }
+  background: var(--color-theme-hover);
 }
 </style>

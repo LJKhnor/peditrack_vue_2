@@ -26,8 +26,6 @@ import PatientMedicalHealthInformations from './patientInformations/PatientMedic
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 import apiClient from '../axios'
 
-import AuthService from '@/services/AuthService.ts'
-
 export default {
   name: 'NewPatientRecord',
   components: {
@@ -47,15 +45,8 @@ export default {
       if (isOkToContinue) {
         const urlCreationPatient = '/patients'
         const patientData = { ...formData.value, birthdate: new Date(formData.value.birthdate) }
-        const options = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + AuthService.getCurrentToken()
-          }
-        }
         try {
-          await apiClient.post(urlCreationPatient, patientData, options)
+          await apiClient.post(urlCreationPatient, patientData)
           emit('closePanel')
         } catch (error) {
           console.error('There was an error!', error.response ? error.response.data : error.message)
@@ -95,13 +86,22 @@ export default {
 </script>
 
 <style scoped>
-.missing {
-  border-color: red;
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 1rem;
 }
-@media (max-width: 480px) {
-  .patient-infos {
-    width: 90vw; /* Sur petits écrans, prend 90% de la largeur du viewport */
-    padding: 0.5rem; /* Réduit le padding sur les petits écrans */
-  }
+
+.record {
+  margin-bottom: 1.5rem;
+}
+
+.patient-record-validation {
+  margin-top: 1rem;
+}
+
+.missing {
+  border-color: #dc2626;
 }
 </style>

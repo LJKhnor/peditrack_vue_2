@@ -1,59 +1,54 @@
 <template>
   <div class="register-page">
     <div class="register-container">
-      <h2 class="h2-register">Créer un compte</h2>
+      <h2>Créer un compte</h2>
       <form class="register-form" @submit.prevent="register">
         <div class="form-group">
-          <!-- <label for="username">Nom d'utilisateur</label> -->
           <input
             class="input-register"
             type="text"
             id="username"
             v-model="form.username"
-            placeholder="Entrez votre nom d'utilisateur"
+            placeholder="Nom d'utilisateur"
             required
           />
         </div>
         <div class="form-group">
-          <!-- <label for="mail">Email</label> -->
           <input
             class="input-register"
             type="email"
             id="mail"
             v-model="form.mail"
-            placeholder="Entrez votre adresse email"
+            placeholder="Adresse email"
             required
           />
         </div>
         <div class="form-group">
-          <!-- <label for="password">Mot de passe</label> -->
           <input
             class="input-register"
             type="password"
             id="password"
             v-model="form.password"
-            placeholder="Créez un mot de passe"
+            placeholder="Mot de passe"
             required
           />
         </div>
         <div class="form-group">
-          <!-- <label for="confirm-password">Confirmer le mot de passe</label> -->
           <input
             class="input-register"
             type="password"
             id="confirm-password"
             v-model="form.confirmPassword"
-            placeholder="Confirmez votre mot de passe"
+            placeholder="Confirmer le mot de passe"
             required
           />
         </div>
         <div class="form-group">
-          <!-- <label>Code d'activation</label> -->
           <input
             type="text"
             class="input-register"
             v-model="form.registrationKey"
-            placeholder="Entrez le code d'activation de votre licence"
+            placeholder="Code d'activation de la licence"
             required
           />
         </div>
@@ -61,13 +56,11 @@
           <button type="submit" class="btn">S'inscrire</button>
         </div>
       </form>
-      <p v-if="showError" id="error">{{ this.message }}</p>
-      <p class="redirect-login">Déjà inscrit ? <a href="/login">Connectez-vous ici</a>.</p>
-      <p class="">
-        Pas encore de clé ? Faites-en la demande via<a
-          href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed."
-          >mail</a
-        >.
+      <p v-if="showError" class="register-error">{{ message }}</p>
+      <p class="register-footer">Déjà inscrit ? <a href="/login">Connectez-vous ici</a>.</p>
+      <p class="register-footer">
+        Pas encore de clé ? Faites-en la demande par
+        <a href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed.">mail</a>.
       </p>
     </div>
   </div>
@@ -86,83 +79,100 @@ export default {
       confirmPassword: '',
       registrationKey: ''
     }
-    let message = ''
+    let message = ref('')
     let showError = ref(false)
+
     async function register() {
-      if (this.form.password !== this.form.confirmPassword) {
+      if (form.password !== form.confirmPassword) {
         alert('Les mots de passe ne correspondent pas !')
         return
       }
-
-      // Appeler une API pour envoyer les données utilisateur
-      const urlRegister = '/users/register'
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:5173'
-        }
-      }
       try {
-        const response = await apiClient.post(
-          urlRegister,
-          {
-            username: this.form.username,
-            mail: this.form.mail,
-            password: this.form.password,
-            // developper l'utilisation du code d'activation
-            registrationKey: this.form.registrationKey
-          },
-          options
-        )
+        await apiClient.post('/users/register', {
+          username: form.username,
+          mail: form.mail,
+          password: form.password,
+          registrationKey: form.registrationKey
+        })
         router.push('/login')
       } catch (error) {
         showError.value = true
-        this.message = error.response.data
+        message.value = error.response?.data ?? error.message
         console.error('Register failed : ', error)
       }
     }
-    return {
-      form,
-      message,
-      register
-    }
+
+    return { form, message, showError, register }
   }
 }
 </script>
 
 <style scoped>
-.register-container {
-  width: 100%;
-  max-width: 400px;
-  background: var(--color-background);
-  border-radius: 2em;
-  box-shadow: 0 2px 6px var(--color-theme);
-  padding: 2em;
-  margin: 5vh 0;
-}
-.register-form div {
+.register-page {
   display: flex;
-  flex-direction: column;
-  gap: 1vh;
-}
-.input-register[type='text'],
-.input-register[type='password'],
-.input-register[type='email'] {
-  padding: 10px;
-  margin: 1vh 0;
-  /* border: 1px solid #ccc; */
-  border-radius: 2em;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s ease-in-out;
+  justify-content: center;
 }
 
-input[type='text']:focus,
-input[type='password']:focus {
+.register-container {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px var(--color-shadow);
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 1.5rem;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-register {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  transition: border-color 0.2s;
+}
+
+.input-register:focus {
+  outline: none;
   border-color: var(--color-theme);
 }
+
 .register-btn {
-  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.register-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.register-footer {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.75rem;
+  text-align: center;
 }
 </style>

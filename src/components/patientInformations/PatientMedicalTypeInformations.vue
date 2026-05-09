@@ -192,4 +192,16 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.medical-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0.75rem 0;
+}
+</style>

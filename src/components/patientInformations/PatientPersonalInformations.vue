@@ -90,4 +90,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.personal-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+</style>

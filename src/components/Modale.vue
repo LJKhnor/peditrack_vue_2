@@ -1,15 +1,20 @@
 <template>
   <div
-    class="block-modal"
+    class="modal-block"
     v-if="revele && (contents.description != null || contents.location != null)"
   >
-    <div class="overlay" v-on:click="toggleModale"></div>
-    <div class="modale card">
-      <div class="btn-modal btn btn-danger" v-on:click="toggleModale">X</div>
-      <h2>Description</h2>
-      <p>{{ contents.description != null ? contents.description : 'Aucune description' }}</p>
-      <h2>Lieu</h2>
-      <p>{{ contents.location != null ? contents.location : 'Aucun lieu' }}</p>
+    <div class="modal-overlay" @click="toggleModale"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Détails du rendez-vous</h3>
+        <button class="modal-close" @click="toggleModale">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-label">Description</p>
+        <p class="modal-value">{{ contents.description ?? 'Aucune description' }}</p>
+        <p class="modal-label">Lieu</p>
+        <p class="modal-value">{{ contents.location ?? 'Aucun lieu' }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -22,35 +27,74 @@ export default {
 </script>
 
 <style scoped>
-.block-modal {
+.modal-block {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
-.overlay {
-  background: rgba(124, 124, 124, 0.5);
+
+.modal-overlay {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
 }
-.modale {
-  background: #f1f1f1;
-  color: #333;
-  padding: 50px;
-  position: fixed;
+
+.modal-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: min(420px, 90vw);
+  box-shadow: 0 8px 32px var(--color-shadow);
+  position: relative;
+  z-index: 1;
 }
-.btn-modal {
-  position: absolute;
-  width: 20px;
-  top: 10px;
-  right: 10px;
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.modal-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--color-text);
+  background: var(--color-background-soft);
+}
+
+.modal-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.modal-value {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  margin-bottom: 1rem;
 }
 </style>
