@@ -62,6 +62,9 @@
         Pas encore de clé ? Faites-en la demande par
         <a href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed.">mail</a>.
       </p>
+      <p class="register-footer">
+        Découvrez notre <a href="/pricing">offre tarifaire</a>.
+      </p>
     </div>
   </div>
 </template>
