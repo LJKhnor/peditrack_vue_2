@@ -10,7 +10,7 @@
           <span class="price">35€</span>
           <span class="period">&nbsp;/ mois</span>
         </div>
-        <p class="pricing-vat">TVA non applicable — article 293 B du CGI</p>
+        <p class="pricing-vat">TVA non applicable — article 56bis du Code TVA belge</p>
       </div>
 
       <ul class="pricing-features">

@@ -38,6 +38,7 @@
 <script>
 import { onMounted, onUnmounted } from 'vue'
 import apiClient from '../axios'
+import AuthService from '../services/AuthService'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 // import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
@@ -53,7 +54,11 @@ export default {
     let zoom = 13
     let iconWidth = 25
     let iconHeight = 40
-    const pedicureStartPoint = [50.4526514, 4.8884249]
+    const currentUser = AuthService.getCurrentUser()
+    const pedicureStartPoint =
+      currentUser?.pointX != null && currentUser?.pointY != null
+        ? [currentUser.pointX, currentUser.pointY]
+        : [50.4526514, 4.8884249]
     let markers = []
     let points = []
     let osm, osmHOT, openTopoMap, map, markersLayer, circlesLayer, layerControl

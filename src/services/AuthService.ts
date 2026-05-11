@@ -17,10 +17,21 @@ class AuthService {
     }
     return apiClient
       .post(urlLogin, { username: user.username, password: user.password })
-      .then((response: any) => {
+      .then(async (response: any) => {
         if (response.data.token) {
-          StorageService.setItem('user', { id: response.data.id, username: user.username })
+          const userId = response.data.id
           StorageService.setItem('token', response.data.token)
+
+          const userObj: any = { id: userId, username: user.username }
+          try {
+            const info = await apiClient.get(`/users/${userId}/info`)
+            if (info.data.pointX != null && info.data.pointY != null) {
+              userObj.pointX = info.data.pointX
+              userObj.pointY = info.data.pointY
+            }
+          } catch (_) {}
+
+          StorageService.setItem('user', userObj)
         }
         return response.data
       })
