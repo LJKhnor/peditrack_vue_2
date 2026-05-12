@@ -75,7 +75,7 @@ export default {
     const urlGetUserInfo = '/users/' + AuthService.getCurrentUserId() + '/info'
     const urlUpdateUser = '/users/' + AuthService.getCurrentUserId() + '/update'
     async function fetchUserInfos() {
-      await apiClient.get(urlGetUserInfo).then((response: { data: { name: string } }) => {
+      await apiClient.get(urlGetUserInfo).then((response: { data: { name: string; street: string; postalCode: string; city: string } }) => {
         form.value.username = response.data.name
         form.value.street = response.data.street
         form.value.postalCode = response.data.postalCode
