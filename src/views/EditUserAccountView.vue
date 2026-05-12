@@ -75,16 +75,15 @@ export default {
     const urlGetUserInfo = '/users/' + AuthService.getCurrentUserId() + '/info'
     const urlUpdateUser = '/users/' + AuthService.getCurrentUserId() + '/update'
     async function fetchUserInfos() {
-      await apiClient
-        .get(urlGetUserInfo)
-        .then((response: { data: { name: string } }) => {
-          form.value.username = response.data.name
-        })
+      await apiClient.get(urlGetUserInfo).then((response: { data: { name: string } }) => {
+        form.value.username = response.data.name
+        form.value.street = response.data.street
+        form.value.postalCode = response.data.postalCode
+        form.value.city = response.data.city
+      })
     }
     async function updateUser() {
-      await apiClient
-        .post(urlUpdateUser, form.value)
-        .then(() => {})
+      await apiClient.post(urlUpdateUser, form.value).then(() => {})
     }
     return { form, updateUser }
   }
