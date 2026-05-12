@@ -61,7 +61,7 @@ export default {
           } else {
             message.value = error.message
           }
-          console.error(error)
+          console.error('Login failed:', error.message, error.response?.status)
         })
     }
 

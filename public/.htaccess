@@ -1,3 +1,9 @@
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com; connect-src 'self' https://pedimed.ddns.net https://www.googleapis.com https://*.tile.openstreetmap.org https://*.tile.opentopomap.org https://*.tile.openstreetmap.fr; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.tile.opentopomap.org https://*.tile.openstreetmap.fr; style-src 'self' 'unsafe-inline'; font-src 'self';"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
 <IfModule mod_rewrite.c>
   Options -MultiViews
   RewriteEngine On

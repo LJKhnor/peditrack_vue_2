@@ -38,7 +38,10 @@ const router = createRouter({
     {
       path: '/update',
       name: 'update',
-      component: () => import('../views/EditUserAccountView.vue')
+      component: () => import('../views/EditUserAccountView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/appointment',

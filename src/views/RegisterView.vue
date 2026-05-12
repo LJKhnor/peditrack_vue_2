@@ -101,7 +101,7 @@ export default {
       } catch (error) {
         showError.value = true
         message.value = error.response?.data ?? error.message
-        console.error('Register failed : ', error)
+        console.error('Register failed:', error.message, error.response?.status)
       }
     }
 
