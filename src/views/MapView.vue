@@ -49,7 +49,7 @@ delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
-  shadowUrl: markerShadow,
+  shadowUrl: markerShadow
 })
 // import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
 
@@ -83,14 +83,19 @@ export default {
       initLayers()
       getAllPatientPositions().then(() => {
         addAllPatientsPositionsToMap()
-        map.fitBounds(points)
+        if (points.length > 0) map.fitBounds(points)
       })
+    })
+
+    onUnmounted(() => {
+      map?.remove()
     })
 
     function initLayers() {
       // on lui passe les tuilles de la map
-      osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       })
       // on créé le layer pour acceuillir la map et on lui passe les infos de centrage et de zoom
 
