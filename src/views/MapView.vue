@@ -45,11 +45,14 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
+const defaultIcon = L.icon({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
-  shadowUrl: markerShadow
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
 })
 // import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
 
@@ -119,7 +122,7 @@ export default {
 
       createCatchmentArea(map)
 
-      L.marker(pedicureStartPoint).addTo(map)
+      L.marker(pedicureStartPoint, { icon: defaultIcon }).addTo(map)
     }
 
     function createCatchmentArea() {
@@ -156,7 +159,7 @@ export default {
 
     function addAllPatientsPositionsToMap() {
       for (const key in points) {
-        let marker = L.marker(points[key])
+        let marker = L.marker(points[key], { icon: defaultIcon })
         markers.push(marker)
       }
       markersLayer = L.layerGroup(markers).addTo(map)
