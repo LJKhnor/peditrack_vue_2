@@ -1,6 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/lejo2225/public_html/pedimed-pro.be/
-    - /bin/rm -rf $DEPLOYPATH/assets
+    - export DEPLOYPATH=/home/lejo2225/public_html/
+    # - /bin/rm -rf $DEPLOYPATH/assets
     - /bin/cp -r /home/lejo2225/repositories/peditrack_vue_2/dist/* $DEPLOYPATH
+
+# /bin/cp -r /home/lejo2225/repositories/peditrack_vue_2/dist/* /home/lejo2225/public_html/pedimed-pro.be
