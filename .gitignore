@@ -34,7 +34,7 @@ coverage
 .env.production
 
 # Build output
-dist/
+# dist/
 
 CLAUDE.md
 ''
