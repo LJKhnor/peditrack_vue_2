@@ -89,8 +89,8 @@ export default {
 
     function initLayers() {
       // on lui passe les tuilles de la map
-      osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       })
       // on créé le layer pour acceuillir la map et on lui passe les infos de centrage et de zoom
 
