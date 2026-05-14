@@ -2,4 +2,5 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/lejo2225/public_html/
+    - /bin/rm -rf $DEPLOYPATH/assets
     - /bin/cp -r /home/lejo2225/repositories/peditrack_vue_2/dist/* $DEPLOYPATH
