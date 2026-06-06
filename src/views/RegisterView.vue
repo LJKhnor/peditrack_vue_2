@@ -53,43 +53,68 @@
           />
         </div>
         <div class="register-btn">
-          <button type="submit" class="btn">S'inscrire</button>
+          <button type="submit" class="btn" :disabled="isLoading">
+            {{ isLoading ? 'Inscription en cours...' : "S'inscrire" }}
+          </button>
         </div>
       </form>
       <p v-if="showError" class="register-error">{{ message }}</p>
       <p class="register-footer">Déjà inscrit ? <a href="/login">Connectez-vous ici</a>.</p>
       <p class="register-footer">
         Pas encore de clé ? Faites-en la demande par
-        <a href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed.">mail</a>.
+        <a
+          href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed."
+          >mail</a
+        >.
       </p>
-      <p class="register-footer">
-        Découvrez notre <a href="/pricing">offre tarifaire</a>.
-      </p>
+      <p class="register-footer">Découvrez notre <a href="/pricing">offre tarifaire</a>.</p>
     </div>
   </div>
 </template>
 
 <script>
 import router from '@/router'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import apiClient from '../axios'
 export default {
   setup() {
-    let form = {
+    const form = reactive({
       username: '',
       mail: '',
       password: '',
       confirmPassword: '',
       registrationKey: ''
+    })
+    const message = ref('')
+    const showError = ref(false)
+    const isLoading = ref(false)
+
+    function resolveErrorMessage(error) {
+      const status = error.response?.status
+      const data = error.response?.data
+
+      if (!status) return 'Impossible de contacter le serveur. Vérifiez votre connexion.'
+
+      if (status === 403) return "Clé d'activation invalide ou expirée."
+      if (status === 409) return "Ce nom d'utilisateur ou cette adresse email est déjà utilisé."
+      if (status === 429) return 'Trop de tentatives. Veuillez patienter avant de réessayer.'
+      if (status === 400) {
+        return data?.message ?? data ?? 'Les informations saisies sont invalides.'
+      }
+      return data?.message ?? data ?? 'Une erreur est survenue. Veuillez réessayer.'
     }
-    let message = ref('')
-    let showError = ref(false)
 
     async function register() {
+      showError.value = false
+      message.value = ''
+
       if (form.password !== form.confirmPassword) {
-        alert('Les mots de passe ne correspondent pas !')
+        showError.value = true
+        message.value = 'Les mots de passe ne correspondent pas.'
         return
       }
+
+      isLoading.value = true
       try {
         await apiClient.post('/users/register', {
           username: form.username,
@@ -100,12 +125,14 @@ export default {
         router.push('/login')
       } catch (error) {
         showError.value = true
-        message.value = error.response?.data ?? error.message
+        message.value = resolveErrorMessage(error)
         console.error('Register failed:', error.message, error.response?.status)
+      } finally {
+        isLoading.value = false
       }
     }
 
-    return { form, message, showError, register }
+    return { form, message, showError, isLoading, register }
   }
 }
 </script>
