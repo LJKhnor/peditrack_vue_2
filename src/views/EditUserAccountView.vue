@@ -55,6 +55,7 @@
 </template>
 <script lang="ts">
 import AuthService from '@/services/AuthService'
+import StorageService from '@/services/StorageService'
 import apiClient from '../axios'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
@@ -84,6 +85,21 @@ export default {
     }
     async function updateUser() {
       await apiClient.post(urlUpdateUser, form.value).then(() => {})
+      await refreshUserPosition()
+    }
+
+    async function refreshUserPosition() {
+      try {
+        const info = await apiClient.get(urlGetUserInfo)
+        if (info.data.pointX != null && info.data.pointY != null) {
+          const currentUser = AuthService.getCurrentUser()
+          StorageService.setItem('user', {
+            ...currentUser,
+            pointX: info.data.pointX,
+            pointY: info.data.pointY
+          })
+        }
+      } catch (_) {}
     }
     return { form, updateUser }
   }

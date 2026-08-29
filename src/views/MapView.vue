@@ -1,37 +1,7 @@
 <template>
   <div class="map">
     <h1>Carte</h1>
-    <div id="mapContainer">
-      <!-- <l-map ref="map" v-model:zoom="zoom" :center="[50.4526514, 4.8884249]">
-        <l-tile-layer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          layer-type="base"
-          name="OpenStreetMap"
-        ></l-tile-layer>
-        <l-marker id="house" :lat-lng="[50.4526514, 4.8884249]"></l-marker>
-        <l-circle
-          :lat-lng="[50.4526514, 4.8884249]"
-          :radius="5000"
-          :color="'green'"
-          :fill="false"
-          opacity="0.5"
-        ></l-circle>
-        <l-circle
-          :lat-lng="[50.4526514, 4.8884249]"
-          :radius="10000"
-          :color="'yellow'"
-          :fill="false"
-          opacity="0.7"
-        ></l-circle>
-        <l-circle
-          :lat-lng="[50.4526514, 4.8884249]"
-          :radius="15000"
-          :color="'red'"
-          :fill="false"
-          opacity="0.5"
-        ></l-circle>
-      </l-map> -->
-    </div>
+    <div id="mapContainer"></div>
   </div>
 </template>
 
@@ -40,7 +10,10 @@ import { onMounted, onUnmounted } from 'vue'
 import apiClient from '../axios'
 import AuthService from '../services/AuthService'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import L from 'leaflet'
+import 'leaflet.markercluster'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
@@ -52,9 +25,21 @@ const defaultIcon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41],
+  shadowSize: [41, 41]
 })
-// import { LMap, LTileLayer, LMarker, LCircle } from '@vue-leaflet/vue-leaflet'
+
+const homeIcon = L.divIcon({
+  className: 'home-marker',
+  html:
+    '<div style="width:30px;height:30px;border-radius:50%;background:#2a7d4f;' +
+    'border:2px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,0.35);' +
+    'display:flex;align-items:center;justify-content:center;">' +
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#ffffff">' +
+    '<path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/></svg></div>',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, -15]
+})
 
 export default {
   components: {
@@ -74,6 +59,7 @@ export default {
         : [50.4526514, 4.8884249]
     let markers = []
     let points = []
+    let patientPositions = []
     let osm, osmHOT, openTopoMap, map, markersLayer, circlesLayer, layerControl
     const urlGetAllPatientPosition = '/data/map'
     function iconUrl() {
@@ -102,27 +88,27 @@ export default {
       })
       // on créé le layer pour acceuillir la map et on lui passe les infos de centrage et de zoom
 
-      osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution:
-          '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
-      })
-      openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution:
-          'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
-      })
+      // osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      //   maxZoom: 19,
+      //   attribution:
+      //     '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
+      // })
+      // openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      //   maxZoom: 19,
+      //   attribution:
+      //     'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
+      // })
       let baseMaps = {
-        OpenStreetMap: osm,
-        'OpenStreetMap.HOT': osmHOT,
-        OpenTopoMap: openTopoMap
+        OpenStreetMap: osm
+        // 'OpenStreetMap.HOT': osmHOT,
+        // OpenTopoMap: openTopoMap
       }
       map = L.map('mapContainer', { layers: [osm] }).setView(pedicureStartPoint, zoom)
       layerControl = L.control.layers(baseMaps).addTo(map)
 
       createCatchmentArea(map)
 
-      L.marker(pedicureStartPoint, { icon: defaultIcon }).addTo(map)
+      L.marker(pedicureStartPoint, { icon: homeIcon }).addTo(map)
     }
 
     function createCatchmentArea() {
@@ -149,8 +135,14 @@ export default {
         let pointsBody = result.data
         for (const key in pointsBody) {
           let value = pointsBody[key]
-          let point = L.latLng(value.x, value.y)
+          let point = L.latLng(value.point.x, value.point.y)
           points.push(point)
+          patientPositions.push({
+            id: value.id,
+            name: value.name,
+            firstName: value.firstName,
+            point
+          })
         }
       })
 
@@ -158,11 +150,16 @@ export default {
     }
 
     function addAllPatientsPositionsToMap() {
-      for (const key in points) {
-        let marker = L.marker(points[key], { icon: defaultIcon })
+      for (const key in patientPositions) {
+        let patientPosition = patientPositions[key]
+        let marker = L.marker(patientPosition.point, { icon: defaultIcon }).bindPopup(
+          `${patientPosition.firstName} ${patientPosition.name}`
+        )
         markers.push(marker)
       }
-      markersLayer = L.layerGroup(markers).addTo(map)
+      markersLayer = L.markerClusterGroup()
+      markersLayer.addLayers(markers)
+      markersLayer.addTo(map)
       layerControl.addOverlay(markersLayer, 'patients')
     }
 
