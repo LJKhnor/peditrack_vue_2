@@ -1,19 +1,27 @@
 <template>
   <h3>Nouveau soin</h3>
   <form>
-    <div>
-      <select
-        name="select-foot"
-        class="select-block-input"
+    <div class="patient-search-select">
+      <input
         type="text"
-        id="patient-select"
-        @change="handleSelectionChange"
-      >
-        <option></option>
-        <option v-for="patient in patients" :value="patient.id" :key="patient.id">
+        class="select-block-input"
+        id="patient-search"
+        placeholder="Rechercher un patient..."
+        autocomplete="off"
+        v-model="searchQuery"
+        @focus="showDropdown = true"
+        @input="showDropdown = true"
+        @blur="onSearchBlur"
+      />
+      <ul v-if="showDropdown && filteredPatients.length" class="patient-dropdown">
+        <li
+          v-for="patient in filteredPatients"
+          :key="patient.id"
+          @mousedown.prevent="selectPatient(patient)"
+        >
           {{ patient.name }}
-        </option>
-      </select>
+        </li>
+      </ul>
     </div>
   </form>
   <form id="update-form">
@@ -58,7 +66,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Tabs from '@/components/Tabs.vue'
 import Tab from '@/components/Tab.vue'
 import CareProvided from './patientInformations/PatientCareProvidedInformations.vue'
@@ -82,10 +90,19 @@ export default {
     const activeTab = ref('personal')
     let formData = ref({})
     let patients = ref([])
+    const searchQuery = ref('')
+    const showDropdown = ref(false)
+    const selectedPatientId = ref(null)
     const urlGetAllPatient = '/patients'
     const urlPostPatient = '/patients'
     onMounted(() => {
       getAllPatient()
+    })
+
+    const filteredPatients = computed(() => {
+      const query = searchQuery.value.trim().toLowerCase()
+      if (!query) return patients.value
+      return patients.value.filter((patient) => patient.name.toLowerCase().includes(query))
     })
 
     async function getAllPatient() {
@@ -97,11 +114,17 @@ export default {
         })
       })
     }
-    async function handleSelectionChange() {
-      const selectElement = document.getElementById('patient-select')
-      const patientId = selectElement.value
-      const url = `${urlPostPatient}/${patientId}`
 
+    function onSearchBlur() {
+      showDropdown.value = false
+    }
+
+    async function selectPatient(patient) {
+      selectedPatientId.value = patient.id
+      searchQuery.value = patient.name
+      showDropdown.value = false
+
+      const url = `${urlPostPatient}/${patient.id}`
       const response = await apiClient.get(url)
       let previousPatientInfos = response.data.patientDto
       let previousHealthInfos = response.data.healthDto
@@ -115,8 +138,7 @@ export default {
     }
 
     async function updatePatient() {
-      const selectElement = document.getElementById('patient-select')
-      const patientId = selectElement.value
+      const patientId = selectedPatientId.value
       const patientData = Object.fromEntries(
         Object.entries(formData.value)
           .filter(([key, value]) => value !== null)
@@ -136,7 +158,17 @@ export default {
       }
     }
 
-    return { activeTab, formData, patients, handleSelectionChange, updatePatient }
+    return {
+      activeTab,
+      formData,
+      patients,
+      searchQuery,
+      showDropdown,
+      filteredPatients,
+      onSearchBlur,
+      selectPatient,
+      updatePatient
+    }
   }
 }
 </script>
@@ -159,6 +191,39 @@ h3 {
   background: var(--color-surface);
   color: var(--color-text);
   margin-bottom: 1rem;
+}
+
+.patient-search-select {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.patient-dropdown {
+  position: absolute;
+  top: 2.25rem;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.patient-dropdown li {
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.patient-dropdown li:hover {
+  background: var(--color-border);
 }
 
 .patient-record-validation {

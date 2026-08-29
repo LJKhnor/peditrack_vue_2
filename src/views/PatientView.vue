@@ -92,6 +92,7 @@ h1 {
 
 .back-btn {
   display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: 0.375rem;
   background: none;
