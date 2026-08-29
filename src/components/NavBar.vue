@@ -4,20 +4,33 @@
       <span class="navbar-title">{{ msg }}</span>
     </div>
 
-    <nav class="navbar-nav" v-if="isLogIn">
-      <RouterLink to="/">Accueil</RouterLink>
-      <RouterLink to="/appointment">Rendez-vous</RouterLink>
-      <RouterLink to="/patient">Patients</RouterLink>
-      <RouterLink to="/map">Carte</RouterLink>
-      <RouterLink to="/data">Données</RouterLink>
-    </nav>
+    <button
+      v-if="isLogIn"
+      class="navbar-toggle"
+      type="button"
+      :aria-expanded="isMenuOpen"
+      aria-label="Ouvrir le menu"
+      @click="isMenuOpen = !isMenuOpen"
+    >
+      <MdiComponent v-bind:mdiValue="isMenuOpen ? closeIcon : menuIcon" />
+    </button>
 
-    <div class="navbar-user" v-if="isLogIn">
-      <span class="navbar-username">{{ username }}</span>
-      <RouterLink to="/update" class="navbar-icon-btn" title="Préférences">
-        <MdiComponent v-bind:mdiValue="cogIcon" />
-      </RouterLink>
-      <button class="navbar-logout-btn" @click="logout">Déconnexion</button>
+    <div class="navbar-collapse" :class="{ open: isMenuOpen }" v-if="isLogIn">
+      <nav class="navbar-nav">
+        <RouterLink to="/" @click="closeMenu">Accueil</RouterLink>
+        <RouterLink to="/appointment" @click="closeMenu">Rendez-vous</RouterLink>
+        <RouterLink to="/patient" @click="closeMenu">Patients</RouterLink>
+        <RouterLink to="/map" @click="closeMenu">Carte</RouterLink>
+        <RouterLink to="/data" @click="closeMenu">Données</RouterLink>
+      </nav>
+
+      <div class="navbar-user">
+        <span class="navbar-username">{{ username }}</span>
+        <RouterLink to="/update" class="navbar-icon-btn" title="Préférences" @click="closeMenu">
+          <MdiComponent v-bind:mdiValue="cogIcon" />
+        </RouterLink>
+        <button class="navbar-logout-btn" @click="logout">Déconnexion</button>
+      </div>
     </div>
     <div class="navbar-auth" v-else>
       <RouterLink to="/login">Connexion</RouterLink>
@@ -31,7 +44,7 @@ import router from '@/router'
 import { ref } from 'vue'
 import AuthService from '@/services/AuthService.ts'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
-import { mdiCog } from '@mdi/js'
+import { mdiCog, mdiMenu, mdiClose } from '@mdi/js'
 import { RouterLink } from 'vue-router'
 export default {
   name: 'NavBar',
@@ -40,7 +53,10 @@ export default {
   setup() {
     let username = ref('')
     let cogIcon = mdiCog
+    let menuIcon = mdiMenu
+    let closeIcon = mdiClose
     const isLogIn = ref(false)
+    const isMenuOpen = ref(false)
 
     const user = AuthService.getCurrentUser()
     if (AuthService.isCurrentUserConnected() && user) {
@@ -51,9 +67,13 @@ export default {
       AuthService.logout()
       await router.push('/login')
       isLogIn.value = false
+      isMenuOpen.value = false
+    }
+    function closeMenu() {
+      isMenuOpen.value = false
     }
 
-    return { isLogIn, username, cogIcon, logout }
+    return { isLogIn, username, cogIcon, menuIcon, closeIcon, isMenuOpen, closeMenu, logout }
   }
 }
 </script>
@@ -63,12 +83,35 @@ export default {
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
-  height: 60px;
+  min-height: 60px;
   gap: 1.5rem;
 }
 
 .navbar-brand {
   flex-shrink: 0;
+}
+
+.navbar-toggle {
+  display: none;
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.35rem;
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.navbar-toggle:hover {
+  color: var(--color-theme);
+  background: var(--color-theme-light);
+}
+
+.navbar-collapse {
+  display: contents;
 }
 
 .navbar-title {
@@ -150,5 +193,65 @@ export default {
   align-items: center;
   gap: 0.75rem;
   flex-shrink: 0;
+  margin-left: auto;
+}
+
+@media (max-width: 767px) {
+  .navbar {
+    flex-wrap: wrap;
+    padding: 0 1rem;
+  }
+
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-collapse {
+    display: none;
+    order: 3;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navbar-collapse.open {
+    display: flex;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.5rem 0;
+  }
+
+  .navbar-nav a {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .navbar-user {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .navbar-username {
+    padding: 0 0.25rem;
+  }
+
+  .navbar-icon-btn {
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .navbar-icon-btn::after {
+    content: 'Préférences';
+    font-size: 0.875rem;
+  }
+
+  .navbar-logout-btn {
+    text-align: left;
+  }
 }
 </style>
