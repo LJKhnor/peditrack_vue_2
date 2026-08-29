@@ -108,7 +108,7 @@ export default {
 
       createCatchmentArea(map)
 
-      L.marker(pedicureStartPoint, { icon: homeIcon }).addTo(map)
+      L.marker(pedicureStartPoint, { icon: homeIcon, zIndexOffset: -1000 }).addTo(map)
     }
 
     function createCatchmentArea() {
@@ -149,6 +149,23 @@ export default {
       return points
     }
 
+    function createClusterIcon(cluster) {
+      const count = cluster.getChildCount()
+      let color = '#3a9b63'
+      if (count >= 50) color = '#1b6b43'
+      else if (count >= 10) color = '#2a7d4f'
+
+      return L.divIcon({
+        className: 'cluster-marker',
+        html:
+          `<div style="width:40px;height:40px;border-radius:50%;background:${color};` +
+          'border:2px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,0.35);' +
+          'display:flex;align-items:center;justify-content:center;color:#ffffff;' +
+          `font-weight:600;font-size:13px;">${count}</div>`,
+        iconSize: L.point(40, 40)
+      })
+    }
+
     function addAllPatientsPositionsToMap() {
       for (const key in patientPositions) {
         let patientPosition = patientPositions[key]
@@ -157,7 +174,9 @@ export default {
         )
         markers.push(marker)
       }
-      markersLayer = L.markerClusterGroup()
+      markersLayer = L.markerClusterGroup({
+        iconCreateFunction: createClusterIcon
+      })
       markersLayer.addLayers(markers)
       markersLayer.addTo(map)
       layerControl.addOverlay(markersLayer, 'patients')
