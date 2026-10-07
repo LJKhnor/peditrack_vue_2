@@ -46,13 +46,13 @@
                 <div class="health-card">
                   <span class="health-label">Allergies</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.allergies ?? 'Aucune renseignée'
+                    displayContent(selectedPatientInfo?.healthDto.allergies)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Médicaments</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.drugs ?? 'Aucun renseigné'
+                    displayContent(selectedPatientInfo?.healthDto.drugs)
                   }}</span>
                 </div>
                 <div class="health-card">
@@ -102,88 +102,68 @@
                 <div class="health-card">
                   <span class="health-label">Conseils</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.advice ?? '—'
+                    displayContent(selectedPatientInfo?.healthDto.advice)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type circulatoire</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.circulationType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.circulationType
+                    displayContent(selectedPatientInfo?.healthDto.circulationType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type dermatose</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.dermatosisType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.dermatosisType
+                    displayContent(selectedPatientInfo?.healthDto.dermatosisType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type déformation du pied</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.footDeformityType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.footDeformityType
+                    displayContent(selectedPatientInfo?.healthDto.footDeformityType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type pied</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.footType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.footType
+                    displayContent(selectedPatientInfo?.healthDto.footType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type groupe</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.groupType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.groupType
+                    displayContent(selectedPatientInfo?.healthDto.groupType)
                   }}</span>
                 </div>
 
                 <div class="health-card">
                   <span class="health-label">Type d'ongle</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.nailConditionType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.nailConditionType
+                    displayContent(selectedPatientInfo?.healthDto.nailConditionType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Blessures possibles</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.possibleWounds === null
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.possibleWounds
+                    displayContent(selectedPatientInfo?.healthDto.possibleWounds)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type de remarques</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.remarkType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.remarkType
+                    displayContent(selectedPatientInfo?.healthDto.remarkType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type de peau</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.skinType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.skinType
+                    displayContent(selectedPatientInfo?.healthDto.skinType)
                   }}</span>
                 </div>
                 <div class="health-card">
                   <span class="health-label">Type de sueur</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.sweatType === ''
-                      ? '—'
-                      : selectedPatientInfo?.healthDto.sweatType
+                    displayContent(selectedPatientInfo?.healthDto.sweatType)
                   }}</span>
                 </div>
               </div>
@@ -284,6 +264,9 @@ export default {
       if (type === 0) return 'Non'
       return 'Oui, type ' + type
     }
+    function displayContent(value, fallback = '—') {
+      return value == null || value === '' ? fallback : value
+    }
 
     return {
       rowData,
@@ -294,7 +277,8 @@ export default {
       loadingHealth,
       handleRowClick,
       closeModal,
-      diabeteLabel
+      diabeteLabel,
+      displayContent
     }
   }
 }
