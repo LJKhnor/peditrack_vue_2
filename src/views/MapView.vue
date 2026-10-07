@@ -128,7 +128,7 @@ export default {
         radius: 15000
       })
       circlesLayer = L.layerGroup([circle1, circle2, circle3])
-      layerControl.addOverlay(circlesLayer, 'Zone de chalendise')
+      layerControl.addOverlay(circlesLayer, 'Zone de chalandise')
     }
     async function getAllPatientPositions() {
       await apiClient.get(urlGetAllPatientPosition).then((result) => {

@@ -18,7 +18,7 @@
     <div class="navbar-collapse" :class="{ open: isMenuOpen }" v-if="isLogIn">
       <nav class="navbar-nav">
         <RouterLink to="/" @click="closeMenu">Accueil</RouterLink>
-        <RouterLink to="/appointment" @click="closeMenu">Rendez-vous</RouterLink>
+        <!-- <RouterLink to="/appointment" @click="closeMenu">Rendez-vous</RouterLink> -->
         <RouterLink to="/patient" @click="closeMenu">Patients</RouterLink>
         <RouterLink to="/map" @click="closeMenu">Carte</RouterLink>
         <RouterLink to="/data" @click="closeMenu">Données</RouterLink>
@@ -102,7 +102,9 @@ export default {
   border-radius: 6px;
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 .navbar-toggle:hover {
@@ -134,7 +136,9 @@ export default {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text-secondary);
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 .navbar-nav a:hover,
@@ -163,7 +167,9 @@ export default {
   padding: 0.35rem;
   border-radius: 6px;
   color: var(--color-text-secondary);
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 .navbar-icon-btn:hover {
@@ -179,7 +185,10 @@ export default {
   border-radius: 6px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
 }
 
 .navbar-logout-btn:hover {
