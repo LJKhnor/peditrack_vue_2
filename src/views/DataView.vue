@@ -38,11 +38,9 @@
             <template v-else-if="selectedPatientInfo?.healthDto">
               <div class="health-grid">
                 <div class="health-card">
-                  <span class="health-label">Diabete</span>
+                  <span class="health-label">Diabète</span>
                   <span class="health-value">{{
-                    selectedPatientInfo?.healthDto.diabeteType === 0
-                      ? 'Non'
-                      : 'Oui, type ' + selectedPatientInfo?.healthDto.diabeteType
+                    diabeteLabel(selectedPatientInfo?.healthDto.diabeteType)
                   }}</span>
                 </div>
                 <div class="health-card">
@@ -281,6 +279,11 @@ export default {
       const response = await apiClient.get(urlGetAllPatient + `/${patientId}`)
       selectedPatientInfo.value = response.data
     }
+    function diabeteLabel(type) {
+      if (type == null) return 'Non renseigné'
+      if (type === 0) return 'Non'
+      return 'Oui, type ' + type
+    }
 
     return {
       rowData,
@@ -290,7 +293,8 @@ export default {
       selectedPatientInfo,
       loadingHealth,
       handleRowClick,
-      closeModal
+      closeModal,
+      diabeteLabel
     }
   }
 }
