@@ -29,6 +29,9 @@
           <!-- Contenu -->
           <div class="modal-body">
             <div v-if="loadingHealth" class="modal-loading">Chargement…</div>
+            <div v-else-if="healthError" class="modal-empty">
+              Impossible de charger le dossier de santé.
+            </div>
 
             <template v-else-if="selectedPatientInfo?.healthDto">
               <div class="health-grid">
@@ -234,9 +237,14 @@ export default {
       loadingHealth.value = true
       selectedPatient.value = true
       selectedPatientInfo.value = null
-      await getHealthPatient(event.data.id)
-
-      loadingHealth.value = false
+      try {
+        await getHealthPatient(event.data.id)
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données de santé du patient :', error)
+        healthError.value = true
+      } finally {
+        loadingHealth.value = false
+      }
     }
 
     const closeModal = () => {
