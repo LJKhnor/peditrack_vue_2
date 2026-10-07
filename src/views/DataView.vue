@@ -1,6 +1,8 @@
 <template>
   <div class="data">
     <h1>Données</h1>
+    <p v-if="loadError" class="load-error">Impossible de charger la liste des patients.</p>
+
     <ag-grid-vue
       :rowData="rowData"
       :columnDefs="columnDefs"
@@ -229,6 +231,7 @@ export default {
       { field: 'Option', headerName: 'Options' }
     ])
     const rowData = ref([])
+    const loadError = ref(false)
     onMounted(() => {
       getAllPatient()
     })
@@ -256,20 +259,22 @@ export default {
     // async functions
     // -------------------------------------------------------------------
     async function getAllPatient() {
-      const response = await apiClient.get(urlGetAllPatient)
+      try {
+        const response = await apiClient.get(urlGetAllPatient)
 
-      // console.log(response.data)
-      response.data.forEach((element) => {
-        rowData.value.push({
+        // console.log(response.data)
+        rowData.value = response.data.map((element) => ({
           id: element.id,
           lastName: element.name,
           firstname: element.firstname,
           phoneNum: element.phoneNum,
           birthdate: element.birthdate,
           address: element.address
-        })
-      })
-      // console.log('rowData', rowData)
+        }))
+      } catch (error) {
+        console.error('Erreur lors de la récupération des patients :', error)
+        loaderror.value = true
+      }
     }
 
     async function getHealthPatient(patientId) {
@@ -280,6 +285,7 @@ export default {
     return {
       rowData,
       columnDefs,
+      loadError,
       selectedPatient,
       selectedPatientInfo,
       loadingHealth,
@@ -460,5 +466,10 @@ h1 {
 
 .btn-close:hover {
   background: var(--color-theme-hover);
+}
+
+.load-error {
+  color: #c0392b;
+  font-size: 0.875rem;
 }
 </style>
