@@ -51,9 +51,10 @@ export default {
   setup() {
     const features = [
       'Gestion des patients',
-      'Gestion des rendez-vous',
+      // RDV-DESACTIVE : 'Gestion des rendez-vous',
+      'Dossiers de santé et suivi des soins',
       'Carte géographique',
-      'Support & mises à jour inclus',
+      'Support & mises à jour inclus'
     ]
     return { features }
   }

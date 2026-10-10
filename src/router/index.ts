@@ -43,17 +43,15 @@ const router = createRouter({
         requiresAuth: true
       }
     },
-    {
-      path: '/appointment',
-      name: 'appointment',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AppointmentView.vue'),
-      meta: {
-        requiresAuth: true // Add meta field to indicate protected route
-      }
-    },
+    // RDV-DESACTIVE : à réactiver avec la prise de rendez-vous
+    // {
+    //   path: '/appointment',
+    //   name: 'appointment',
+    //   component: () => import('../views/AppointmentView.vue'),
+    //   meta: {
+    //     requiresAuth: true // Add meta field to indicate protected route
+    //   }
+    // },
     {
       path: '/patient',
       name: 'patient',

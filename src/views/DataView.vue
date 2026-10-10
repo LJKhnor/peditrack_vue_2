@@ -35,7 +35,7 @@
               Impossible de charger le dossier de santé.
             </div>
 
-            <template v-else-if="selectedPatientInfo?.healthDto">
+            <div v-else-if="selectedPatientInfo?.healthDto" class="health-layout">
               <div class="health-grid">
                 <div class="health-card">
                   <span class="health-label">Diabète</span>
@@ -167,7 +167,9 @@
                   }}</span>
                 </div>
               </div>
-            </template>
+
+              <CareTimeline class="health-timeline" :history="careHistory" />
+            </div>
 
             <div v-else class="modal-empty">Aucune donnée de santé disponible pour ce patient.</div>
           </div>
@@ -183,21 +185,32 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
 import apiClient from '../axios'
-import Modale from '@/components/Modale.vue'
+import CareTimeline from '@/components/CareTimeline.vue'
 
 export default {
   components: {
-    AgGridVue
+    AgGridVue,
+    CareTimeline
   },
   setup() {
     const selectedPatient = ref(false)
     const selectedPatientInfo = ref(null)
     const loadingHealth = ref(false)
+    const healthError = ref(false)
+
+    // Historique des soins : `healthHistory` doit être fourni par l'API (GET /patients/{id}).
+    // Tant qu'il ne l'est pas, on affiche au moins le dernier soin (healthDto).
+    const careHistory = computed(() => {
+      const info = selectedPatientInfo.value
+      if (!info) return []
+      if (Array.isArray(info.healthHistory)) return info.healthHistory
+      return info.healthDto ? [info.healthDto] : []
+    })
     const urlGetAllPatient = '/patients'
 
     const columnDefs = ref([
@@ -216,6 +229,7 @@ export default {
     // ---- Handlers ----
     const handleRowClick = async (event) => {
       loadingHealth.value = true
+      healthError.value = false
       selectedPatient.value = true
       selectedPatientInfo.value = null
       try {
@@ -251,7 +265,7 @@ export default {
         }))
       } catch (error) {
         console.error('Erreur lors de la récupération des patients :', error)
-        loaderror.value = true
+        loadError.value = true
       }
     }
 
@@ -275,6 +289,8 @@ export default {
       selectedPatient,
       selectedPatientInfo,
       loadingHealth,
+      healthError,
+      careHistory,
       handleRowClick,
       closeModal,
       diabeteLabel,
@@ -332,7 +348,7 @@ h1 {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 10px;
-  width: min(680px, 92vw);
+  width: min(1080px, 94vw);
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -400,6 +416,35 @@ h1 {
   color: var(--color-text-secondary);
   padding: 2.5rem 0;
   font-style: italic;
+}
+
+/* ── Health layout : infos à gauche, timeline à droite ── */
+.health-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.health-timeline {
+  position: sticky;
+  top: 0;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--color-border);
+}
+
+@media (max-width: 900px) {
+  .health-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .health-timeline {
+    position: static;
+    padding-left: 0;
+    padding-top: 1.5rem;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+  }
 }
 
 /* ── Health grid ── */

@@ -38,12 +38,21 @@
           e-mail, informations de facturation, données de connexion et d'utilisation de
           l'Application.
         </li>
+        <!-- RDV-DESACTIVE : version à remettre avec la prise de rendez-vous
         <li>
           <strong>Données des patients encodées par le professionnel :</strong> données
           d'identification (nom, prénom, date de naissance, coordonnées), données de santé
           (antécédents médicaux, traitements, actes de soins podologiques) et données de
           rendez-vous. Ces données constituent des <strong>données de santé</strong>, catégorie
           spéciale au sens de l'article 9 du RGPD.
+        </li>
+        -->
+        <li>
+          <strong>Données des patients encodées par le professionnel :</strong> données
+          d'identification (nom, prénom, date de naissance, coordonnées) et données de santé
+          (antécédents médicaux, traitements, actes de soins podologiques). Ces données
+          constituent des <strong>données de santé</strong>, catégorie spéciale au sens de
+          l'article 9 du RGPD.
         </li>
         <li>
           <strong>Données techniques :</strong> adresse IP, type de navigateur, journaux d'accès,

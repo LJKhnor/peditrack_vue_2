@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { mdiCalendarMonth, mdiAccountGroup, mdiMap, mdiDatabaseArrowDown } from '@mdi/js'
+// RDV-DESACTIVE : remettre mdiCalendarMonth avec la carte Rendez-vous
+import { mdiAccountGroup, mdiMap, mdiDatabaseArrowDown } from '@mdi/js'
 import WelcomeItem from './WelcomeItem.vue'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
 </script>
 
 <template>
   <div class="features-grid">
+    <!-- RDV-DESACTIVE : à réactiver avec la prise de rendez-vous
     <WelcomeItem to="/appointment">
       <template #icon><MdiComponent :mdiValue="mdiCalendarMonth" /></template>
       <template #heading>Rendez-vous</template>
       Gérez votre agenda et consultez vos prochains rendez-vous.
     </WelcomeItem>
+    -->
 
     <WelcomeItem to="/patient">
       <template #icon><MdiComponent :mdiValue="mdiAccountGroup" /></template>

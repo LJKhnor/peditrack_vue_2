@@ -8,12 +8,20 @@
 
     <section class="legal-content">
       <h2>1. Objet</h2>
+      <!-- RDV-DESACTIVE : version à remettre avec la prise de rendez-vous
       <p>
         Les présentes Conditions Générales d'Utilisation (ci-après « CGU ») régissent l'accès et
         l'utilisation de l'application Pedimed (ci-après « l'Application »), un logiciel de
         gestion de patients et de rendez-vous destiné aux professionnels de soins de santé. En
         créant un compte ou en utilisant l'Application, l'utilisateur accepte sans réserve les
         présentes CGU.
+      </p>
+      -->
+      <p>
+        Les présentes Conditions Générales d'Utilisation (ci-après « CGU ») régissent l'accès et
+        l'utilisation de l'application Pedimed (ci-après « l'Application »), un logiciel de
+        gestion de patients destiné aux professionnels de soins de santé. En créant un compte ou
+        en utilisant l'Application, l'utilisateur accepte sans réserve les présentes CGU.
       </p>
 
       <h2>2. Éditeur</h2>
@@ -44,11 +52,19 @@
       </p>
 
       <h2>4. Description du service</h2>
+      <!-- RDV-DESACTIVE : version à remettre avec la prise de rendez-vous
       <p>
         Pedimed est un outil de gestion permettant notamment : la création et la gestion de
         dossiers patients, la planification et le suivi des rendez-vous, la visualisation
         cartographique des patients et la consultation de données statistiques à usage interne. Le
         service est fourni « en l'état » et peut évoluer au fil du temps.
+      </p>
+      -->
+      <p>
+        Pedimed est un outil de gestion permettant notamment : la création et la gestion de
+        dossiers patients, la visualisation cartographique des patients et la consultation de
+        données statistiques à usage interne. Le service est fourni « en l'état » et peut évoluer
+        au fil du temps.
       </p>
 
       <h2>5. Obligations de l'utilisateur</h2>
@@ -103,8 +119,9 @@
         international de la propriété intellectuelle. Toute reproduction, modification, distribution
         ou exploitation non autorisée est strictement interdite.
       </p>
+      <!-- RDV-DESACTIVE : remettre « (dossiers patients, rendez-vous) » avec la prise de rendez-vous -->
       <p>
-        Les données encodées par l'utilisateur (dossiers patients, rendez-vous) restent la
+        Les données encodées par l'utilisateur (dossiers patients) restent la
         propriété de l'utilisateur. L'Éditeur n'y accède que dans la mesure strictement nécessaire
         à la fourniture et à la maintenance du service (voir Politique de confidentialité).
       </p>

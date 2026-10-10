@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(node -e ' *)",
-      "PowerShell(ls *)"
+      "PowerShell(ls *)",
+      "PowerShell(npm run type-check)",
+      "PowerShell(npm run test:unit)",
+      "PowerShell(npx eslint src/views/DataView.vue src/components/CareTimeline.vue)"
     ]
   }
 }
