@@ -1,6 +1,6 @@
 <template>
   <header>
-    <NavBar msg="PediMed" />
+    <NavBar msg="Pedimed pro" />
   </header>
   <main>
     <div class="content">

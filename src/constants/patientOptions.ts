@@ -15,6 +15,8 @@ export const CIRCULATION_TYPES = [
   'Rougeurs',
   'Œdèmes'
 ]
+// Option « Autres » des déformations du pied et affections unguéales : elle ouvre un champ de précision
+export const OTHER_OPTION = 'Autres'
 export const DERMATOSIS_TYPES = ['Eczéma', 'Psoriasis', 'Verrues', 'Intertrigo G/D']
 export const FOOT_DEFORMITY_TYPES = [
   'Orteils en marteau',

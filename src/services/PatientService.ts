@@ -46,6 +46,22 @@ export interface MedicalFields {
   dermatosisType: string | null
   footDeformityType: string | null
   nailConditionType: string | null
+  // Précision quand footDeformityType / nailConditionType vaut « Autres » (ignorée sinon par l'API)
+  footDeformityComment: string | null
+  nailConditionComment: string | null
+  // Observations par orteil (R1 = hallux … R5 = petit orteil) et commentaire, pour chaque pied
+  leftToeR1: string | null
+  leftToeR2: string | null
+  leftToeR3: string | null
+  leftToeR4: string | null
+  leftToeR5: string | null
+  leftToesComment: string | null
+  rightToeR1: string | null
+  rightToeR2: string | null
+  rightToeR3: string | null
+  rightToeR4: string | null
+  rightToeR5: string | null
+  rightToesComment: string | null
 }
 
 export interface Health extends Partial<MedicalFields> {

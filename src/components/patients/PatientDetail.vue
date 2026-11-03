@@ -108,7 +108,15 @@ import BaseModal from './BaseModal.vue'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
 import CareTimeline from '@/components/CareTimeline.vue'
 import type { PatientRecord } from '@/services/PatientService'
-import { computeAge, formatDate, fullName, initials, patientAlerts } from '@/utils/patient'
+import { OTHER_OPTION } from '@/constants/patientOptions'
+import {
+  computeAge,
+  formatDate,
+  fullName,
+  initials,
+  patientAlerts,
+  toesSummary
+} from '@/utils/patient'
 
 const props = defineProps<{ record: PatientRecord | null; loading?: boolean; error?: boolean }>()
 
@@ -147,6 +155,12 @@ function displayContent(value: string | null | undefined, fallback = '—') {
 
 function yesNo(value: boolean | undefined) {
   return value ? '✅' : '❌'
+}
+
+// « Autres — précision » quand l'option « Autres » est accompagnée d'un commentaire
+function withOtherComment(type: string | null | undefined, comment: string | null | undefined) {
+  const precision = comment?.trim()
+  return type === OTHER_OPTION && precision ? `${type} — ${precision}` : displayContent(type)
 }
 
 // unknownSide : fiche antérieure à la distinction gauche / droite
@@ -188,9 +202,14 @@ const healthFields = computed(() => {
     { label: 'Conseils', value: displayContent(h.advice) },
     { label: 'Type circulatoire', value: displayContent(h.circulationType) },
     { label: 'Type dermatose', value: displayContent(h.dermatosisType) },
-    { label: 'Type déformation du pied', value: displayContent(h.footDeformityType) },
+    {
+      label: 'Type déformation du pied',
+      value: withOtherComment(h.footDeformityType, h.footDeformityComment)
+    },
     { label: 'Type pied', value: displayContent(h.footType) },
-    { label: "Type d'ongle", value: displayContent(h.nailConditionType) },
+    { label: "Type d'ongle", value: withOtherComment(h.nailConditionType, h.nailConditionComment) },
+    { label: 'Orteils pied gauche', value: toesSummary(h, 'left') ?? '—' },
+    { label: 'Orteils pied droit', value: toesSummary(h, 'right') ?? '—' },
     { label: 'Blessures possibles', value: displayContent(h.possibleWounds) },
     { label: 'Type de remarques', value: displayContent(h.remarkType) },
     { label: 'Type de peau', value: displayContent(h.skinType) },

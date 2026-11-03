@@ -75,6 +75,38 @@ export function patientAlerts(health: AlertSource | null | undefined): PatientAl
   return alerts
 }
 
+export type FootSide = 'left' | 'right'
+export const TOES = [1, 2, 3, 4, 5] as const
+
+// Notes des orteils renseignés d'un pied puis son commentaire, ex. « R1 : incarné · R5 : épaissi »
+export function toesSummary(health: Partial<Health>, side: FootSide): string | null {
+  const parts: string[] = TOES.flatMap((toe) => {
+    const note = health[`${side}ToeR${toe}`]?.trim()
+    return note ? [`R${toe} : ${note}`] : []
+  })
+  const comment = health[`${side}ToesComment`]?.trim()
+  if (comment) parts.push(comment)
+  return parts.length ? parts.join(' · ') : null
+}
+
+// Champs date de la fiche : seuls ceux-ci sont convertis en Date avant l'envoi. Un champ texte
+// qui ressemble à une date (une note d'orteil « 3 », « 1/2 »…) doit rester une chaîne.
+const DATE_KEYS = ['birthdate', 'date']
+
+// Corps envoyé par « Encoder le soin » : sans les valeurs null (ignorées par l'API), dates en Date
+export function toCarePayload(formData: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(formData)
+      .filter(([, value]) => value !== null)
+      .map(([key, value]) => {
+        if (DATE_KEYS.includes(key) && typeof value === 'string' && toDate(value)) {
+          return [key, new Date(value)]
+        }
+        return [key, value]
+      })
+  )
+}
+
 function normalize(value: string | null | undefined): string {
   return (value ?? '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 }

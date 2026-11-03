@@ -5,7 +5,6 @@
       <select
         name="select-skin"
         class="info-block-input"
-        type="text"
         id="skin-{{skinType}}"
         v-model="formData.skinType"
       >
@@ -21,7 +20,6 @@
       <select
         name="select-foot"
         class="info-block-input"
-        type="text"
         id="foot-{{footType}}"
         v-model="formData.footType"
       >
@@ -37,7 +35,6 @@
       <select
         name="select-transpiration"
         class="info-block-input"
-        type="text"
         id="transpiration-{{transpiration}}"
         v-model="formData.sweatType"
       >
@@ -57,7 +54,6 @@
       <select
         name="select-comment"
         class="info-block-input"
-        type="text"
         id="comment-{{commentType}}"
         v-model="formData.remarkType"
       >
@@ -73,7 +69,6 @@
       <select
         name="select-circulation"
         class="info-block-input"
-        type="text"
         id="circulation-{{circulationType}}"
         v-model="formData.circulationType"
       >
@@ -93,7 +88,6 @@
       <select
         name="select-dermatose"
         class="info-block-input"
-        type="text"
         id="dermatose-{{dermatoseType}}"
         v-model="formData.dermatosisType"
       >
@@ -112,7 +106,6 @@
       <select
         name="select-foot-deformity"
         class="info-block-input"
-        type="text"
         id="dermatose-{{footDeformityType}}"
         v-model="formData.footDeformityType"
       >
@@ -126,12 +119,20 @@
         </option>
       </select>
     </div>
+    <div v-if="formData.footDeformityType === otherOption" class="info-block">
+      <label for="footDeformityComment">Précisez la déformation</label>
+      <input
+        class="info-block-input"
+        type="text"
+        id="footDeformityComment"
+        v-model="formData.footDeformityComment"
+      />
+    </div>
     <div class="info-block">
       <p>Affections unguéales</p>
       <select
         name="select-foot-nail-condition"
         class="info-block-input"
-        type="text"
         id="nail-condition-{{nailConditionType}}"
         v-model="formData.nailConditionType"
       >
@@ -145,6 +146,40 @@
         </option>
       </select>
     </div>
+    <div v-if="formData.nailConditionType === otherOption" class="info-block">
+      <label for="nailConditionComment">Précisez l'affection</label>
+      <input
+        class="info-block-input"
+        type="text"
+        id="nailConditionComment"
+        v-model="formData.nailConditionComment"
+      />
+    </div>
+
+    <!-- Observations par orteil (R1 = hallux … R5 = petit orteil), pour chaque pied -->
+    <div class="feet">
+      <fieldset v-for="foot in feet" :key="foot.side" class="foot">
+        <legend>{{ foot.label }}</legend>
+        <div v-for="toe in toes" :key="toe" class="info-block">
+          <label :for="`${foot.side}ToeR${toe}`">Orteil R{{ toe }}</label>
+          <input
+            class="info-block-input"
+            type="text"
+            :id="`${foot.side}ToeR${toe}`"
+            v-model="formData[`${foot.side}ToeR${toe}`]"
+          />
+        </div>
+        <div class="info-block">
+          <label :for="`${foot.side}ToesComment`">Commentaire</label>
+          <textarea
+            class="info-block-input toes-comment"
+            :id="`${foot.side}ToesComment`"
+            rows="2"
+            v-model="formData[`${foot.side}ToesComment`]"
+          ></textarea>
+        </div>
+      </fieldset>
+    </div>
   </div>
 </template>
 
@@ -155,10 +190,12 @@ import {
   FOOT_DEFORMITY_TYPES,
   FOOT_TYPES,
   NAIL_CONDITION_TYPES,
+  OTHER_OPTION,
   REMARK_TYPES,
   SKIN_TYPES,
   SWEAT_TYPES
 } from '@/constants/patientOptions'
+import { TOES } from '@/utils/patient'
 
 export default {
   name: 'PatientMedicalTypeInformations',
@@ -173,7 +210,13 @@ export default {
       circulationTypes: CIRCULATION_TYPES,
       dermatoseTypes: DERMATOSIS_TYPES,
       footDeformityTypes: FOOT_DEFORMITY_TYPES,
-      nailConditionsTypes: NAIL_CONDITION_TYPES
+      nailConditionsTypes: NAIL_CONDITION_TYPES,
+      otherOption: OTHER_OPTION,
+      toes: TOES,
+      feet: [
+        { side: 'left', label: 'Pied gauche' },
+        { side: 'right', label: 'Pied droit' }
+      ]
     }
   }
 }
@@ -190,5 +233,38 @@ hr {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: 0.75rem 0;
+}
+
+.info-block label {
+  width: 50%;
+}
+
+.feet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.foot {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  min-width: 0;
+}
+
+.foot legend {
+  padding: 0 0.25rem;
+  font-weight: 600;
+}
+
+.foot .info-block-input {
+  width: 50%;
+}
+
+.toes-comment {
+  height: auto;
+  padding: 0.5rem 0.75rem;
+  resize: vertical;
 }
 </style>

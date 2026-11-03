@@ -5,6 +5,8 @@ import {
   initials,
   matchesSearch,
   patientAlerts,
+  toCarePayload,
+  toesSummary,
   toInputDate
 } from '../patient'
 import type { Patient } from '@/services/PatientService'
@@ -105,5 +107,49 @@ describe('matchesSearch', () => {
     expect(matchesSearch(patient(), '0471234567')).toBe(true)
     expect(matchesSearch(patient(), 'martin')).toBe(false)
     expect(matchesSearch(patient(), '   ')).toBe(true)
+  })
+})
+
+describe('toesSummary', () => {
+  it('lists the filled toes of one foot, then its comment', () => {
+    const health = {
+      leftToeR1: 'Incarné bord interne',
+      leftToeR2: '  ',
+      leftToeR5: 'Ongle épaissi',
+      leftToesComment: 'Contrôle dans 1 mois',
+      rightToeR3: 'Mycose'
+    }
+    expect(toesSummary(health, 'left')).toBe(
+      'R1 : Incarné bord interne · R5 : Ongle épaissi · Contrôle dans 1 mois'
+    )
+    expect(toesSummary(health, 'right')).toBe('R3 : Mycose')
+  })
+
+  it('returns null when nothing is noted for the foot', () => {
+    expect(toesSummary({ leftToeR1: null, leftToesComment: '' }, 'left')).toBeNull()
+  })
+})
+
+describe('toCarePayload', () => {
+  it('drops null values and converts only the date fields', () => {
+    const payload = toCarePayload({
+      birthdate: '1950-03-02',
+      date: '2026-11-03',
+      leftToeR1: '3',
+      rightToeR2: '1/2',
+      allergies: null,
+      hasLeftHipProsthesis: true
+    })
+    expect(payload.birthdate).toBeInstanceOf(Date)
+    expect(payload.date).toBeInstanceOf(Date)
+    // Une note d'orteil qui ressemble à une date reste du texte
+    expect(payload.leftToeR1).toBe('3')
+    expect(payload.rightToeR2).toBe('1/2')
+    expect(payload).not.toHaveProperty('allergies')
+    expect(payload.hasLeftHipProsthesis).toBe(true)
+  })
+
+  it('leaves an empty or invalid date as is', () => {
+    expect(toCarePayload({ birthdate: '' }).birthdate).toBe('')
   })
 })

@@ -22,6 +22,7 @@ import {
   FOOT_TYPES,
   MUTUALITIES,
   NAIL_CONDITION_TYPES,
+  OTHER_OPTION,
   REMARK_TYPES,
   SKIN_TYPES,
   SWEAT_TYPES
@@ -225,6 +226,19 @@ const COMMENTS = [
 ]
 const ALLERGIES = ['Latex', 'Pénicilline', 'Iode', 'Sparadrap', 'Nickel', 'Lanoline']
 const ANTICOAGULANTS = ['Xarelto', 'Eliquis', 'Sintrom']
+const TOE_NOTES = [
+  'Incarné bord interne',
+  'Incarné bord externe',
+  'Ongle épaissi',
+  'Mycose',
+  'Hématome sous-unguéal',
+  'Cor dorsal'
+]
+const TOE_COMMENTS = [
+  'Contrôle au prochain soin',
+  'Orthoplastie conseillée',
+  'Douleur au chaussage'
+]
 const PRODUCTS = [
   'Chlorhexidine',
   'Alcool 70 %',
@@ -323,6 +337,9 @@ function buildMedical(age: number): Json {
     [`is${key[0].toUpperCase()}${key.slice(1)}`]: value
   })
 
+  const footDeformityType = maybe(0.35, () => pick(FOOT_DEFORMITY_TYPES))
+  const nailConditionType = maybe(0.45, () => pick(NAIL_CONDITION_TYPES))
+
   return {
     groupType: diabeteType ? int(1, 3) : chance(0.1) ? 1 : 0,
     diabeteType,
@@ -343,9 +360,25 @@ function buildMedical(age: number): Json {
     remarkType: maybe(0.6, () => pick(REMARK_TYPES)),
     circulationType: maybe(age >= 70 ? 0.5 : 0.15, () => pick(CIRCULATION_TYPES)),
     dermatosisType: maybe(0.15, () => pick(DERMATOSIS_TYPES)),
-    footDeformityType: maybe(0.35, () => pick(FOOT_DEFORMITY_TYPES.slice(0, -1))),
-    nailConditionType: maybe(0.45, () => pick(NAIL_CONDITION_TYPES.slice(0, -1)))
+    footDeformityType,
+    footDeformityComment: footDeformityType === OTHER_OPTION ? 'Pied de Charcot' : null,
+    nailConditionType,
+    nailConditionComment: nailConditionType === OTHER_OPTION ? 'Ongles striés' : null,
+    ...buildToes('left', nailConditionType),
+    ...buildToes('right', nailConditionType)
   }
+}
+
+// Notes d'orteils (R1 = hallux … R5 = petit orteil), surtout quand une affection unguéale est notée
+function buildToes(side: 'left' | 'right', nailConditionType: string | null): Json {
+  const toes: Json = {}
+  for (let toe = 1; toe <= 5; toe++) {
+    toes[`${side}ToeR${toe}`] = maybe(nailConditionType ? (toe === 1 ? 0.5 : 0.1) : 0.02, () =>
+      pick(TOE_NOTES)
+    )
+  }
+  toes[`${side}ToesComment`] = maybe(nailConditionType ? 0.2 : 0, () => pick(TOE_COMMENTS))
+  return toes
 }
 
 function buildCare(medical: Json, date: Date): Json {

@@ -74,7 +74,7 @@ import PatientPersonalInformations from './patientInformations/PatientPersonalIn
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 import apiClient from '../axios'
-import { toInputDate } from '@/utils/patient'
+import { toCarePayload, toInputDate } from '@/utils/patient'
 
 export default {
   name: 'EditPatientRecord',
@@ -144,17 +144,7 @@ export default {
 
     async function updatePatient() {
       const patientId = selectedPatientId.value
-      const patientData = Object.fromEntries(
-        Object.entries(formData.value)
-          .filter(([key, value]) => value !== null)
-          .map(([key, value]) => {
-            // Vérifier si la valeur est une chaîne de caractères qui semble être une date
-            if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-              return [key, new Date(value)] // Convertir en objet Date
-            }
-            return [key, value] // Sinon, laisser la valeur telle quelle
-          })
-      )
+      const patientData = toCarePayload(formData.value)
       try {
         // Le PUT ne met à jour que les informations personnelles ; le soin (avec les
         // informations médicales) est enregistré à part comme nouvelle fiche de santé.
