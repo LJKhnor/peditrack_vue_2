@@ -74,7 +74,7 @@ import PatientPersonalInformations from './patientInformations/PatientPersonalIn
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 import apiClient from '../axios'
-import { toCarePayload, toInputDate } from '@/utils/patient'
+import { toCarePayload, toNewCareForm } from '@/utils/patient'
 
 export default {
   name: 'EditPatientRecord',
@@ -130,16 +130,7 @@ export default {
 
       const url = `${urlPostPatient}/${patient.id}`
       const response = await apiClient.get(url)
-      let previousPatientInfos = response.data.patientDto
-      let previousHealthInfos = response.data.healthDto
-
-      formData.value = {
-        ...previousPatientInfos,
-        ...previousHealthInfos,
-        birthdate: toInputDate(previousPatientInfos.birthdate),
-        // Un nouveau soin est toujours daté du jour
-        date: toInputDate(new Date())
-      }
+      formData.value = toNewCareForm(response.data.patientDto, response.data.healthDto)
     }
 
     async function updatePatient() {

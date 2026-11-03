@@ -7,7 +7,8 @@ import {
   patientAlerts,
   toCarePayload,
   toesSummary,
-  toInputDate
+  toInputDate,
+  toNewCareForm
 } from '../patient'
 import type { Patient } from '@/services/PatientService'
 
@@ -151,5 +152,48 @@ describe('toCarePayload', () => {
 
   it('leaves an empty or invalid date as is', () => {
     expect(toCarePayload({ birthdate: '' }).birthdate).toBe('')
+  })
+})
+
+describe('toNewCareForm', () => {
+  const lastHealth = {
+    diabeteType: 2,
+    leftToeR1: 'Incarné bord interne',
+    careDate: '2026-10-01T10:00:00Z',
+    care: 'Coupe des ongles',
+    usedProducts: 'Bétadine',
+    usedTools: 'Pince',
+    possibleWounds: 'Aucune',
+    advice: 'Chaussures larges'
+  }
+
+  it('starts the care provided from a blank page, dated today', () => {
+    const form = toNewCareForm(patient(), lastHealth, new Date(2026, 10, 3))
+    expect(form).toMatchObject({
+      care: '',
+      usedProducts: '',
+      usedTools: '',
+      possibleWounds: '',
+      advice: '',
+      date: '2026-11-03'
+    })
+  })
+
+  it('keeps the personal and medical information of the last record', () => {
+    const form = toNewCareForm(patient(), lastHealth, new Date(2026, 10, 3))
+    expect(form).toMatchObject({
+      name: 'Dupont',
+      birthdate: toInputDate('1950-03-02T00:00:00Z'),
+      diabeteType: 2,
+      leftToeR1: 'Incarné bord interne'
+    })
+  })
+
+  it('works for a patient without health record', () => {
+    expect(toNewCareForm(patient(), null, new Date(2026, 10, 3))).toMatchObject({
+      name: 'Dupont',
+      care: '',
+      date: '2026-11-03'
+    })
   })
 })

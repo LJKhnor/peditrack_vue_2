@@ -89,6 +89,25 @@ export function toesSummary(health: Partial<Health>, side: FootSide): string | n
   return parts.length ? parts.join(' · ') : null
 }
 
+// Champs « Soins prodigués » : propres à chaque séance, ils ne sont pas repris du soin précédent
+const CARE_FIELDS = ['care', 'usedProducts', 'usedTools', 'possibleWounds', 'advice'] as const
+
+// Formulaire « Encoder le soin » : informations personnelles et médicales reprises de la dernière
+// fiche, soins prodigués vides et soin daté du jour
+export function toNewCareForm(
+  patient: Patient,
+  lastHealth: Health | null | undefined,
+  today = new Date()
+): Record<string, unknown> {
+  return {
+    ...patient,
+    ...lastHealth,
+    ...Object.fromEntries(CARE_FIELDS.map((key) => [key, ''])),
+    birthdate: toInputDate(patient.birthdate),
+    date: toInputDate(today)
+  }
+}
+
 // Champs date de la fiche : seuls ceux-ci sont convertis en Date avant l'envoi. Un champ texte
 // qui ressemble à une date (une note d'orteil « 3 », « 1/2 »…) doit rester une chaîne.
 const DATE_KEYS = ['birthdate', 'date']

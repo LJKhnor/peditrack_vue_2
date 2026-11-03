@@ -31,7 +31,7 @@
       />
     </div>
     <div class="info-block">
-      <p>Conseils données</p>
+      <p>Conseils donnés</p>
       <input class="info-block-input" type="text" id="advices" v-model="formData.advice" />
     </div>
   </div>
