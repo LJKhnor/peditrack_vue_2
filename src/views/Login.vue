@@ -34,6 +34,7 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import AuthService from '@/services/AuthService.ts'
+import { errorStatus } from '@/services/apiError'
 export default {
   name: 'LoginVue',
   props: [],
@@ -56,13 +57,20 @@ export default {
         })
         .catch((error) => {
           showError.value = true
-          if (error.response !== undefined) {
-            message.value = error.response.data
-          } else {
-            message.value = error.message
-          }
-          console.error('Login failed:', error.message, error.response?.status)
+          message.value = loginErrorMessage(error)
+          console.error('Login failed:', error.message, errorStatus(error))
         })
+    }
+
+    // Les erreurs sont des ProblemDetail dont le `detail` est en anglais : on traduit le statut
+    function loginErrorMessage(error) {
+      const status = errorStatus(error)
+      if (status === undefined)
+        return 'Impossible de contacter le serveur. Vérifiez votre connexion.'
+      if (status === 401) return "Nom d'utilisateur ou mot de passe incorrect."
+      if (status === 429)
+        return 'Trop de tentatives. Veuillez patienter quelques minutes avant de réessayer.'
+      return 'Une erreur est survenue. Veuillez réessayer.'
     }
 
     return { form, showError, message, login }

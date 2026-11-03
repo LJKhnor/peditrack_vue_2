@@ -50,6 +50,9 @@
         value="Mettre à jour"
         @click.prevent="updateUser"
       />
+      <p v-if="feedback" class="update-feedback" :class="{ 'update-error': isError }" role="status">
+        {{ feedback }}
+      </p>
     </div>
   </div>
 </template>
@@ -57,6 +60,7 @@
 import AuthService from '@/services/AuthService'
 import StorageService from '@/services/StorageService'
 import apiClient from '../axios'
+import { errorStatus } from '@/services/apiError'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 export default {
@@ -72,20 +76,51 @@ export default {
     onMounted(() => {
       fetchUserInfos().then(() => {})
     })
-    let showError = ref(false)
+    const feedback = ref('')
+    const isError = ref(false)
     const urlGetUserInfo = '/users/' + AuthService.getCurrentUserId() + '/info'
-    const urlUpdateUser = '/users/' + AuthService.getCurrentUserId() + '/update'
+    const urlUpdateUser = '/users/' + AuthService.getCurrentUserId()
     async function fetchUserInfos() {
-      await apiClient.get(urlGetUserInfo).then((response: { data: { name: string; street: string; postalCode: string; city: string } }) => {
-        form.value.username = response.data.name
-        form.value.street = response.data.street
-        form.value.postalCode = response.data.postalCode
-        form.value.city = response.data.city
-      })
+      await apiClient
+        .get(urlGetUserInfo)
+        .then(
+          (response: {
+            data: { name: string; street: string; postalCode: string; city: string }
+          }) => {
+            form.value.username = response.data.name
+            form.value.street = response.data.street
+            form.value.postalCode = response.data.postalCode
+            form.value.city = response.data.city
+          }
+        )
     }
     async function updateUser() {
-      await apiClient.post(urlUpdateUser, form.value).then(() => {})
+      feedback.value = ''
+      try {
+        // PUT /users/{id} : l'API attend la ville sous le nom `locality`
+        await apiClient.put(urlUpdateUser, {
+          username: form.value.username,
+          street: form.value.street,
+          postalCode: form.value.postalCode,
+          locality: form.value.city
+        })
+      } catch (error) {
+        console.error('Update user failed:', errorStatus(error))
+        isError.value = true
+        feedback.value = updateErrorMessage(error)
+        return
+      }
+      isError.value = false
+      feedback.value = 'Vos préférences ont été enregistrées.'
       await refreshUserPosition()
+    }
+
+    function updateErrorMessage(error: unknown) {
+      const status = errorStatus(error)
+      if (status === undefined)
+        return 'Impossible de contacter le serveur. Vérifiez votre connexion.'
+      if (status === 401) return 'Votre session a expiré. Reconnectez-vous.'
+      return "L'enregistrement a échoué. Veuillez réessayer."
     }
 
     async function refreshUserPosition() {
@@ -101,11 +136,21 @@ export default {
         }
       } catch (_) {}
     }
-    return { form, updateUser }
+    return { form, updateUser, feedback, isError }
   }
 }
 </script>
 <style scoped>
+.update-feedback {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-theme);
+}
+
+.update-feedback.update-error {
+  color: #c0392b;
+}
+
 .edit-user-page {
   width: 100%;
   max-width: 480px;

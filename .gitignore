@@ -36,5 +36,8 @@ coverage
 # Build output
 # dist/
 
+### Claude Code ###
 CLAUDE.md
-''
+CLAUDE.local.md
+**/CLAUDE.md
+.claude/

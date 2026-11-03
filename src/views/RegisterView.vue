@@ -76,6 +76,7 @@
 import router from '@/router'
 import { ref, reactive } from 'vue'
 import apiClient from '../axios'
+import { errorStatus, fieldErrors } from '@/services/apiError'
 export default {
   setup() {
     const form = reactive({
@@ -89,19 +90,34 @@ export default {
     const showError = ref(false)
     const isLoading = ref(false)
 
+    // Messages des champs refusés par la validation du backend (400 avec `errors`)
+    const FIELD_MESSAGES = {
+      username: "Le nom d'utilisateur est obligatoire.",
+      mail: "L'adresse email est invalide.",
+      password:
+        'Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, ' +
+        'un chiffre et un caractère spécial (@#$%^&+=!*()_-).',
+      registrationKey: "La clé d'activation est obligatoire."
+    }
+
+    // Les erreurs sont des ProblemDetail dont le `detail` est en anglais : on traduit le statut
     function resolveErrorMessage(error) {
-      const status = error.response?.status
-      const data = error.response?.data
+      const status = errorStatus(error)
+      if (status === undefined)
+        return 'Impossible de contacter le serveur. Vérifiez votre connexion.'
 
-      if (!status) return 'Impossible de contacter le serveur. Vérifiez votre connexion.'
-
-      if (status === 403) return "Clé d'activation invalide ou expirée."
       if (status === 409) return "Ce nom d'utilisateur ou cette adresse email est déjà utilisé."
-      if (status === 429) return 'Trop de tentatives. Veuillez patienter avant de réessayer.'
       if (status === 400) {
-        return data?.message ?? data ?? 'Les informations saisies sont invalides.'
+        const fields = Object.keys(fieldErrors(error))
+        if (fields.length > 0) {
+          return fields
+            .map((field) => FIELD_MESSAGES[field] ?? 'Les informations saisies sont invalides.')
+            .join(' ')
+        }
+        // 400 sans erreur de champ : clé d'activation au mauvais format ou refusée
+        return "Clé d'activation invalide, déjà utilisée ou expirée."
       }
-      return data?.message ?? data ?? 'Une erreur est survenue. Veuillez réessayer.'
+      return 'Une erreur est survenue. Veuillez réessayer.'
     }
 
     async function register() {
@@ -126,7 +142,7 @@ export default {
       } catch (error) {
         showError.value = true
         message.value = resolveErrorMessage(error)
-        console.error('Register failed:', error.message, error.response?.status)
+        console.error('Register failed:', error.message, errorStatus(error))
       } finally {
         isLoading.value = false
       }
