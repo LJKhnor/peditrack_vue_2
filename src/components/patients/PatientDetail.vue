@@ -12,12 +12,20 @@
             >
           </p>
         </div>
-        <!-- RDV-DESACTIVE : à réactiver avec la prise de rendez-vous -->
-        <!-- <div v-if="record" class="detail-actions">
-          <button type="button" class="header-btn" @click="emit('newAppointment')">
+        <div v-if="patient" class="detail-actions">
+          <!-- Encodage du soin sur la page Patients, avec ce patient déjà sélectionné -->
+          <RouterLink
+            :to="{ name: 'patient', query: { mode: 'soin', patientId: patient.id } }"
+            class="header-btn"
+          >
+            <MdiComponent :mdiValue="mdiPlus" />
+            Nouveau soin
+          </RouterLink>
+          <!-- RDV-DESACTIVE : à réactiver avec la prise de rendez-vous -->
+          <!-- <button type="button" class="header-btn" @click="emit('newAppointment')">
             Nouveau RDV
-          </button>
-        </div> -->
+          </button> -->
+        </div>
       </div>
     </template>
 
@@ -94,7 +102,10 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { RouterLink } from 'vue-router'
+import { mdiPlus } from '@mdi/js'
 import BaseModal from './BaseModal.vue'
+import MdiComponent from '@/components/icons/MdiComponent.vue'
 import CareTimeline from '@/components/CareTimeline.vue'
 import type { PatientRecord } from '@/services/PatientService'
 import { computeAge, formatDate, fullName, initials, patientAlerts } from '@/utils/patient'
@@ -233,19 +244,37 @@ const contactFields = computed(() => {
   gap: 0.5rem;
 }
 
+/* Bouton plein (couleurs de la surface) : contrasté sur le bandeau vert en thème clair
+   comme en thème sombre, où le bandeau devient vert clair */
 .header-btn {
-  padding: 0.35rem 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.45rem 1rem 0.45rem 0.75rem;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 0.8125rem;
+  border: none;
+  background: var(--color-surface);
+  color: var(--color-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: background 0.2s;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
 }
 
+/* lien : on neutralise la couleur de survol globale des liens */
 .header-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--color-background-soft);
+  color: var(--color-heading);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.header-btn .mdi-component {
+  width: 18px;
+  height: 18px;
 }
 
 .detail-empty {

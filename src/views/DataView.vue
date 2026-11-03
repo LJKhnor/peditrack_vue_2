@@ -13,7 +13,8 @@
         placeholder="Rechercher : nom, prénom, téléphone, email…"
         aria-label="Rechercher un patient"
       />
-      <div class="filters" role="group" aria-label="Filtres">
+      <!-- Filtres masqués pour le moment (la logique de filtrage reste en place, voir FILTERS) -->
+      <!-- <div class="filters" role="group" aria-label="Filtres">
         <button
           v-for="option in FILTERS"
           :key="option.value"
@@ -25,7 +26,7 @@
         >
           {{ option.label }}
         </button>
-      </div>
+      </div> -->
     </div>
 
     <p v-if="loadError" class="load-error">Impossible de charger la liste des patients.</p>
@@ -245,6 +246,8 @@ interface Row {
   alerts: PatientAlert[]
 }
 
+// Utilisé par les filtres du template, masqués pour le moment
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const FILTERS: { value: FilterKey; label: string }[] = [
   { value: 'all', label: 'Tous' },
   // Masqué pour le moment : { value: 'alerts', label: '⚠ Alertes' },

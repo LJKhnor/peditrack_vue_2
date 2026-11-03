@@ -86,7 +86,8 @@ export default {
     PatientMedicalTypeInformations,
     CareProvided
   },
-  props: [],
+  // patientId : patient à présélectionner (arrivée depuis « Nouveau soin » de la fiche patient)
+  props: ['patientId'],
   setup(props, { emit }) {
     const activeTab = ref('personal')
     let formData = ref({})
@@ -96,8 +97,10 @@ export default {
     const selectedPatientId = ref(null)
     const urlGetAllPatient = '/patients'
     const urlPostPatient = '/patients'
-    onMounted(() => {
-      getAllPatient()
+    onMounted(async () => {
+      await getAllPatient()
+      const preselected = patients.value.find((patient) => patient.id === props.patientId)
+      if (preselected) selectPatient(preselected)
     })
 
     const filteredPatients = computed(() => {

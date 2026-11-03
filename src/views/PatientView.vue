@@ -18,7 +18,7 @@
         <MdiComponent v-bind:mdiValue="pathArrowLeft" />
         Retour
       </button>
-      <EditPatientRecord @close-panel="onValidatePatientUpdate" />
+      <EditPatientRecord :patientId="initialPatientId" @close-panel="onValidatePatientUpdate" />
     </template>
   </div>
 </template>
@@ -35,9 +35,11 @@ export default {
   components: { NewPatientRecord, EditPatientRecord, MdiComponent },
   setup() {
     // /patient?mode=creation ouvre directement le formulaire de création (ex. depuis Données)
+    // /patient?mode=soin&patientId=… ouvre « Encoder le soin » avec ce patient sélectionné
     const route = useRoute()
     let isNewPatient = ref(route.query.mode === 'creation')
-    let isEditPatient = ref(false)
+    let isEditPatient = ref(route.query.mode === 'soin')
+    const initialPatientId = Number(route.query.patientId) || null
     let currentPatientData = ref(null) // Contient les données du patient à éditer
     let pathArrowLeft = mdiArrowLeft
     function onCreatePatient() {
@@ -61,6 +63,7 @@ export default {
     return {
       isNewPatient,
       isEditPatient,
+      initialPatientId,
       pathArrowLeft,
       currentPatientData,
       onCreatePatient,

@@ -18,10 +18,10 @@
     <div class="navbar-collapse" :class="{ open: isMenuOpen }" v-if="isLogIn">
       <nav class="navbar-nav">
         <RouterLink to="/" @click="closeMenu">Accueil</RouterLink>
+        <RouterLink to="/data" @click="closeMenu">Données</RouterLink>
         <!-- RDV-DESACTIVE : <RouterLink to="/appointment" @click="closeMenu">Rendez-vous</RouterLink> -->
         <RouterLink to="/patient" @click="closeMenu">Patients</RouterLink>
         <RouterLink to="/map" @click="closeMenu">Carte</RouterLink>
-        <RouterLink to="/data" @click="closeMenu">Données</RouterLink>
       </nav>
 
       <div class="navbar-user">
