@@ -24,24 +24,30 @@
           />
         </div>
         <div class="form-group">
-          <input
-            class="input-register"
-            type="password"
-            id="password"
-            v-model="form.password"
-            placeholder="Mot de passe"
-            required
-          />
+          <PasswordToggle v-slot="{ type }">
+            <input
+              class="input-register"
+              :type="type"
+              id="password"
+              autocomplete="new-password"
+              v-model="form.password"
+              placeholder="Mot de passe"
+              required
+            />
+          </PasswordToggle>
         </div>
         <div class="form-group">
-          <input
-            class="input-register"
-            type="password"
-            id="confirm-password"
-            v-model="form.confirmPassword"
-            placeholder="Confirmer le mot de passe"
-            required
-          />
+          <PasswordToggle v-slot="{ type }">
+            <input
+              class="input-register"
+              :type="type"
+              id="confirm-password"
+              autocomplete="new-password"
+              v-model="form.confirmPassword"
+              placeholder="Confirmer le mot de passe"
+              required
+            />
+          </PasswordToggle>
         </div>
         <div class="form-group">
           <input
@@ -77,7 +83,9 @@ import router from '@/router'
 import { ref, reactive } from 'vue'
 import apiClient from '../axios'
 import { errorStatus, fieldErrors } from '@/services/apiError'
+import PasswordToggle from '@/components/PasswordToggle.vue'
 export default {
+  components: { PasswordToggle },
   setup() {
     const form = reactive({
       username: '',

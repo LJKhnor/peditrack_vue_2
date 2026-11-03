@@ -6,7 +6,7 @@ export const DIABETE_TYPES = [1, 2]
 
 export const SKIN_TYPES = ['Normale', 'Pale', 'Cyanosée', 'Sèche', 'Grasse']
 export const FOOT_TYPES = ['Creux', 'Plat', 'Grec', 'Egyptien', 'Carré', 'Normal']
-export const SWEAT_TYPES = ['Hyperhidrose', 'Anidrose', 'Bromidrose', 'Normale']
+export const SWEAT_TYPES = ['Hyperhidrose', 'Anhidrose', 'Bromidrose', 'Normale']
 export const REMARK_TYPES = ['Cors', 'Durillons', 'Crevasses', 'Phlyctènes']
 export const CIRCULATION_TYPES = [
   'Pieds froids',

@@ -13,13 +13,16 @@
           />
         </div>
         <div>
-          <input
-            class="input-login"
-            type="password"
-            name="password"
-            v-model="form.password"
-            placeholder="Mot de passe"
-          />
+          <PasswordToggle v-slot="{ type }">
+            <input
+              class="input-login"
+              :type="type"
+              name="password"
+              autocomplete="current-password"
+              v-model="form.password"
+              placeholder="Mot de passe"
+            />
+          </PasswordToggle>
         </div>
         <div class="login-connection">
           <input type="submit" class="btn" value="Se connecter" @click.prevent="login" />
@@ -35,8 +38,10 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import AuthService from '@/services/AuthService.ts'
 import { errorStatus } from '@/services/apiError'
+import PasswordToggle from '@/components/PasswordToggle.vue'
 export default {
   name: 'LoginVue',
+  components: { PasswordToggle },
   props: [],
   setup(props, { emit }) {
     const router = useRouter()
