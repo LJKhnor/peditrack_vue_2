@@ -1,0 +1,1 @@
+function r(n){if(!(typeof n!="object"||n===null))return n.response}function u(n){var t;return(t=r(n))==null?void 0:t.status}function o(n){var e;const t=(e=r(n))==null?void 0:e.data;return typeof t=="object"&&t!==null?t:null}function s(n){var e;const t=(e=o(n))==null?void 0:e.errors;return typeof t=="object"&&t!==null?t:{}}export{u as e,s as f};

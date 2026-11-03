@@ -13,7 +13,12 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "seed:demo": "vite-node scripts/seed-demo.ts"
+    "seed:demo": "vite-node scripts/seed-demo.ts",
+    "release:patch": "npm version patch",
+    "release:minor": "npm version minor",
+    "release:major": "npm version major",
+    "preversion": "npm run test:unit && npm run type-check",
+    "version": "npm run build-only && git add -A dist"
   },
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
