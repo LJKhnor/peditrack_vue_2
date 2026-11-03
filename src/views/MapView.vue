@@ -56,6 +56,28 @@ const homeIcon = L.divIcon({
   popupAnchor: [0, -15]
 })
 
+// Patient placé au centre de sa localité (adresse exacte introuvable) : marqueur gris distinct,
+// pour ne pas le confondre avec une position exacte dans les zones de chalandise
+const approximateIcon = L.divIcon({
+  className: 'approximate-marker',
+  html:
+    '<div style="width:18px;height:18px;border-radius:50%;background:#94a3b8;' +
+    'border:2px dashed #ffffff;box-shadow:0 1px 4px rgba(0,0,0,0.35);' +
+    'display:flex;align-items:center;justify-content:center;color:#ffffff;' +
+    'font-weight:700;font-size:12px;line-height:1;">~</div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+  popupAnchor: [0, -9]
+})
+
+// Les popups Leaflet interprètent le HTML : les noms saisis sont échappés
+function escapeHtml(value) {
+  return String(value).replace(
+    /[&<>"']/g,
+    (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]
+  )
+}
+
 export default {
   components: {
     // LMap,
@@ -164,12 +186,16 @@ export default {
         for (const key in pointsBody) {
           let value = pointsBody[key]
           if (value.point?.x == null || value.point?.y == null) continue
+          // (0, 0) : adresse introuvable enregistrée par l'ancien géocodage. Ignoré pour ne pas
+          // décentrer la carte ; le patient apparaît dans la liste « sans position sur la carte »
+          if (value.point.x === 0 && value.point.y === 0) continue
           let point = L.latLng(value.point.x, value.point.y)
           points.push(point)
           patientPositions.push({
             id: value.id,
             name: value.name,
             firstName: value.firstName,
+            approximate: value.approximate === true,
             point
           })
         }
@@ -198,9 +224,12 @@ export default {
     function addAllPatientsPositionsToMap() {
       for (const key in patientPositions) {
         let patientPosition = patientPositions[key]
-        let marker = L.marker(patientPosition.point, { icon: defaultIcon }).bindPopup(
-          `${patientPosition.firstName} ${patientPosition.name}`
-        )
+        const name = escapeHtml(`${patientPosition.firstName} ${patientPosition.name}`)
+        let marker = patientPosition.approximate
+          ? L.marker(patientPosition.point, { icon: approximateIcon }).bindPopup(
+              `${name}<br><em>Position approximative : adresse introuvable, centre de la localité</em>`
+            )
+          : L.marker(patientPosition.point, { icon: defaultIcon }).bindPopup(name)
         markers.push(marker)
       }
       markersLayer = L.markerClusterGroup({
