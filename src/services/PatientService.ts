@@ -52,6 +52,16 @@ export interface Health extends Partial<MedicalFields> {
   advice?: string | null
 }
 
+// Ligne de la liste des patients (GET /patients/summary) : informations personnelles, date du
+// dernier soin et alertes de la dernière fiche santé, calculées par le backend
+export interface PatientSummary extends Patient {
+  lastVisit: string | null
+  diabeteType: number
+  withBleedingDisorder: boolean
+  withHeartDisorder: boolean
+  hasAllergies: boolean
+}
+
 export interface PatientRecord {
   patientDto: Patient
   healthDto: Health | null
@@ -93,6 +103,11 @@ export function buildPatientPayload(patient: PatientFields) {
 
 export async function getPatients(): Promise<Patient[]> {
   const response = await apiClient.get<Patient[]>('/patients')
+  return response.data
+}
+
+export async function getPatientSummaries(): Promise<PatientSummary[]> {
+  const response = await apiClient.get<PatientSummary[]>('/patients/summary')
   return response.data
 }
 

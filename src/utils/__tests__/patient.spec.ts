@@ -3,7 +3,6 @@ import {
   computeAge,
   findDuplicate,
   initials,
-  lastVisit,
   matchesSearch,
   patientAlerts,
   toInputDate
@@ -71,21 +70,16 @@ describe('patientAlerts', () => {
     expect(patientAlerts({ diabeteType: 0, allergies: '  ' })).toEqual([])
     expect(patientAlerts(null)).toEqual([])
   })
-})
 
-describe('lastVisit', () => {
-  it('returns the most recent care date and skips entries without a date', () => {
-    const result = lastVisit([
-      { careDate: '2026-01-10T00:00:00Z' },
-      { careDate: null, care: '' },
-      { careDate: '2026-05-02T00:00:00Z' }
+  it('uses the hasAllergies flag of a patient summary', () => {
+    const summary = { diabeteType: 0, withBleedingDisorder: false, withHeartDisorder: true }
+    expect(patientAlerts({ ...summary, hasAllergies: true }).map((alert) => alert.key)).toEqual([
+      'heart',
+      'allergies'
     ])
-    expect(result).toBe('2026-05-02T00:00:00.000Z')
-  })
-
-  it('returns null when no care has a date', () => {
-    expect(lastVisit([{ careDate: null }])).toBeNull()
-    expect(lastVisit(undefined)).toBeNull()
+    expect(patientAlerts({ ...summary, hasAllergies: false }).map((alert) => alert.key)).toEqual([
+      'heart'
+    ])
   })
 })
 

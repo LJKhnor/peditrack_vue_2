@@ -36,13 +36,6 @@
           {{ countLabel }}
           <template v-if="isFiltered && !loading"> sur {{ patients.length }}</template>
         </span>
-        <span v-if="recordsPending > 0" class="records-hint">
-          Chargement des dossiers médicaux… {{ recordsTotal - recordsPending }}/{{ recordsTotal }}
-        </span>
-        <span v-else-if="recordsFailed > 0" class="records-hint records-hint-error">
-          {{ recordsFailed }} dossier(s) n'ont pas pu être chargés : leurs alertes ne sont pas
-          affichées.
-        </span>
       </div>
 
       <div v-if="loading" class="empty-state">Chargement des patients…</div>
@@ -100,14 +93,11 @@
               </td>
               <td data-label="Âge">{{ row.age === null ? '—' : `${row.age} ans` }}</td>
               <td data-label="Téléphone">{{ row.patient.phoneNum || '—' }}</td>
-              <td data-label="Dernière visite">
-                {{ row.lastVisit === undefined ? pendingMark(row) : formatDate(row.lastVisit) }}
-              </td>
+              <td data-label="Dernière visite">{{ formatDate(row.patient.lastVisit) }}</td>
               <!-- RDV-DESACTIVE : colonne « Prochain RDV » -->
               <!-- <td data-label="Prochain RDV">{{ formatDate(nextAppointment(row.patient)) }}</td> -->
               <td data-label="Alertes" class="cell-alerts">
-                <template v-if="row.alerts === undefined">{{ pendingMark(row) }}</template>
-                <template v-else-if="row.alerts.length === 0">—</template>
+                <template v-if="row.alerts.length === 0">—</template>
                 <span v-else class="alert-list">
                   <span v-for="alert in row.alerts" :key="alert.key" class="alert-badge">
                     ⚠ {{ alert.label }}
@@ -223,16 +213,16 @@ import PatientForm from '@/components/patients/PatientForm.vue'
 import {
   deletePatient,
   getPatientRecord,
-  getPatients,
+  getPatientSummaries,
   type Patient,
-  type PatientRecord
+  type PatientRecord,
+  type PatientSummary
 } from '@/services/PatientService'
 import {
   computeAge,
   formatDate,
   fullName,
   initials,
-  lastVisit,
   matchesSearch,
   patientAlerts,
   type AlertKey,
@@ -250,12 +240,9 @@ type Modal =
 const CREATE_PATIENT_ROUTE = { name: 'patient', query: { mode: 'creation' } }
 
 interface Row {
-  patient: Patient
+  patient: PatientSummary
   age: number | null
-  failed: boolean
-  // undefined tant que le dossier médical n'est pas chargé
-  lastVisit: string | null | undefined
-  alerts: PatientAlert[] | undefined
+  alerts: PatientAlert[]
 }
 
 const FILTERS: { value: FilterKey; label: string }[] = [
@@ -276,17 +263,11 @@ const COLUMNS: { label: string; sort?: SortKey }[] = [
   { label: 'Actions' }
 ]
 
-// Nombre de dossiers médicaux chargés en parallèle après la liste
-const RECORD_CONCURRENCY = 4
-
-const patients = ref<Patient[]>([])
+const patients = ref<PatientSummary[]>([])
+// Dossiers complets déjà ouverts dans la fiche patient
 const records = ref<Record<number, PatientRecord>>({})
 const loading = ref(true)
 const loadError = ref(false)
-const recordsTotal = ref(0)
-const recordsPending = ref(0)
-const recordsFailed = ref(0)
-const failedIds = ref<Record<number, true>>({})
 
 const search = ref('')
 const filter = ref<FilterKey>('all')
@@ -304,8 +285,6 @@ const deleteError = ref('')
 const MENU_HEIGHT = 130
 const menu = ref<{ id: number; style: Record<string, string> } | null>(null)
 
-let active = true
-
 onMounted(() => {
   loadPatients()
   document.addEventListener('click', closeMenu)
@@ -315,7 +294,6 @@ onMounted(() => {
   window.addEventListener('resize', closeMenu)
 })
 onUnmounted(() => {
-  active = false
   document.removeEventListener('click', closeMenu)
   document.removeEventListener('keydown', onKeydown)
   window.removeEventListener('scroll', closeMenu, true)
@@ -354,68 +332,29 @@ function runMenuAction(action: (id: number) => unknown) {
   if (id !== undefined) action(id)
 }
 
+// Une seule requête : le backend renvoie déjà la dernière visite et les alertes de chaque
+// patient. Le dossier complet n'est chargé qu'à l'ouverture de la fiche.
 async function loadPatients() {
   try {
-    patients.value = await getPatients()
+    patients.value = await getPatientSummaries()
   } catch (error) {
     console.error('Erreur lors de la récupération des patients :', error)
     loadError.value = true
-    return
   } finally {
     loading.value = false
   }
-  loadRecords(patients.value.map((patient) => patient.id))
-}
-
-// La liste de l'API ne contient pas les données de santé : on charge chaque dossier
-// en arrière-plan pour afficher alertes et dernière visite.
-async function loadRecords(ids: number[]) {
-  recordsTotal.value = ids.length
-  recordsPending.value = ids.length
-  let next = 0
-  async function worker() {
-    while (active && next < ids.length) {
-      const id = ids[next++]
-      try {
-        records.value[id] = await getPatientRecord(id)
-      } catch (error) {
-        console.error(`Erreur lors du chargement du dossier ${id} :`, error)
-        failedIds.value[id] = true
-        recordsFailed.value++
-      } finally {
-        recordsPending.value--
-      }
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(RECORD_CONCURRENCY, ids.length) }, worker))
-}
-
-function historyOf(record: PatientRecord) {
-  if (Array.isArray(record.healthHistory)) return record.healthHistory
-  return record.healthDto ? [record.healthDto] : []
 }
 
 const rows = computed<Row[]>(() =>
-  patients.value.map((patient) => {
-    const record = records.value[patient.id]
-    return {
-      patient,
-      age: computeAge(patient.birthdate),
-      failed: !record && !!failedIds.value[patient.id],
-      lastVisit: record ? lastVisit(historyOf(record)) : undefined,
-      alerts: record ? patientAlerts(record.healthDto) : undefined
-    }
-  })
+  patients.value.map((patient) => ({
+    patient,
+    age: computeAge(patient.birthdate),
+    alerts: patientAlerts(patient)
+  }))
 )
-
-// « … » pendant le chargement du dossier, « ? » s'il n'a pas pu être chargé
-function pendingMark(row: Row) {
-  return row.failed ? '?' : '…'
-}
 
 function matchesFilter(row: Row): boolean {
   if (filter.value === 'all') return true
-  if (!row.alerts) return false
   if (filter.value === 'alerts') return row.alerts.length > 0
   return row.alerts.some((alert) => alert.key === filter.value)
 }
@@ -431,12 +370,15 @@ function compareRows(a: Row, b: Row): number {
     )
   }
   if (sortKey.value === 'age') return (a.age as number) - (b.age as number)
-  return new Date(a.lastVisit as string).getTime() - new Date(b.lastVisit as string).getTime()
+  return (
+    new Date(a.patient.lastVisit as string).getTime() -
+    new Date(b.patient.lastVisit as string).getTime()
+  )
 }
 
 function sortValue(row: Row) {
   if (sortKey.value === 'age') return row.age
-  if (sortKey.value === 'lastVisit') return row.lastVisit
+  if (sortKey.value === 'lastVisit') return row.patient.lastVisit
   return row.patient.name
 }
 
@@ -484,22 +426,13 @@ function ariaSort(key: SortKey) {
   return sortDir.value === 1 ? 'ascending' : 'descending'
 }
 
-async function fetchRecord(id: number) {
-  const record = await getPatientRecord(id)
-  records.value[id] = record
-  const index = patients.value.findIndex((patient) => patient.id === id)
-  if (index === -1) patients.value.push(record.patientDto)
-  else patients.value[index] = record.patientDto
-  return record
-}
-
 async function openDetail(id: number) {
   modal.value = { kind: 'detail', id }
   detailError.value = false
   if (records.value[id]) return
   detailLoading.value = true
   try {
-    await fetchRecord(id)
+    records.value[id] = await getPatientRecord(id)
   } catch (error) {
     console.error('Erreur lors de la récupération du dossier patient :', error)
     detailError.value = true
@@ -525,11 +458,12 @@ function openEdit(id: number) {
   modal.value = { kind: 'edit', id }
 }
 
-// Seules les informations personnelles ont changé : on met à jour la liste et la fiche en cache
+// Seules les informations personnelles ont changé : on met à jour la liste (en gardant la
+// dernière visite et les alertes du résumé) et la fiche en cache
 function onSaved(saved: Patient) {
   modal.value = null
   const index = patients.value.findIndex((patient) => patient.id === saved.id)
-  if (index !== -1) patients.value[index] = saved
+  if (index !== -1) patients.value[index] = { ...patients.value[index], ...saved }
   const record = records.value[saved.id]
   if (record) record.patientDto = saved
 }
@@ -652,15 +586,6 @@ h1 {
 .patient-count {
   font-weight: 600;
   color: var(--color-heading);
-}
-
-.records-hint {
-  color: var(--color-text-secondary);
-  font-size: 0.8125rem;
-}
-
-.records-hint-error {
-  color: #b45309;
 }
 
 .empty-state {

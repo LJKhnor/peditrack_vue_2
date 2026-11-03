@@ -54,8 +54,14 @@ export interface PatientAlert {
   label: string
 }
 
+// Fiche santé complète (fiche patient) ou résumé de la liste (`hasAllergies` au lieu du texte)
+type AlertSource = Pick<
+  Health,
+  'diabeteType' | 'withBleedingDisorder' | 'withHeartDisorder' | 'allergies'
+> & { hasAllergies?: boolean }
+
 // Alertes médicales mises en avant dans la liste et la fiche patient
-export function patientAlerts(health: Health | null | undefined): PatientAlert[] {
+export function patientAlerts(health: AlertSource | null | undefined): PatientAlert[] {
   if (!health) return []
   const alerts: PatientAlert[] = []
   if (health.diabeteType) {
@@ -63,18 +69,10 @@ export function patientAlerts(health: Health | null | undefined): PatientAlert[]
   }
   if (health.withBleedingDisorder) alerts.push({ key: 'bleeding', label: 'Coagulation' })
   if (health.withHeartDisorder) alerts.push({ key: 'heart', label: 'Cardiaque' })
-  if (health.allergies?.trim()) alerts.push({ key: 'allergies', label: 'Allergies' })
-  return alerts
-}
-
-// Date du soin le plus récent de l'historique (les fiches sans date sont ignorées)
-export function lastVisit(history: Health[] | null | undefined): string | null {
-  let latest: Date | null = null
-  for (const entry of history ?? []) {
-    const date = toDate(entry.careDate)
-    if (date && (!latest || date > latest)) latest = date
+  if (health.hasAllergies ?? !!health.allergies?.trim()) {
+    alerts.push({ key: 'allergies', label: 'Allergies' })
   }
-  return latest ? latest.toISOString() : null
+  return alerts
 }
 
 function normalize(value: string | null | undefined): string {
