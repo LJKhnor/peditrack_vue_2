@@ -124,14 +124,14 @@
 </template>
 
 <script>
+import { DIABETE_TYPES, GROUP_TYPES } from '@/constants/patientOptions'
+
 export default {
   name: 'PatientMedicalHealthInformations',
   props: ['formData'],
   components: {},
   setup() {
-    let groups = [1, 2, 3, 4]
-    let diabeteTypes = [1, 2]
-    return { groups, diabeteTypes }
+    return { groups: GROUP_TYPES, diabeteTypes: DIABETE_TYPES }
   }
 }
 </script>

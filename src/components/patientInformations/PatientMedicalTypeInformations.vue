@@ -149,44 +149,31 @@
 </template>
 
 <script>
+import {
+  CIRCULATION_TYPES,
+  DERMATOSIS_TYPES,
+  FOOT_DEFORMITY_TYPES,
+  FOOT_TYPES,
+  NAIL_CONDITION_TYPES,
+  REMARK_TYPES,
+  SKIN_TYPES,
+  SWEAT_TYPES
+} from '@/constants/patientOptions'
+
 export default {
   name: 'PatientMedicalTypeInformations',
   props: ['formData'],
   components: {},
   setup() {
-    let skinTypes = ['Normale', 'Pale', 'Cyanosée', 'Sèche', 'Grasse']
-    let footTypes = ['Creux', 'Plat', 'Grec', 'Egyptien', 'Carré', 'Normal']
-    let transpirationTypes = ['Hyperhidrose', 'Anidrose', 'Bromidrose', 'Normale']
-    let commentTypes = ['Cors', 'Durillons', 'Crevasses', 'Phlyctènes']
-    let circulationTypes = ['Pieds froids', 'Varicosités', 'Pieds bleutés', 'Rougeurs', 'Œdèmes']
-    let dermatoseTypes = ['Eczéma', 'Psoriasis', 'Verrues', 'Intertrigo G/D']
-
-    let footDeformityTypes = [
-      'Orteils en marteau',
-      'Hallux valgus',
-      'Hallux varus',
-      'Quintus valgus',
-      'Quintus varus',
-      'Hallux rigidus',
-      'Autres'
-    ]
-    let nailConditionsTypes = [
-      'Onycomychoses',
-      'Onychogryphoses',
-      'Ongles incarnés',
-      'Onycholyses',
-      'Autres'
-    ]
-
     return {
-      skinTypes,
-      footTypes,
-      transpirationTypes,
-      commentTypes,
-      circulationTypes,
-      dermatoseTypes,
-      footDeformityTypes,
-      nailConditionsTypes
+      skinTypes: SKIN_TYPES,
+      footTypes: FOOT_TYPES,
+      transpirationTypes: SWEAT_TYPES,
+      commentTypes: REMARK_TYPES,
+      circulationTypes: CIRCULATION_TYPES,
+      dermatoseTypes: DERMATOSIS_TYPES,
+      footDeformityTypes: FOOT_DEFORMITY_TYPES,
+      nailConditionsTypes: NAIL_CONDITION_TYPES
     }
   }
 }

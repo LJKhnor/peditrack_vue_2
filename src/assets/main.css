@@ -71,6 +71,8 @@ footer a:hover {
   display: flex;
   flex: 1;
   min-height: 0;
+  /* sans ça, un contenu large (tableau) élargit la page au lieu de défiler dans son cadre */
+  min-width: 0;
   justify-content: center;
   margin-bottom: 4vh;
 }

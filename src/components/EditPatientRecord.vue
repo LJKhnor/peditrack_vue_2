@@ -74,6 +74,7 @@ import PatientPersonalInformations from './patientInformations/PatientPersonalIn
 import PatientMedicalHealthInformations from './patientInformations/PatientMedicalHealthInformations.vue'
 import PatientMedicalTypeInformations from './patientInformations/PatientMedicalTypeInformations.vue'
 import apiClient from '../axios'
+import { toInputDate } from '@/utils/patient'
 
 export default {
   name: 'EditPatientRecord',
@@ -138,18 +139,6 @@ export default {
       }
     }
 
-    // Format AAAA-MM-JJ attendu par <input type="date">, en heure locale.
-    // Une valeur absente ou invalide donne null (et non le 01/01/1970 de new Date(null)).
-    function toInputDate(value) {
-      if (value === null || value === undefined || value === '') return null
-      const date = new Date(value)
-      if (isNaN(date.getTime())) return null
-      const year = date.getFullYear()
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const day = String(date.getDate()).padStart(2, '0')
-      return `${year}-${month}-${day}`
-    }
-
     async function updatePatient() {
       const patientId = selectedPatientId.value
       const patientData = Object.fromEntries(
@@ -164,7 +153,10 @@ export default {
           })
       )
       try {
-        const response = await apiClient.put(`${urlPostPatient}/${patientId}`, patientData)
+        // Le PUT ne met à jour que les informations personnelles ; le soin (avec les
+        // informations médicales) est enregistré à part comme nouvelle fiche de santé.
+        await apiClient.put(`${urlPostPatient}/${patientId}`, patientData)
+        await apiClient.post(`${urlPostPatient}/${patientId}/health`, patientData)
         emit('closePanel')
       } catch (error) {
         console.error('There was an error!', error.response ? error.response.data : error.message)

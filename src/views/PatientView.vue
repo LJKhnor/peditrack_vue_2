@@ -25,6 +25,7 @@
 
 <script>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import NewPatientRecord from '@/components/NewPatientRecord.vue'
 import EditPatientRecord from '@/components/EditPatientRecord.vue'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
@@ -33,7 +34,9 @@ export default {
   name: 'PatientVue',
   components: { NewPatientRecord, EditPatientRecord, MdiComponent },
   setup() {
-    let isNewPatient = ref(false)
+    // /patient?mode=creation ouvre directement le formulaire de création (ex. depuis Données)
+    const route = useRoute()
+    let isNewPatient = ref(route.query.mode === 'creation')
     let isEditPatient = ref(false)
     let currentPatientData = ref(null) // Contient les données du patient à éditer
     let pathArrowLeft = mdiArrowLeft
@@ -53,7 +56,7 @@ export default {
       // Gérer la soumission du formulaire ici (création ou édition)
       if (isEditPatient.value) {
         // Mettre à jour le patient existant
-        }
+      }
     }
     return {
       isNewPatient,
@@ -103,7 +106,9 @@ h1 {
   padding: 0.375rem 0.75rem;
   cursor: pointer;
   margin-bottom: 1.25rem;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .back-btn:hover {

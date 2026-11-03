@@ -2,13 +2,28 @@
   <div class="map">
     <h1>Carte</h1>
     <div id="mapContainer"></div>
+    <details v-if="unlocatedPatients.length" class="map-unlocated">
+      <summary>
+        {{ unlocatedPatients.length }} patient{{ unlocatedPatients.length > 1 ? 's' : '' }} sans
+        position sur la carte
+      </summary>
+      <ul>
+        <li v-for="patient in unlocatedPatients" :key="patient.id">
+          {{ patient.firstname }} {{ patient.name }} —
+          <span class="map-unlocated-reason">
+            {{ patient.address ? 'adresse non localisée' : 'aucune adresse' }}
+          </span>
+        </li>
+      </ul>
+    </details>
   </div>
 </template>
 
 <script>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import apiClient from '../axios'
 import AuthService from '../services/AuthService'
+import { getPatients } from '../services/PatientService'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -60,6 +75,7 @@ export default {
     let markers = []
     let points = []
     let patientPositions = []
+    const unlocatedPatients = ref([])
     let osm, osmHOT, openTopoMap, map, markersLayer, circlesLayer, layerControl
     const urlGetAllPatientPosition = '/data/map'
     function iconUrl() {
@@ -73,8 +89,20 @@ export default {
       getAllPatientPositions().then(() => {
         addAllPatientsPositionsToMap()
         if (points.length > 0) map.fitBounds(points)
+        findUnlocatedPatients()
       })
     })
+
+    // Patients absents de /data/map (adresse manquante ou pas encore géolocalisée)
+    async function findUnlocatedPatients() {
+      try {
+        const locatedIds = new Set(patientPositions.map((position) => position.id))
+        const patients = await getPatients()
+        unlocatedPatients.value = patients.filter((patient) => !locatedIds.has(patient.id))
+      } catch (error) {
+        console.error('Erreur lors de la récupération des patients :', error)
+      }
+    }
 
     onUnmounted(() => {
       map?.remove()
@@ -135,6 +163,7 @@ export default {
         let pointsBody = result.data
         for (const key in pointsBody) {
           let value = pointsBody[key]
+          if (value.point?.x == null || value.point?.y == null) continue
           let point = L.latLng(value.point.x, value.point.y)
           points.push(point)
           patientPositions.push({
@@ -182,7 +211,7 @@ export default {
       layerControl.addOverlay(markersLayer, 'patients')
     }
 
-    return { iconUrl, iconSize, zoom, iconWidth, iconHeight }
+    return { iconUrl, iconSize, zoom, iconWidth, iconHeight, unlocatedPatients }
   }
 }
 </script>
@@ -207,5 +236,29 @@ h1 {
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--color-border);
+}
+
+.map-unlocated {
+  font-size: 0.875rem;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  padding: 0.75rem 1rem;
+}
+
+.map-unlocated summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.map-unlocated ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.map-unlocated-reason {
+  color: var(--color-text-secondary);
+  font-style: italic;
 }
 </style>
