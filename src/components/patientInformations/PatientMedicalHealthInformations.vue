@@ -66,27 +66,100 @@
     </div>
     <div class="info-block">
       <p>Prothèse hanche</p>
-      <label class="switch">
-        <input
-          class="info-block-input"
-          type="checkbox"
-          id="hasHipProthesis"
-          v-model="formData.hasHipProsthesis"
-        />
-        <span class="slider round"></span>
-      </label>
+      <div class="sides">
+        <label class="side">
+          <span>Gauche</span>
+          <span class="switch">
+            <input
+              class="info-block-input"
+              type="checkbox"
+              id="hasLeftHipProsthesis"
+              v-model="formData.hasLeftHipProsthesis"
+            />
+            <span class="slider round"></span>
+          </span>
+        </label>
+        <label class="side">
+          <span>Droite</span>
+          <span class="switch">
+            <input
+              class="info-block-input"
+              type="checkbox"
+              id="hasRightHipProsthesis"
+              v-model="formData.hasRightHipProsthesis"
+            />
+            <span class="slider round"></span>
+          </span>
+        </label>
+        <!-- Fiche antérieure à la distinction gauche / droite : la prothèse est connue, pas le côté -->
+        <label
+          v-if="
+            formData.hasHipProsthesis &&
+            !formData.hasLeftHipProsthesis &&
+            !formData.hasRightHipProsthesis
+          "
+          class="side unknown-side"
+        >
+          <span>Côté non précisé</span>
+          <span class="switch">
+            <input
+              class="info-block-input"
+              type="checkbox"
+              id="hasHipProsthesis"
+              v-model="formData.hasHipProsthesis"
+            />
+            <span class="slider round"></span>
+          </span>
+        </label>
+      </div>
     </div>
     <div class="info-block">
       <p>Prothèse genou</p>
-      <label class="switch">
-        <input
-          class="info-block-input"
-          type="checkbox"
-          id="hasKneeProthesis"
-          v-model="formData.hasKneeProsthesis"
-        />
-        <span class="slider round"></span>
-      </label>
+      <div class="sides">
+        <label class="side">
+          <span>Gauche</span>
+          <span class="switch">
+            <input
+              class="info-block-input"
+              type="checkbox"
+              id="hasLeftKneeProsthesis"
+              v-model="formData.hasLeftKneeProsthesis"
+            />
+            <span class="slider round"></span>
+          </span>
+        </label>
+        <label class="side">
+          <span>Droite</span>
+          <span class="switch">
+            <input
+              class="info-block-input"
+              type="checkbox"
+              id="hasRightKneeProsthesis"
+              v-model="formData.hasRightKneeProsthesis"
+            />
+            <span class="slider round"></span>
+          </span>
+        </label>
+        <label
+          v-if="
+            formData.hasKneeProsthesis &&
+            !formData.hasLeftKneeProsthesis &&
+            !formData.hasRightKneeProsthesis
+          "
+          class="side unknown-side"
+        >
+          <span>Côté non précisé</span>
+          <span class="switch">
+            <input
+              class="info-block-input"
+              type="checkbox"
+              id="hasKneeProsthesis"
+              v-model="formData.hasKneeProsthesis"
+            />
+            <span class="slider round"></span>
+          </span>
+        </label>
+      </div>
     </div>
     <div class="info-block">
       <p>Maladies</p>
@@ -142,6 +215,21 @@ export default {
 }
 .info-block-input-checkbox-label {
   margin-right: 16px;
+}
+.sides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+.side {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.unknown-side {
+  color: var(--color-text-secondary);
+  font-style: italic;
 }
 /* The switch - the box around the slider */
 .switch {

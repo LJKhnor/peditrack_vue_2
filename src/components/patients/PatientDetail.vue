@@ -149,6 +149,15 @@ function yesNo(value: boolean | undefined) {
   return value ? '✅' : '❌'
 }
 
+// unknownSide : fiche antérieure à la distinction gauche / droite
+function prosthesisLabel(left?: boolean, right?: boolean, unknownSide?: boolean) {
+  if (left && right) return 'Gauche et droite'
+  if (left) return 'Gauche'
+  if (right) return 'Droite'
+  if (unknownSide) return 'Oui, côté non précisé'
+  return '❌'
+}
+
 function diabeteLabel(type: number | undefined) {
   if (type == null) return 'Non renseigné'
   if (type === 0) return 'Non'
@@ -166,10 +175,16 @@ const healthFields = computed(() => {
     { label: 'Problèmes sanguins', value: yesNo(h.withBleedingDisorder) },
     { label: 'Problèmes cardiaques', value: yesNo(h.withHeartDisorder) },
     { label: 'Problèmes thyroïdiens', value: yesNo(h.withThyroideDisorder) },
-    { label: 'Prothèse de hanche', value: yesNo(h.hasHipProsthesis) },
-    { label: 'Prothèse de genoux', value: yesNo(h.hasKneeProsthesis) },
-    { label: 'Maladies récentes', value: yesNo(h.hasRecentDiseases) },
-    { label: 'Opérations récentes', value: yesNo(h.hasRecentOperations) },
+    {
+      label: 'Prothèse de hanche',
+      value: prosthesisLabel(h.hasLeftHipProsthesis, h.hasRightHipProsthesis, h.hasHipProsthesis)
+    },
+    {
+      label: 'Prothèse de genoux',
+      value: prosthesisLabel(h.hasLeftKneeProsthesis, h.hasRightKneeProsthesis, h.hasKneeProsthesis)
+    },
+    { label: 'Maladies', value: yesNo(h.hasRecentDiseases) },
+    { label: 'Opérations', value: yesNo(h.hasRecentOperations) },
     { label: 'Conseils', value: displayContent(h.advice) },
     { label: 'Type circulatoire', value: displayContent(h.circulationType) },
     { label: 'Type dermatose', value: displayContent(h.dermatosisType) },

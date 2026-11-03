@@ -27,8 +27,13 @@ export interface MedicalFields {
   withHeartDisorder: boolean
   withBleedingDisorder: boolean
   withThyroideDisorder: boolean
+  // Prothèse dont le côté n'est pas précisé (fiche antérieure à la distinction gauche / droite)
   hasHipProsthesis: boolean
   hasKneeProsthesis: boolean
+  hasLeftHipProsthesis: boolean
+  hasRightHipProsthesis: boolean
+  hasLeftKneeProsthesis: boolean
+  hasRightKneeProsthesis: boolean
   hasRecentDiseases: boolean
   hasRecentOperations: boolean
   allergies: string | null
