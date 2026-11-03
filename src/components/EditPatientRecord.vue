@@ -132,9 +132,22 @@ export default {
       formData.value = {
         ...previousPatientInfos,
         ...previousHealthInfos,
-        birthdate: new Date(previousPatientInfos.birthdate).toISOString().slice(0, 10),
-        date: new Date(previousHealthInfos.careDate).toISOString().slice(0, 10)
+        birthdate: toInputDate(previousPatientInfos.birthdate),
+        // Un nouveau soin est toujours daté du jour
+        date: toInputDate(new Date())
       }
+    }
+
+    // Format AAAA-MM-JJ attendu par <input type="date">, en heure locale.
+    // Une valeur absente ou invalide donne null (et non le 01/01/1970 de new Date(null)).
+    function toInputDate(value) {
+      if (value === null || value === undefined || value === '') return null
+      const date = new Date(value)
+      if (isNaN(date.getTime())) return null
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
     }
 
     async function updatePatient() {

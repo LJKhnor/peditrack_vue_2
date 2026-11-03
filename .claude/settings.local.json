@@ -5,7 +5,12 @@
       "PowerShell(ls *)",
       "PowerShell(npm run type-check)",
       "PowerShell(npm run test:unit)",
-      "PowerShell(npx eslint src/views/DataView.vue src/components/CareTimeline.vue)"
+      "PowerShell(npx eslint src/views/DataView.vue src/components/CareTimeline.vue)",
+      "Bash(cd \"D:/CLIENTS/Informatique/1. Valériane pédicure/peditrack_vue_2\" && printf '\\\\n# Outil local de captures d ecran\\\\n/screenshots/\\\\n' >> .git/info/exclude && git status --short && echo \"status-ok\")",
+      "Bash(npm run *)"
+    ],
+    "additionalDirectories": [
+      "D:\\CLIENTS\\Informatique\\1. Valériane pédicure\\peditrack_vue_2\\.git\\info"
     ]
   }
 }
