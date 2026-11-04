@@ -35,19 +35,41 @@ afterEach(() => {
 describe('PatientDetail', () => {
   it('shows the precision of an "Autres" deformity and nail condition', () => {
     const fields = mountDetail({
-      footDeformityType: 'Autres',
+      footDeformityTypes: ['Autres'],
       footDeformityComment: 'Pied de Charcot',
-      nailConditionType: 'Autres',
+      nailConditionTypes: ['Autres'],
       nailConditionComment: 'Ongles striés'
     })
-    expect(fields['Type déformation du pied']).toBe('Autres — Pied de Charcot')
-    expect(fields["Type d'ongle"]).toBe('Autres — Ongles striés')
+    expect(fields['Déformations du pied']).toBe('Autres — Pied de Charcot')
+    expect(fields['Affections unguéales']).toBe('Autres — Ongles striés')
   })
 
-  it('shows only the type when it is not "Autres"', () => {
-    const fields = mountDetail({ footDeformityType: 'Hallux valgus', nailConditionType: null })
-    expect(fields['Type déformation du pied']).toBe('Hallux valgus')
-    expect(fields["Type d'ongle"]).toBe('—')
+  it('lists several deformities and nail conditions, with the "Autres" precision', () => {
+    const fields = mountDetail({
+      footDeformityTypes: ['Orteils en marteau', 'Hallux valgus', 'Autres'],
+      footDeformityComment: 'Pied de Charcot',
+      nailConditionTypes: ['Onycomychoses', 'Ongles incarnés']
+    })
+    expect(fields['Déformations du pied']).toBe(
+      'Orteils en marteau, Hallux valgus, Autres — Pied de Charcot'
+    )
+    expect(fields['Affections unguéales']).toBe('Onycomychoses, Ongles incarnés')
+  })
+
+  it('shows only the types when there is no "Autres", and a dash when there is none', () => {
+    const fields = mountDetail({
+      footDeformityTypes: ['Hallux valgus'],
+      footDeformityComment: 'ancien commentaire',
+      nailConditionTypes: []
+    })
+    expect(fields['Déformations du pied']).toBe('Hallux valgus')
+    expect(fields['Affections unguéales']).toBe('—')
+  })
+
+  it('shows a dash when the lists are missing', () => {
+    const fields = mountDetail({})
+    expect(fields['Déformations du pied']).toBe('—')
+    expect(fields['Affections unguéales']).toBe('—')
   })
 
   it('summarises the toes of each foot', () => {

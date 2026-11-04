@@ -55,6 +55,12 @@ function random(): number {
 const int = (min: number, max: number) => min + Math.floor(random() * (max - min + 1))
 const chance = (probability: number) => random() < probability
 const pick = <T>(items: readonly T[]): T => items[Math.floor(random() * items.length)]
+// count éléments distincts, dans l'ordre de la liste
+const pickSome = <T>(items: readonly T[], count: number): T[] => {
+  const chosen = new Set<T>()
+  while (chosen.size < Math.min(count, items.length)) chosen.add(pick(items))
+  return items.filter((item) => chosen.has(item))
+}
 const maybe = <T>(probability: number, value: () => T): T | null =>
   chance(probability) ? value() : null
 
@@ -337,8 +343,9 @@ function buildMedical(age: number): Json {
     [`is${key[0].toUpperCase()}${key.slice(1)}`]: value
   })
 
-  const footDeformityType = maybe(0.35, () => pick(FOOT_DEFORMITY_TYPES))
-  const nailConditionType = maybe(0.45, () => pick(NAIL_CONDITION_TYPES))
+  // Choix multiples : le plus souvent un seul, parfois deux
+  const footDeformityTypes = chance(0.35) ? pickSome(FOOT_DEFORMITY_TYPES, chance(0.3) ? 2 : 1) : []
+  const nailConditionTypes = chance(0.45) ? pickSome(NAIL_CONDITION_TYPES, chance(0.3) ? 2 : 1) : []
 
   return {
     groupType: diabeteType ? int(1, 3) : chance(0.1) ? 1 : 0,
@@ -360,44 +367,44 @@ function buildMedical(age: number): Json {
     remarkType: maybe(0.6, () => pick(REMARK_TYPES)),
     circulationType: maybe(age >= 70 ? 0.5 : 0.15, () => pick(CIRCULATION_TYPES)),
     dermatosisType: maybe(0.15, () => pick(DERMATOSIS_TYPES)),
-    footDeformityType,
-    footDeformityComment: footDeformityType === OTHER_OPTION ? 'Pied de Charcot' : null,
-    nailConditionType,
-    nailConditionComment: nailConditionType === OTHER_OPTION ? 'Ongles striés' : null,
-    ...buildToes('left', nailConditionType),
-    ...buildToes('right', nailConditionType)
+    footDeformityTypes,
+    footDeformityComment: footDeformityTypes.includes(OTHER_OPTION) ? 'Pied de Charcot' : null,
+    nailConditionTypes,
+    nailConditionComment: nailConditionTypes.includes(OTHER_OPTION) ? 'Ongles striés' : null,
+    ...buildToes('left', nailConditionTypes.length > 0),
+    ...buildToes('right', nailConditionTypes.length > 0)
   }
 }
 
 // Notes d'orteils (R1 = hallux … R5 = petit orteil), surtout quand une affection unguéale est notée
-function buildToes(side: 'left' | 'right', nailConditionType: string | null): Json {
+function buildToes(side: 'left' | 'right', hasNailCondition: boolean): Json {
   const toes: Json = {}
   for (let toe = 1; toe <= 5; toe++) {
-    toes[`${side}ToeR${toe}`] = maybe(nailConditionType ? (toe === 1 ? 0.5 : 0.1) : 0.02, () =>
+    toes[`${side}ToeR${toe}`] = maybe(hasNailCondition ? (toe === 1 ? 0.5 : 0.1) : 0.02, () =>
       pick(TOE_NOTES)
     )
   }
-  toes[`${side}ToesComment`] = maybe(nailConditionType ? 0.2 : 0, () => pick(TOE_COMMENTS))
+  toes[`${side}ToesComment`] = maybe(hasNailCondition ? 0.2 : 0, () => pick(TOE_COMMENTS))
   return toes
 }
 
 function buildCare(medical: Json, date: Date): Json {
+  const nails = (medical.nailConditionTypes ?? []) as string[]
   const acts = ['coupe et fraisage des ongles']
   const side = () => pick(['droit', 'gauche'])
   if (medical.remarkType === 'Cors') acts.push(`énucléation d'un cor au 5e orteil ${side()}`)
   if (medical.remarkType === 'Durillons') acts.push('dégraissage des durillons plantaires')
   if (medical.remarkType === 'Crevasses') acts.push('soin des crevasses talonnières')
   if (medical.remarkType === 'Phlyctènes') acts.push('protection des phlyctènes')
-  if (medical.nailConditionType === 'Ongles incarnés')
-    acts.push(`soin d'ongle incarné, hallux ${side()}`)
-  if (medical.nailConditionType === 'Onycomychoses') acts.push('meulage des ongles mycosés')
-  if (medical.nailConditionType === 'Onychogryphoses') acts.push("réduction d'onychogryphose")
+  if (nails.includes('Ongles incarnés')) acts.push(`soin d'ongle incarné, hallux ${side()}`)
+  if (nails.includes('Onycomychoses')) acts.push('meulage des ongles mycosés')
+  if (nails.includes('Onychogryphoses')) acts.push("réduction d'onychogryphose")
   const care = acts.join(', ')
 
   const tools = ['pince à ongles', 'fraise diamantée']
   if (medical.remarkType === 'Cors' || medical.remarkType === 'Durillons')
     tools.push('scalpel lame n°15')
-  if (medical.nailConditionType === 'Ongles incarnés') tools.push('gouge')
+  if (nails.includes('Ongles incarnés')) tools.push('gouge')
 
   const advice = medical.diabeteType
     ? 'Inspecter les pieds chaque jour, ne jamais marcher pieds nus'

@@ -11,31 +11,76 @@ const mountForm = (initial: Record<string, unknown> = {}) => {
   return { wrapper, formData }
 }
 
+type Wrapper = ReturnType<typeof mountForm>['wrapper']
+
+const checkbox = (wrapper: Wrapper, field: string, option: string) =>
+  wrapper.find<HTMLInputElement>(`input[type="checkbox"][name="${field}"][value="${option}"]`)
+
+const checkedOptions = (wrapper: Wrapper, field: string) =>
+  wrapper
+    .findAll<HTMLInputElement>(`input[type="checkbox"][name="${field}"]`)
+    .filter((input) => input.element.checked)
+    .map((input) => input.element.value)
+
 describe('PatientMedicalTypeInformations', () => {
-  it('asks for a precision only when the foot deformity is "Autres"', async () => {
+  it('offers every foot deformity and nail condition as a checkbox', () => {
+    const { wrapper } = mountForm()
+    expect(wrapper.findAll('input[name="footDeformityTypes"]')).toHaveLength(7)
+    expect(wrapper.findAll('input[name="nailConditionTypes"]')).toHaveLength(5)
+    expect(checkedOptions(wrapper, 'footDeformityTypes')).toEqual([])
+  })
+
+  it('selects several foot deformities, in the order of the options', async () => {
     const { wrapper, formData } = mountForm()
+
+    await checkbox(wrapper, 'footDeformityTypes', 'Hallux valgus').setValue(true)
+    await checkbox(wrapper, 'footDeformityTypes', 'Orteils en marteau').setValue(true)
+    expect(formData.footDeformityTypes).toEqual(['Orteils en marteau', 'Hallux valgus'])
+
+    await checkbox(wrapper, 'footDeformityTypes', 'Orteils en marteau').setValue(false)
+    expect(formData.footDeformityTypes).toEqual(['Hallux valgus'])
+  })
+
+  it('selects several nail conditions without touching the foot deformities', async () => {
+    const { wrapper, formData } = mountForm({ footDeformityTypes: ['Hallux rigidus'] })
+
+    await checkbox(wrapper, 'nailConditionTypes', 'Ongles incarnés').setValue(true)
+    await checkbox(wrapper, 'nailConditionTypes', 'Onycomychoses').setValue(true)
+    expect(formData.nailConditionTypes).toEqual(['Onycomychoses', 'Ongles incarnés'])
+    expect(formData.footDeformityTypes).toEqual(['Hallux rigidus'])
+  })
+
+  it('asks for a precision only while "Autres" is among the foot deformities', async () => {
+    const { wrapper, formData } = mountForm({ footDeformityTypes: ['Hallux valgus'] })
     expect(wrapper.find('#footDeformityComment').exists()).toBe(false)
 
-    await wrapper.find('select[name="select-foot-deformity"]').setValue('Autres')
+    await checkbox(wrapper, 'footDeformityTypes', 'Autres').setValue(true)
     await wrapper.find('#footDeformityComment').setValue('Pied de Charcot')
-    expect(formData.footDeformityType).toBe('Autres')
+    expect(formData.footDeformityTypes).toEqual(['Hallux valgus', 'Autres'])
     expect(formData.footDeformityComment).toBe('Pied de Charcot')
 
-    await wrapper.find('select[name="select-foot-deformity"]').setValue('Hallux valgus')
+    await checkbox(wrapper, 'footDeformityTypes', 'Autres').setValue(false)
     expect(wrapper.find('#footDeformityComment').exists()).toBe(false)
   })
 
-  it('asks for a precision only when the nail condition is "Autres"', async () => {
-    const { wrapper, formData } = mountForm({ nailConditionType: 'Ongles incarnés' })
+  it('asks for a precision only while "Autres" is among the nail conditions', async () => {
+    const { wrapper, formData } = mountForm({ nailConditionTypes: ['Ongles incarnés'] })
     expect(wrapper.find('#nailConditionComment').exists()).toBe(false)
 
-    await wrapper.find('select[name="select-foot-nail-condition"]').setValue('Autres')
+    await checkbox(wrapper, 'nailConditionTypes', 'Autres').setValue(true)
     await wrapper.find('#nailConditionComment').setValue('Ongles striés')
+    expect(formData.nailConditionTypes).toEqual(['Ongles incarnés', 'Autres'])
     expect(formData.nailConditionComment).toBe('Ongles striés')
   })
 
-  it('shows the precision already recorded on the previous care', () => {
-    const { wrapper } = mountForm({ footDeformityType: 'Autres', footDeformityComment: 'Charcot' })
+  it('shows the choices and the precision already recorded on the previous care', () => {
+    const { wrapper } = mountForm({
+      footDeformityTypes: ['Quintus varus', 'Autres'],
+      footDeformityComment: 'Charcot',
+      nailConditionTypes: ['Onycholyses']
+    })
+    expect(checkedOptions(wrapper, 'footDeformityTypes')).toEqual(['Quintus varus', 'Autres'])
+    expect(checkedOptions(wrapper, 'nailConditionTypes')).toEqual(['Onycholyses'])
     const input = wrapper.find<HTMLInputElement>('#footDeformityComment')
     expect(input.element.value).toBe('Charcot')
   })

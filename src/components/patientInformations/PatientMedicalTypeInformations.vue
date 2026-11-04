@@ -100,61 +100,38 @@
 
     <hr />
 
-    <!-- déformation du pied et affection unguéales-->
-    <div class="info-block">
-      <p>Déformation du pied</p>
-      <select
-        name="select-foot-deformity"
-        class="info-block-input"
-        id="dermatose-{{footDeformityType}}"
-        v-model="formData.footDeformityType"
-      >
-        <option></option>
-        <option
-          v-for="footDeformityType in footDeformityTypes"
-          :value="footDeformityType"
-          :key="footDeformityType"
-        >
-          {{ footDeformityType }}
-        </option>
-      </select>
-    </div>
-    <div v-if="formData.footDeformityType === otherOption" class="info-block">
-      <label for="footDeformityComment">Précisez la déformation</label>
-      <input
-        class="info-block-input"
-        type="text"
-        id="footDeformityComment"
-        v-model="formData.footDeformityComment"
-      />
-    </div>
-    <div class="info-block">
-      <p>Affections unguéales</p>
-      <select
-        name="select-foot-nail-condition"
-        class="info-block-input"
-        id="nail-condition-{{nailConditionType}}"
-        v-model="formData.nailConditionType"
-      >
-        <option></option>
-        <option
-          v-for="nailConditionType in nailConditionsTypes"
-          :value="nailConditionType"
-          :key="nailConditionType"
-        >
-          {{ nailConditionType }}
-        </option>
-      </select>
-    </div>
-    <div v-if="formData.nailConditionType === otherOption" class="info-block">
-      <label for="nailConditionComment">Précisez l'affection</label>
-      <input
-        class="info-block-input"
-        type="text"
-        id="nailConditionComment"
-        v-model="formData.nailConditionComment"
-      />
-    </div>
+    <!-- Déformations du pied et affections unguéales : choix multiples, « Autres » ouvre une précision -->
+    <template v-for="group in multiChoices" :key="group.field">
+      <div class="info-block multi-choice">
+        <p :id="`${group.field}-label`">{{ group.label }}</p>
+        <div class="choices" role="group" :aria-labelledby="`${group.field}-label`">
+          <label
+            v-for="option in group.options"
+            :key="option"
+            class="choice"
+            :class="{ selected: isSelected(group.field, option) }"
+          >
+            <input
+              type="checkbox"
+              :name="group.field"
+              :value="option"
+              :checked="isSelected(group.field, option)"
+              @change="toggle(group.field, option)"
+            />
+            {{ option }}
+          </label>
+        </div>
+      </div>
+      <div v-if="isSelected(group.field, otherOption)" class="info-block">
+        <label :for="group.commentField">{{ group.commentLabel }}</label>
+        <input
+          class="info-block-input"
+          type="text"
+          :id="group.commentField"
+          v-model="formData[group.commentField]"
+        />
+      </div>
+    </template>
 
     <!-- Observations par orteil (R1 = hallux … R5 = petit orteil), pour chaque pied -->
     <div class="feet">
@@ -201,16 +178,48 @@ export default {
   name: 'PatientMedicalTypeInformations',
   props: ['formData'],
   components: {},
-  setup() {
+  setup(props) {
+    const selected = (field) => {
+      const value = props.formData[field]
+      return Array.isArray(value) ? value : []
+    }
+    const isSelected = (field, option) => selected(field).includes(option)
+    // Remplace la liste (le champ peut être absent quand le patient n'a pas encore de fiche santé),
+    // en gardant l'ordre des options
+    const toggle = (field, option) => {
+      const current = selected(field)
+      const next = current.includes(option)
+        ? current.filter((value) => value !== option)
+        : [...current, option]
+      const options = field === 'footDeformityTypes' ? FOOT_DEFORMITY_TYPES : NAIL_CONDITION_TYPES
+      props.formData[field] = options.filter((value) => next.includes(value))
+    }
+
     return {
+      isSelected,
+      toggle,
+      multiChoices: [
+        {
+          field: 'footDeformityTypes',
+          label: 'Déformations du pied',
+          options: FOOT_DEFORMITY_TYPES,
+          commentField: 'footDeformityComment',
+          commentLabel: 'Précisez la déformation'
+        },
+        {
+          field: 'nailConditionTypes',
+          label: 'Affections unguéales',
+          options: NAIL_CONDITION_TYPES,
+          commentField: 'nailConditionComment',
+          commentLabel: "Précisez l'affection"
+        }
+      ],
       skinTypes: SKIN_TYPES,
       footTypes: FOOT_TYPES,
       transpirationTypes: SWEAT_TYPES,
       commentTypes: REMARK_TYPES,
       circulationTypes: CIRCULATION_TYPES,
       dermatoseTypes: DERMATOSIS_TYPES,
-      footDeformityTypes: FOOT_DEFORMITY_TYPES,
-      nailConditionsTypes: NAIL_CONDITION_TYPES,
       otherOption: OTHER_OPTION,
       toes: TOES,
       feet: [
@@ -237,6 +246,55 @@ hr {
 
 .info-block label {
   width: 50%;
+}
+
+.multi-choice {
+  align-items: flex-start;
+}
+
+.multi-choice p {
+  padding-top: 0.4rem;
+}
+
+.choices {
+  width: 30vw;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.info-block .choice {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.choice:hover {
+  border-color: var(--color-border-hover);
+}
+
+.choice.selected {
+  border-color: var(--color-theme);
+  background: var(--color-theme-light);
+}
+
+.choice input {
+  accent-color: var(--color-theme);
+  margin: 0;
+}
+
+.choice:focus-within {
+  outline: 2px solid var(--color-theme);
+  outline-offset: 1px;
 }
 
 .feet {

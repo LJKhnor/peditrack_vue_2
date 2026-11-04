@@ -157,10 +157,13 @@ function yesNo(value: boolean | undefined) {
   return value ? '✅' : '❌'
 }
 
-// « Autres — précision » quand l'option « Autres » est accompagnée d'un commentaire
-function withOtherComment(type: string | null | undefined, comment: string | null | undefined) {
+// Choix multiples séparés par des virgules, « Autres » suivi de sa précision (« Autres — Charcot »)
+function withOtherComment(types: string[] | null | undefined, comment: string | null | undefined) {
   const precision = comment?.trim()
-  return type === OTHER_OPTION && precision ? `${type} — ${precision}` : displayContent(type)
+  const labels = (types ?? []).map((type) =>
+    type === OTHER_OPTION && precision ? `${type} — ${precision}` : type
+  )
+  return labels.length ? labels.join(', ') : '—'
 }
 
 // unknownSide : fiche antérieure à la distinction gauche / droite
@@ -203,11 +206,14 @@ const healthFields = computed(() => {
     { label: 'Type circulatoire', value: displayContent(h.circulationType) },
     { label: 'Type dermatose', value: displayContent(h.dermatosisType) },
     {
-      label: 'Type déformation du pied',
-      value: withOtherComment(h.footDeformityType, h.footDeformityComment)
+      label: 'Déformations du pied',
+      value: withOtherComment(h.footDeformityTypes, h.footDeformityComment)
     },
     { label: 'Type pied', value: displayContent(h.footType) },
-    { label: "Type d'ongle", value: withOtherComment(h.nailConditionType, h.nailConditionComment) },
+    {
+      label: 'Affections unguéales',
+      value: withOtherComment(h.nailConditionTypes, h.nailConditionComment)
+    },
     { label: 'Orteils pied gauche', value: toesSummary(h, 'left') ?? '—' },
     { label: 'Orteils pied droit', value: toesSummary(h, 'right') ?? '—' },
     { label: 'Blessures possibles', value: displayContent(h.possibleWounds) },

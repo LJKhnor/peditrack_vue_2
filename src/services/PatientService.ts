@@ -44,9 +44,10 @@ export interface MedicalFields {
   remarkType: string | null
   circulationType: string | null
   dermatosisType: string | null
-  footDeformityType: string | null
-  nailConditionType: string | null
-  // Précision quand footDeformityType / nailConditionType vaut « Autres » (ignorée sinon par l'API)
+  // Choix multiples (labels de FOOT_DEFORMITY_TYPES / NAIL_CONDITION_TYPES), liste vide si aucun
+  footDeformityTypes: string[]
+  nailConditionTypes: string[]
+  // Précision quand footDeformityTypes / nailConditionTypes contient « Autres » (ignorée sinon par l'API)
   footDeformityComment: string | null
   nailConditionComment: string | null
   // Observations par orteil (R1 = hallux … R5 = petit orteil) et commentaire, pour chaque pied
