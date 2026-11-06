@@ -70,6 +70,23 @@ describe('PatientDetail', () => {
     const fields = mountDetail({})
     expect(fields['Déformations du pied']).toBe('—')
     expect(fields['Affections unguéales']).toBe('—')
+    expect(fields['Transpiration']).toBe('—')
+    expect(fields['Remarques']).toBe('—')
+    expect(fields['Circulation']).toBe('—')
+    expect(fields['Dermatoses']).toBe('—')
+  })
+
+  it('lists several sweat, remark, circulation and dermatosis types', () => {
+    const fields = mountDetail({
+      sweatTypes: ['Hyperhidrose', 'Bromidrose'],
+      remarkTypes: ['Cors'],
+      circulationTypes: ['Pieds froids', 'Varicosités', 'Œdèmes'],
+      dermatosisTypes: []
+    })
+    expect(fields['Transpiration']).toBe('Hyperhidrose, Bromidrose')
+    expect(fields['Remarques']).toBe('Cors')
+    expect(fields['Circulation']).toBe('Pieds froids, Varicosités, Œdèmes')
+    expect(fields['Dermatoses']).toBe('—')
   })
 
   it('summarises the toes of each foot', () => {

@@ -30,78 +30,10 @@
       </select>
     </div>
 
-    <div class="info-block">
-      <p>Transpiration</p>
-      <select
-        name="select-transpiration"
-        class="info-block-input"
-        id="transpiration-{{transpiration}}"
-        v-model="formData.sweatType"
-      >
-        <option></option>
-        <option
-          v-for="transpirationType in transpirationTypes"
-          :value="transpirationType"
-          :key="transpirationType"
-        >
-          {{ transpirationType }}
-        </option>
-      </select>
-    </div>
-
-    <div class="info-block">
-      <p>Remarques</p>
-      <select
-        name="select-comment"
-        class="info-block-input"
-        id="comment-{{commentType}}"
-        v-model="formData.remarkType"
-      >
-        <option></option>
-        <option v-for="commentType in commentTypes" :value="commentType" :key="commentType">
-          {{ commentType }}
-        </option>
-      </select>
-    </div>
-
-    <div class="info-block">
-      <p>Circulation</p>
-      <select
-        name="select-circulation"
-        class="info-block-input"
-        id="circulation-{{circulationType}}"
-        v-model="formData.circulationType"
-      >
-        <option></option>
-        <option
-          v-for="circulationType in circulationTypes"
-          :value="circulationType"
-          :key="circulationType"
-        >
-          {{ circulationType }}
-        </option>
-      </select>
-    </div>
-
-    <div class="info-block">
-      <p>Dermatoses</p>
-      <select
-        name="select-dermatose"
-        class="info-block-input"
-        id="dermatose-{{dermatoseType}}"
-        v-model="formData.dermatosisType"
-      >
-        <option></option>
-        <option v-for="dermatoseType in dermatoseTypes" :value="dermatoseType" :key="dermatoseType">
-          {{ dermatoseType }}
-        </option>
-      </select>
-    </div>
-
-    <hr />
-
-    <!-- Déformations du pied et affections unguéales : choix multiples, « Autres » ouvre une précision -->
+    <!-- Choix multiples : transpiration, remarques, circulation et dermatoses, puis (après le trait)
+         déformations du pied et affections unguéales, dont l'option « Autres » ouvre une précision -->
     <template v-for="group in multiChoices" :key="group.field">
+      <hr v-if="group.separatorBefore" />
       <div class="info-block multi-choice">
         <p :id="`${group.field}-label`">{{ group.label }}</p>
         <div class="choices" role="group" :aria-labelledby="`${group.field}-label`">
@@ -116,13 +48,13 @@
               :name="group.field"
               :value="option"
               :checked="isSelected(group.field, option)"
-              @change="toggle(group.field, option)"
+              @change="toggle(group, option)"
             />
             {{ option }}
           </label>
         </div>
       </div>
-      <div v-if="isSelected(group.field, otherOption)" class="info-block">
+      <div v-if="group.commentField && isSelected(group.field, otherOption)" class="info-block">
         <label :for="group.commentField">{{ group.commentLabel }}</label>
         <input
           class="info-block-input"
@@ -186,12 +118,11 @@ export default {
     const isSelected = (field, option) => selected(field).includes(option)
     // Remplace la liste (le champ peut être absent quand le patient n'a pas encore de fiche santé),
     // en gardant l'ordre des options
-    const toggle = (field, option) => {
+    const toggle = ({ field, options }, option) => {
       const current = selected(field)
       const next = current.includes(option)
         ? current.filter((value) => value !== option)
         : [...current, option]
-      const options = field === 'footDeformityTypes' ? FOOT_DEFORMITY_TYPES : NAIL_CONDITION_TYPES
       props.formData[field] = options.filter((value) => next.includes(value))
     }
 
@@ -199,12 +130,17 @@ export default {
       isSelected,
       toggle,
       multiChoices: [
+        { field: 'sweatTypes', label: 'Transpiration', options: SWEAT_TYPES },
+        { field: 'remarkTypes', label: 'Remarques', options: REMARK_TYPES },
+        { field: 'circulationTypes', label: 'Circulation', options: CIRCULATION_TYPES },
+        { field: 'dermatosisTypes', label: 'Dermatoses', options: DERMATOSIS_TYPES },
         {
           field: 'footDeformityTypes',
           label: 'Déformations du pied',
           options: FOOT_DEFORMITY_TYPES,
           commentField: 'footDeformityComment',
-          commentLabel: 'Précisez la déformation'
+          commentLabel: 'Précisez la déformation',
+          separatorBefore: true
         },
         {
           field: 'nailConditionTypes',
@@ -216,10 +152,6 @@ export default {
       ],
       skinTypes: SKIN_TYPES,
       footTypes: FOOT_TYPES,
-      transpirationTypes: SWEAT_TYPES,
-      commentTypes: REMARK_TYPES,
-      circulationTypes: CIRCULATION_TYPES,
-      dermatoseTypes: DERMATOSIS_TYPES,
       otherOption: OTHER_OPTION,
       toes: TOES,
       feet: [

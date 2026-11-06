@@ -158,7 +158,10 @@ function yesNo(value: boolean | undefined) {
 }
 
 // Choix multiples séparés par des virgules, « Autres » suivi de sa précision (« Autres — Charcot »)
-function withOtherComment(types: string[] | null | undefined, comment: string | null | undefined) {
+function withOtherComment(
+  types: string[] | null | undefined,
+  comment: string | null | undefined = null
+) {
   const precision = comment?.trim()
   const labels = (types ?? []).map((type) =>
     type === OTHER_OPTION && precision ? `${type} — ${precision}` : type
@@ -203,8 +206,8 @@ const healthFields = computed(() => {
     { label: 'Maladies', value: yesNo(h.hasRecentDiseases) },
     { label: 'Opérations', value: yesNo(h.hasRecentOperations) },
     { label: 'Conseils', value: displayContent(h.advice) },
-    { label: 'Type circulatoire', value: displayContent(h.circulationType) },
-    { label: 'Type dermatose', value: displayContent(h.dermatosisType) },
+    { label: 'Circulation', value: withOtherComment(h.circulationTypes) },
+    { label: 'Dermatoses', value: withOtherComment(h.dermatosisTypes) },
     {
       label: 'Déformations du pied',
       value: withOtherComment(h.footDeformityTypes, h.footDeformityComment)
@@ -217,9 +220,9 @@ const healthFields = computed(() => {
     { label: 'Orteils pied gauche', value: toesSummary(h, 'left') ?? '—' },
     { label: 'Orteils pied droit', value: toesSummary(h, 'right') ?? '—' },
     { label: 'Blessures possibles', value: displayContent(h.possibleWounds) },
-    { label: 'Type de remarques', value: displayContent(h.remarkType) },
+    { label: 'Remarques', value: withOtherComment(h.remarkTypes) },
     { label: 'Type de peau', value: displayContent(h.skinType) },
-    { label: 'Type de sueur', value: displayContent(h.sweatType) }
+    { label: 'Transpiration', value: withOtherComment(h.sweatTypes) }
   ]
 })
 

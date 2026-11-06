@@ -346,6 +346,20 @@ function buildMedical(age: number): Json {
   // Choix multiples : le plus souvent un seul, parfois deux
   const footDeformityTypes = chance(0.35) ? pickSome(FOOT_DEFORMITY_TYPES, chance(0.3) ? 2 : 1) : []
   const nailConditionTypes = chance(0.45) ? pickSome(NAIL_CONDITION_TYPES, chance(0.3) ? 2 : 1) : []
+  // « Normale » n'est jamais combinée à une autre transpiration
+  const sweatTypes = chance(0.5)
+    ? chance(0.2)
+      ? pickSome(
+          SWEAT_TYPES.filter((type) => type !== 'Normale'),
+          2
+        )
+      : [pick(SWEAT_TYPES)]
+    : []
+  const remarkTypes = chance(0.6) ? pickSome(REMARK_TYPES, chance(0.3) ? 2 : 1) : []
+  const circulationTypes = chance(age >= 70 ? 0.5 : 0.15)
+    ? pickSome(CIRCULATION_TYPES, chance(0.3) ? 2 : 1)
+    : []
+  const dermatosisTypes = chance(0.15) ? pickSome(DERMATOSIS_TYPES, chance(0.2) ? 2 : 1) : []
 
   return {
     groupType: diabeteType ? int(1, 3) : chance(0.1) ? 1 : 0,
@@ -363,10 +377,10 @@ function buildMedical(age: number): Json {
     drugs: drugs.length ? drugs.join(', ') : null,
     skinType: maybe(0.7, () => pick(SKIN_TYPES)),
     footType: maybe(0.6, () => pick(FOOT_TYPES)),
-    sweatType: maybe(0.5, () => pick(SWEAT_TYPES)),
-    remarkType: maybe(0.6, () => pick(REMARK_TYPES)),
-    circulationType: maybe(age >= 70 ? 0.5 : 0.15, () => pick(CIRCULATION_TYPES)),
-    dermatosisType: maybe(0.15, () => pick(DERMATOSIS_TYPES)),
+    sweatTypes,
+    remarkTypes,
+    circulationTypes,
+    dermatosisTypes,
     footDeformityTypes,
     footDeformityComment: footDeformityTypes.includes(OTHER_OPTION) ? 'Pied de Charcot' : null,
     nailConditionTypes,
@@ -390,20 +404,20 @@ function buildToes(side: 'left' | 'right', hasNailCondition: boolean): Json {
 
 function buildCare(medical: Json, date: Date): Json {
   const nails = (medical.nailConditionTypes ?? []) as string[]
+  const remarks = (medical.remarkTypes ?? []) as string[]
   const acts = ['coupe et fraisage des ongles']
   const side = () => pick(['droit', 'gauche'])
-  if (medical.remarkType === 'Cors') acts.push(`énucléation d'un cor au 5e orteil ${side()}`)
-  if (medical.remarkType === 'Durillons') acts.push('dégraissage des durillons plantaires')
-  if (medical.remarkType === 'Crevasses') acts.push('soin des crevasses talonnières')
-  if (medical.remarkType === 'Phlyctènes') acts.push('protection des phlyctènes')
+  if (remarks.includes('Cors')) acts.push(`énucléation d'un cor au 5e orteil ${side()}`)
+  if (remarks.includes('Durillons')) acts.push('dégraissage des durillons plantaires')
+  if (remarks.includes('Crevasses')) acts.push('soin des crevasses talonnières')
+  if (remarks.includes('Phlyctènes')) acts.push('protection des phlyctènes')
   if (nails.includes('Ongles incarnés')) acts.push(`soin d'ongle incarné, hallux ${side()}`)
   if (nails.includes('Onycomychoses')) acts.push('meulage des ongles mycosés')
   if (nails.includes('Onychogryphoses')) acts.push("réduction d'onychogryphose")
   const care = acts.join(', ')
 
   const tools = ['pince à ongles', 'fraise diamantée']
-  if (medical.remarkType === 'Cors' || medical.remarkType === 'Durillons')
-    tools.push('scalpel lame n°15')
+  if (remarks.includes('Cors') || remarks.includes('Durillons')) tools.push('scalpel lame n°15')
   if (nails.includes('Ongles incarnés')) tools.push('gouge')
 
   const advice = medical.diabeteType

@@ -141,7 +141,9 @@ describe('toCarePayload', () => {
       allergies: null,
       hasLeftHipProsthesis: true,
       footDeformityTypes: ['Hallux valgus', 'Autres'],
-      nailConditionTypes: []
+      nailConditionTypes: [],
+      sweatTypes: ['Hyperhidrose', 'Bromidrose'],
+      remarkTypes: []
     })
     expect(payload.birthdate).toBeInstanceOf(Date)
     expect(payload.date).toBeInstanceOf(Date)
@@ -153,6 +155,8 @@ describe('toCarePayload', () => {
     // Choix multiples envoyés tels quels, liste vide comprise (aucune affection)
     expect(payload.footDeformityTypes).toEqual(['Hallux valgus', 'Autres'])
     expect(payload.nailConditionTypes).toEqual([])
+    expect(payload.sweatTypes).toEqual(['Hyperhidrose', 'Bromidrose'])
+    expect(payload.remarkTypes).toEqual([])
   })
 
   it('leaves an empty or invalid date as is', () => {
@@ -165,6 +169,7 @@ describe('toNewCareForm', () => {
     diabeteType: 2,
     leftToeR1: 'Incarné bord interne',
     footDeformityTypes: ['Hallux valgus', 'Orteils en marteau'],
+    circulationTypes: ['Pieds froids', 'Œdèmes'],
     careDate: '2026-10-01T10:00:00Z',
     care: 'Coupe des ongles',
     usedProducts: 'Bétadine',
@@ -192,7 +197,8 @@ describe('toNewCareForm', () => {
       birthdate: toInputDate('1950-03-02T00:00:00Z'),
       diabeteType: 2,
       leftToeR1: 'Incarné bord interne',
-      footDeformityTypes: ['Hallux valgus', 'Orteils en marteau']
+      footDeformityTypes: ['Hallux valgus', 'Orteils en marteau'],
+      circulationTypes: ['Pieds froids', 'Œdèmes']
     })
   })
 

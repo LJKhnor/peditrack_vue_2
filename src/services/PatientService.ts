@@ -40,11 +40,12 @@ export interface MedicalFields {
   drugs: string | null
   skinType: string | null
   footType: string | null
-  sweatType: string | null
-  remarkType: string | null
-  circulationType: string | null
-  dermatosisType: string | null
-  // Choix multiples (labels de FOOT_DEFORMITY_TYPES / NAIL_CONDITION_TYPES), liste vide si aucun
+  // Choix multiples (labels de SWEAT_TYPES, REMARK_TYPES, CIRCULATION_TYPES, DERMATOSIS_TYPES,
+  // FOOT_DEFORMITY_TYPES, NAIL_CONDITION_TYPES), dans l'ordre des options, liste vide si aucun
+  sweatTypes: string[]
+  remarkTypes: string[]
+  circulationTypes: string[]
+  dermatosisTypes: string[]
   footDeformityTypes: string[]
   nailConditionTypes: string[]
   // Précision quand footDeformityTypes / nailConditionTypes contient « Autres » (ignorée sinon par l'API)

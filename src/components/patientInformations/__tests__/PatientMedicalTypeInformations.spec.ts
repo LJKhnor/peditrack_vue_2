@@ -30,6 +30,51 @@ describe('PatientMedicalTypeInformations', () => {
     expect(checkedOptions(wrapper, 'footDeformityTypes')).toEqual([])
   })
 
+  it('offers every sweat, remark, circulation and dermatosis type as a checkbox', () => {
+    const { wrapper } = mountForm()
+    expect(wrapper.findAll('input[name="sweatTypes"]')).toHaveLength(4)
+    expect(wrapper.findAll('input[name="remarkTypes"]')).toHaveLength(4)
+    expect(wrapper.findAll('input[name="circulationTypes"]')).toHaveLength(5)
+    expect(wrapper.findAll('input[name="dermatosisTypes"]')).toHaveLength(4)
+    // plus de liste déroulante pour ces champs
+    expect(wrapper.findAll('select')).toHaveLength(2)
+  })
+
+  it('selects several values of each new multiple choice, in the order of the options', async () => {
+    const { wrapper, formData } = mountForm()
+
+    await checkbox(wrapper, 'sweatTypes', 'Bromidrose').setValue(true)
+    await checkbox(wrapper, 'sweatTypes', 'Hyperhidrose').setValue(true)
+    await checkbox(wrapper, 'remarkTypes', 'Phlyctènes').setValue(true)
+    await checkbox(wrapper, 'remarkTypes', 'Cors').setValue(true)
+    await checkbox(wrapper, 'circulationTypes', 'Œdèmes').setValue(true)
+    await checkbox(wrapper, 'circulationTypes', 'Pieds froids').setValue(true)
+    await checkbox(wrapper, 'dermatosisTypes', 'Verrues').setValue(true)
+    await checkbox(wrapper, 'dermatosisTypes', 'Eczéma').setValue(true)
+
+    expect(formData.sweatTypes).toEqual(['Hyperhidrose', 'Bromidrose'])
+    expect(formData.remarkTypes).toEqual(['Cors', 'Phlyctènes'])
+    expect(formData.circulationTypes).toEqual(['Pieds froids', 'Œdèmes'])
+    expect(formData.dermatosisTypes).toEqual(['Eczéma', 'Verrues'])
+
+    await checkbox(wrapper, 'remarkTypes', 'Cors').setValue(false)
+    expect(formData.remarkTypes).toEqual(['Phlyctènes'])
+    expect(formData.sweatTypes).toEqual(['Hyperhidrose', 'Bromidrose'])
+  })
+
+  it('shows the sweat, remark, circulation and dermatosis types of the previous care', () => {
+    const { wrapper } = mountForm({
+      sweatTypes: ['Anhidrose'],
+      remarkTypes: ['Durillons', 'Crevasses'],
+      circulationTypes: ['Varicosités'],
+      dermatosisTypes: []
+    })
+    expect(checkedOptions(wrapper, 'sweatTypes')).toEqual(['Anhidrose'])
+    expect(checkedOptions(wrapper, 'remarkTypes')).toEqual(['Durillons', 'Crevasses'])
+    expect(checkedOptions(wrapper, 'circulationTypes')).toEqual(['Varicosités'])
+    expect(checkedOptions(wrapper, 'dermatosisTypes')).toEqual([])
+  })
+
   it('selects several foot deformities, in the order of the options', async () => {
     const { wrapper, formData } = mountForm()
 
