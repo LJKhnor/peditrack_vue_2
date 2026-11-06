@@ -6,7 +6,14 @@ import MdiComponent from '@/components/icons/MdiComponent.vue'
 </script>
 
 <template>
+  <!-- Les tuiles suivent l'ordre des liens de la NavBar -->
   <div class="features-grid">
+    <WelcomeItem to="/data">
+      <template #icon><MdiComponent :mdiValue="mdiDatabaseArrowDown" /></template>
+      <template #heading>Données</template>
+      Exportez et gérez les données médicales de vos patients.
+    </WelcomeItem>
+
     <!-- RDV-DESACTIVE : à réactiver avec la prise de rendez-vous
     <WelcomeItem to="/appointment">
       <template #icon><MdiComponent :mdiValue="mdiCalendarMonth" /></template>
@@ -25,12 +32,6 @@ import MdiComponent from '@/components/icons/MdiComponent.vue'
       <template #icon><MdiComponent :mdiValue="mdiMap" /></template>
       <template #heading>Carte</template>
       Visualisez la localisation géographique de votre patientèle.
-    </WelcomeItem>
-
-    <WelcomeItem to="/data">
-      <template #icon><MdiComponent :mdiValue="mdiDatabaseArrowDown" /></template>
-      <template #heading>Données</template>
-      Exportez et gérez les données médicales de vos patients.
     </WelcomeItem>
   </div>
 </template>
