@@ -41,9 +41,9 @@
           />
         </div>
       </Tab>
-      <Tab name="Informations médicales (suite)" value="type" :activeTab="activeTab">
+      <Tab name="Examen des pieds" value="type" :activeTab="activeTab">
         <div class="container patient-infos">
-          <h2 class="h2-patient">Informations médicales (suites)</h2>
+          <h2 class="h2-patient">Examen des pieds</h2>
           <PatientMedicalTypeInformations v-bind:formData="formData" @update:formData="formData" />
         </div>
       </Tab>

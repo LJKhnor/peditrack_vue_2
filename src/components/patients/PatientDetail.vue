@@ -169,6 +169,25 @@ function withOtherComment(
   return labels.length ? labels.join(', ') : '—'
 }
 
+// Déformations / affections par pied : « Gauche : … · Droit : … · Côté non précisé : … »,
+// « Autres » suivi de sa précision (commune aux deux pieds). unknownSide : fiche antérieure à la
+// distinction gauche / droite
+function perFootLabel(
+  left: string[] | null | undefined,
+  right: string[] | null | undefined,
+  unknownSide: string[] | null | undefined,
+  comment: string | null | undefined
+) {
+  const parts = [
+    ['Gauche', left],
+    ['Droit', right],
+    ['Côté non précisé', unknownSide]
+  ] as const
+  const filled = parts.filter(([, types]) => types?.length)
+  if (!filled.length) return '—'
+  return filled.map(([side, types]) => `${side} : ${withOtherComment(types, comment)}`).join(' · ')
+}
+
 // unknownSide : fiche antérieure à la distinction gauche / droite
 function prosthesisLabel(left?: boolean, right?: boolean, unknownSide?: boolean) {
   if (left && right) return 'Gauche et droite'
@@ -210,12 +229,22 @@ const healthFields = computed(() => {
     { label: 'Dermatoses', value: withOtherComment(h.dermatosisTypes) },
     {
       label: 'Déformations du pied',
-      value: withOtherComment(h.footDeformityTypes, h.footDeformityComment)
+      value: perFootLabel(
+        h.leftFootDeformityTypes,
+        h.rightFootDeformityTypes,
+        h.footDeformityTypes,
+        h.footDeformityComment
+      )
     },
     { label: 'Type pied', value: displayContent(h.footType) },
     {
       label: 'Affections unguéales',
-      value: withOtherComment(h.nailConditionTypes, h.nailConditionComment)
+      value: perFootLabel(
+        h.leftNailConditionTypes,
+        h.rightNailConditionTypes,
+        h.nailConditionTypes,
+        h.nailConditionComment
+      )
     },
     { label: 'Orteils pied gauche', value: toesSummary(h, 'left') ?? '—' },
     { label: 'Orteils pied droit', value: toesSummary(h, 'right') ?? '—' },

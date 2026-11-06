@@ -344,8 +344,16 @@ function buildMedical(age: number): Json {
   })
 
   // Choix multiples : le plus souvent un seul, parfois deux
-  const footDeformityTypes = chance(0.35) ? pickSome(FOOT_DEFORMITY_TYPES, chance(0.3) ? 2 : 1) : []
-  const nailConditionTypes = chance(0.45) ? pickSome(NAIL_CONDITION_TYPES, chance(0.3) ? 2 : 1) : []
+  // Déformations et affections par pied, souvent les mêmes des deux côtés
+  const perFoot = (options: readonly string[], probability: number) => {
+    const left = chance(probability) ? pickSome(options, chance(0.3) ? 2 : 1) : []
+    const right = chance(0.6) ? [...left] : chance(probability) ? pickSome(options, 1) : []
+    return { left, right }
+  }
+  const deformities = perFoot(FOOT_DEFORMITY_TYPES, 0.35)
+  const nails = perFoot(NAIL_CONDITION_TYPES, 0.45)
+  const hasOther = (sides: { left: string[]; right: string[] }) =>
+    [...sides.left, ...sides.right].includes(OTHER_OPTION)
   // « Normale » n'est jamais combinée à une autre transpiration
   const sweatTypes = chance(0.5)
     ? chance(0.2)
@@ -381,12 +389,17 @@ function buildMedical(age: number): Json {
     remarkTypes,
     circulationTypes,
     dermatosisTypes,
-    footDeformityTypes,
-    footDeformityComment: footDeformityTypes.includes(OTHER_OPTION) ? 'Pied de Charcot' : null,
-    nailConditionTypes,
-    nailConditionComment: nailConditionTypes.includes(OTHER_OPTION) ? 'Ongles striés' : null,
-    ...buildToes('left', nailConditionTypes.length > 0),
-    ...buildToes('right', nailConditionTypes.length > 0)
+    // Aucune valeur « côté non précisé » : réservé aux fiches antérieures à la distinction G / D
+    footDeformityTypes: [],
+    leftFootDeformityTypes: deformities.left,
+    rightFootDeformityTypes: deformities.right,
+    footDeformityComment: hasOther(deformities) ? 'Pied de Charcot' : null,
+    nailConditionTypes: [],
+    leftNailConditionTypes: nails.left,
+    rightNailConditionTypes: nails.right,
+    nailConditionComment: hasOther(nails) ? 'Ongles striés' : null,
+    ...buildToes('left', nails.left.length > 0),
+    ...buildToes('right', nails.right.length > 0)
   }
 }
 
@@ -403,7 +416,10 @@ function buildToes(side: 'left' | 'right', hasNailCondition: boolean): Json {
 }
 
 function buildCare(medical: Json, date: Date): Json {
-  const nails = (medical.nailConditionTypes ?? []) as string[]
+  const nails = [
+    ...((medical.leftNailConditionTypes ?? []) as string[]),
+    ...((medical.rightNailConditionTypes ?? []) as string[])
+  ]
   const remarks = (medical.remarkTypes ?? []) as string[]
   const acts = ['coupe et fraisage des ongles']
   const side = () => pick(['droit', 'gauche'])

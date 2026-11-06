@@ -6,7 +6,9 @@ export const DIABETE_TYPES = [1, 2]
 
 export const SKIN_TYPES = ['Normale', 'Pale', 'Cyanosée', 'Sèche', 'Grasse']
 export const FOOT_TYPES = ['Creux', 'Plat', 'Grec', 'Egyptien', 'Carré', 'Normal']
-export const SWEAT_TYPES = ['Hyperhidrose', 'Anhidrose', 'Bromidrose', 'Normale']
+// « Normale » ne se combine avec aucun autre type de transpiration (option exclusive du formulaire)
+export const NORMAL_SWEAT = 'Normale'
+export const SWEAT_TYPES = ['Hyperhidrose', 'Anhidrose', 'Bromidrose', NORMAL_SWEAT]
 export const REMARK_TYPES = ['Cors', 'Durillons', 'Crevasses', 'Phlyctènes']
 export const CIRCULATION_TYPES = [
   'Pieds froids',

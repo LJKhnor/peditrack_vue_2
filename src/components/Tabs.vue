@@ -37,7 +37,7 @@ export default {
       tabs: [
         { name: 'Informations personnelles', value: 'personal' },
         { name: 'Informations médicales', value: 'medical' },
-        { name: 'Informations médicales (suite)', value: 'type' },
+        { name: 'Examen des pieds', value: 'type' },
         { name: 'Soins Prodigués', value: 'care' }
       ]
     }

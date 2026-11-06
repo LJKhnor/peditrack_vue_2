@@ -169,6 +169,8 @@ describe('toNewCareForm', () => {
     diabeteType: 2,
     leftToeR1: 'Incarné bord interne',
     footDeformityTypes: ['Hallux valgus', 'Orteils en marteau'],
+    leftFootDeformityTypes: ['Quintus varus'],
+    rightNailConditionTypes: ['Ongles incarnés'],
     circulationTypes: ['Pieds froids', 'Œdèmes'],
     careDate: '2026-10-01T10:00:00Z',
     care: 'Coupe des ongles',
@@ -198,6 +200,8 @@ describe('toNewCareForm', () => {
       diabeteType: 2,
       leftToeR1: 'Incarné bord interne',
       footDeformityTypes: ['Hallux valgus', 'Orteils en marteau'],
+      leftFootDeformityTypes: ['Quintus varus'],
+      rightNailConditionTypes: ['Ongles incarnés'],
       circulationTypes: ['Pieds froids', 'Œdèmes']
     })
   })

@@ -46,9 +46,16 @@ export interface MedicalFields {
   remarkTypes: string[]
   circulationTypes: string[]
   dermatosisTypes: string[]
+  // Côté non précisé (fiches antérieures à la distinction gauche / droite) : une valeur aussi cochée
+  // pour un pied y est retirée par l'API
   footDeformityTypes: string[]
   nailConditionTypes: string[]
-  // Précision quand footDeformityTypes / nailConditionTypes contient « Autres » (ignorée sinon par l'API)
+  leftFootDeformityTypes: string[]
+  rightFootDeformityTypes: string[]
+  leftNailConditionTypes: string[]
+  rightNailConditionTypes: string[]
+  // Précision quand une liste de déformations / d'affections (quel que soit le côté) contient « Autres »
+  // (ignorée sinon par l'API)
   footDeformityComment: string | null
   nailConditionComment: string | null
   // Observations par orteil (R1 = hallux … R5 = petit orteil) et commentaire, pour chaque pied

@@ -35,34 +35,50 @@ afterEach(() => {
 describe('PatientDetail', () => {
   it('shows the precision of an "Autres" deformity and nail condition', () => {
     const fields = mountDetail({
-      footDeformityTypes: ['Autres'],
+      rightFootDeformityTypes: ['Autres'],
       footDeformityComment: 'Pied de Charcot',
-      nailConditionTypes: ['Autres'],
+      leftNailConditionTypes: ['Autres'],
       nailConditionComment: 'Ongles striés'
     })
-    expect(fields['Déformations du pied']).toBe('Autres — Pied de Charcot')
-    expect(fields['Affections unguéales']).toBe('Autres — Ongles striés')
+    expect(fields['Déformations du pied']).toBe('Droit : Autres — Pied de Charcot')
+    expect(fields['Affections unguéales']).toBe('Gauche : Autres — Ongles striés')
   })
 
-  it('lists several deformities and nail conditions, with the "Autres" precision', () => {
+  it('lists the deformities and nail conditions of each foot', () => {
     const fields = mountDetail({
-      footDeformityTypes: ['Orteils en marteau', 'Hallux valgus', 'Autres'],
+      leftFootDeformityTypes: ['Orteils en marteau', 'Hallux valgus'],
+      rightFootDeformityTypes: ['Hallux valgus', 'Autres'],
       footDeformityComment: 'Pied de Charcot',
-      nailConditionTypes: ['Onycomychoses', 'Ongles incarnés']
+      leftNailConditionTypes: [],
+      rightNailConditionTypes: ['Onycomychoses', 'Ongles incarnés']
     })
     expect(fields['Déformations du pied']).toBe(
-      'Orteils en marteau, Hallux valgus, Autres — Pied de Charcot'
+      'Gauche : Orteils en marteau, Hallux valgus · Droit : Hallux valgus, Autres — Pied de Charcot'
     )
-    expect(fields['Affections unguéales']).toBe('Onycomychoses, Ongles incarnés')
+    expect(fields['Affections unguéales']).toBe('Droit : Onycomychoses, Ongles incarnés')
   })
 
-  it('shows only the types when there is no "Autres", and a dash when there is none', () => {
+  it('shows the values without side of an older record', () => {
     const fields = mountDetail({
       footDeformityTypes: ['Hallux valgus'],
       footDeformityComment: 'ancien commentaire',
+      leftFootDeformityTypes: ['Quintus varus'],
+      nailConditionTypes: ['Onycholyses']
+    })
+    expect(fields['Déformations du pied']).toBe(
+      'Gauche : Quintus varus · Côté non précisé : Hallux valgus'
+    )
+    expect(fields['Affections unguéales']).toBe('Côté non précisé : Onycholyses')
+  })
+
+  it('shows a dash when no foot has a deformity nor a nail condition', () => {
+    const fields = mountDetail({
+      footDeformityTypes: [],
+      leftFootDeformityTypes: [],
+      rightFootDeformityTypes: [],
       nailConditionTypes: []
     })
-    expect(fields['Déformations du pied']).toBe('Hallux valgus')
+    expect(fields['Déformations du pied']).toBe('—')
     expect(fields['Affections unguéales']).toBe('—')
   })
 
