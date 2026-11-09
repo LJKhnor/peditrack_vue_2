@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // RDV-DESACTIVE : remettre mdiCalendarMonth avec la carte Rendez-vous
-import { mdiAccountGroup, mdiMap, mdiDatabaseArrowDown } from '@mdi/js'
+import { mdiAccountGroup, mdiMap, mdiDatabaseArrowDown, mdiChartBar } from '@mdi/js'
 import WelcomeItem from './WelcomeItem.vue'
 import MdiComponent from '@/components/icons/MdiComponent.vue'
 </script>
@@ -32,6 +32,12 @@ import MdiComponent from '@/components/icons/MdiComponent.vue'
       <template #icon><MdiComponent :mdiValue="mdiMap" /></template>
       <template #heading>Carte</template>
       Visualisez la localisation géographique de votre patientèle.
+    </WelcomeItem>
+
+    <WelcomeItem to="/stats">
+      <template #icon><MdiComponent :mdiValue="mdiChartBar" /></template>
+      <template #heading>Statistiques</template>
+      Suivez l'activité de votre cabinet.
     </WelcomeItem>
   </div>
 </template>

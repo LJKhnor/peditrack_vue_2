@@ -22,6 +22,7 @@
         <!-- RDV-DESACTIVE : <RouterLink to="/appointment" @click="closeMenu">Rendez-vous</RouterLink> -->
         <RouterLink to="/patient" @click="closeMenu">Patients</RouterLink>
         <RouterLink to="/map" @click="closeMenu">Carte</RouterLink>
+        <RouterLink to="/stats" @click="closeMenu">Statistiques</RouterLink>
       </nav>
 
       <div class="navbar-user">

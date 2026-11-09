@@ -84,6 +84,14 @@ const router = createRouter({
       meta: {
         requiresAuth: true // Add meta field to indicate protected route
       }
+    },
+    {
+      path: '/stats',
+      name: 'stats',
+      component: () => import('../views/StatsView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
