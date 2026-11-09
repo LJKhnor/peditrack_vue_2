@@ -3,8 +3,10 @@
     <h1>Statistiques</h1>
 
     <p v-if="loading" class="stats-status">Chargement des statistiques…</p>
-    <p v-else-if="error" class="stats-status stats-error" role="alert">{{ error }}</p>
 
+    <p v-else-if="activityError" class="stats-status stats-error" role="alert">
+      {{ activityError }}
+    </p>
     <section v-else-if="activity" class="stats-section" aria-labelledby="activity-title">
       <h2 id="activity-title">Activité</h2>
 
@@ -38,24 +40,7 @@
       <article class="card">
         <header class="card-header">
           <h3>Soins</h3>
-          <div class="segmented" role="group" aria-label="Période des soins">
-            <button
-              type="button"
-              :aria-pressed="careView === 'month'"
-              :class="{ active: careView === 'month' }"
-              @click="careView = 'month'"
-            >
-              Par mois
-            </button>
-            <button
-              type="button"
-              :aria-pressed="careView === 'week'"
-              :class="{ active: careView === 'week' }"
-              @click="careView = 'week'"
-            >
-              Par semaine
-            </button>
-          </div>
+          <SegmentedControl v-model="careView" :options="careViews" label="Période des soins" />
         </header>
         <p class="card-subtitle">
           {{
@@ -92,12 +77,22 @@
         </article>
       </div>
     </section>
+
+    <template v-if="!loading">
+      <p v-if="patientsError" class="stats-status stats-error" role="alert">
+        {{ patientsError }}
+      </p>
+      <FollowUpSection v-else :patients="patients" :today="today" />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import ColumnChart from '@/components/stats/ColumnChart.vue'
+import FollowUpSection from '@/components/stats/FollowUpSection.vue'
+import SegmentedControl from '@/components/stats/SegmentedControl.vue'
+import { getPatientSummaries, type PatientSummary } from '@/services/PatientService'
 import { getActivityStats, type ActivityStats } from '@/services/StatsService'
 import {
   activitySummary,
@@ -109,18 +104,31 @@ import {
 
 const today = new Date()
 const activity = ref<ActivityStats | null>(null)
+// Liste des patients (GET /patients/summary) : dernier soin, rythme habituel, alertes, téléphones
+const patients = ref<PatientSummary[]>([])
 const loading = ref(true)
-const error = ref('')
+const activityError = ref('')
+const patientsError = ref('')
 const careView = ref<'month' | 'week'>('month')
+const careViews = [
+  { value: 'month' as const, label: 'Par mois' },
+  { value: 'week' as const, label: 'Par semaine' }
+]
 
+// Chaque section s'affiche même si l'autre requête échoue
 onMounted(async () => {
-  try {
-    activity.value = await getActivityStats()
-  } catch {
-    error.value = 'Impossible de charger les statistiques. Réessayez dans quelques instants.'
-  } finally {
-    loading.value = false
+  const [activityResult, patientsResult] = await Promise.allSettled([
+    getActivityStats(),
+    getPatientSummaries()
+  ])
+  if (activityResult.status === 'fulfilled') activity.value = activityResult.value
+  else activityError.value = "Impossible de charger l'activité. Réessayez dans quelques instants."
+  if (patientsResult.status === 'fulfilled') patients.value = patientsResult.value
+  else {
+    patientsError.value =
+      'Impossible de charger les patients à relancer. Réessayez dans quelques instants.'
   }
+  loading.value = false
 })
 
 const cares = computed(() => activity.value?.cares ?? [])
@@ -157,7 +165,7 @@ function capitalize(value: string) {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 2rem;
 }
 
 h1 {
@@ -257,33 +265,6 @@ h3 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-}
-
-.segmented {
-  display: inline-flex;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.segmented button {
-  padding: 0.375rem 0.75rem;
-  border: none;
-  background: var(--color-surface);
-  color: var(--color-text);
-  font: inherit;
-  font-size: 0.8125rem;
-  cursor: pointer;
-}
-
-.segmented button + button {
-  border-left: 1px solid var(--color-border);
-}
-
-.segmented button.active {
-  background: var(--color-theme-light);
-  color: var(--color-theme);
-  font-weight: 600;
 }
 
 @media (max-width: 900px) {

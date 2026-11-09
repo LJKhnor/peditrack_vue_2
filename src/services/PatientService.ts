@@ -90,6 +90,9 @@ export interface PatientSummary extends Patient {
   withBleedingDisorder: boolean
   withHeartDisorder: boolean
   hasAllergies: boolean
+  // Rythme habituel des soins en jours (médiane des 5 derniers intervalles entre deux jours de soin),
+  // null avec moins de deux jours de soin
+  careInterval: number | null
 }
 
 export interface PatientRecord {

@@ -1,6 +1,14 @@
 import { describe, it, expect } from 'vitest'
+import type { PatientSummary } from '@/services/PatientService'
 import {
   activitySummary,
+  daysBetween,
+  formatDuration,
+  formatRhythm,
+  isAtRisk,
+  latePatients,
+  telHref,
+  unknownRhythmCount,
   monthlyColumns,
   parseDay,
   weekdayColumns,
@@ -112,5 +120,98 @@ describe('activitySummary', () => {
     const summary = activitySummary([{ date: '2025-12-20', count: 2 }], new Date(2026, 0, 5))
     expect(summary.lastMonth).toBe(2)
     expect(summary.yearToDate).toBe(0)
+  })
+})
+
+const summary = (overrides: Partial<PatientSummary> = {}): PatientSummary => ({
+  id: 1,
+  name: 'Dupont',
+  firstname: 'Élise',
+  lastVisit: null,
+  careInterval: null,
+  diabeteType: 0,
+  withBleedingDisorder: false,
+  withHeartDisorder: false,
+  hasAllergies: false,
+  ...overrides
+})
+
+describe('daysBetween', () => {
+  it('counts whole days, across a daylight saving change', () => {
+    expect(daysBetween(new Date(2026, 9, 20, 18), new Date(2026, 10, 9, 8))).toBe(20)
+  })
+})
+
+describe('latePatients', () => {
+  it('lists the patients not seen for more than 1.5 times their usual interval', () => {
+    const late = latePatients(
+      [
+        // rythme 28 jours, vu il y a 42 jours : exactement 1,5 fois, pas encore en retard
+        summary({ id: 1, lastVisit: '2026-09-28T00:00:00Z', careInterval: 28 }),
+        // rythme 28 jours, vu il y a 43 jours : en retard, attendu depuis 15 jours
+        summary({ id: 2, lastVisit: '2026-09-27T00:00:00Z', careInterval: 28 }),
+        // rythme inconnu (un seul soin) ou jamais soigné : jamais en retard
+        summary({ id: 3, lastVisit: '2025-01-01T00:00:00Z', careInterval: null }),
+        summary({ id: 4, lastVisit: null, careInterval: null })
+      ],
+      today
+    )
+    expect(late.map((item) => item.patient.id)).toEqual([2])
+    expect(late[0]).toMatchObject({ interval: 28, overdueDays: 15, atRisk: false })
+  })
+
+  it('puts the most recently late patients first and flags the patients at risk', () => {
+    const late = latePatients(
+      [
+        summary({ id: 1, lastVisit: '2025-11-09T00:00:00Z', careInterval: 42 }),
+        summary({ id: 2, lastVisit: '2026-08-01T00:00:00Z', careInterval: 42, diabeteType: 2 })
+      ],
+      today
+    )
+    expect(late.map((item) => [item.patient.id, item.atRisk])).toEqual([
+      [2, true],
+      [1, false]
+    ])
+  })
+})
+
+describe('isAtRisk', () => {
+  it('means diabetes, bleeding disorder or heart disorder, not allergies', () => {
+    expect(isAtRisk(summary({ diabeteType: 1 }))).toBe(true)
+    expect(isAtRisk(summary({ withBleedingDisorder: true }))).toBe(true)
+    expect(isAtRisk(summary({ withHeartDisorder: true }))).toBe(true)
+    expect(isAtRisk(summary({ hasAllergies: true }))).toBe(false)
+  })
+})
+
+describe('unknownRhythmCount', () => {
+  it('counts the patients cared for only once', () => {
+    expect(
+      unknownRhythmCount([
+        summary({ lastVisit: '2026-01-01T00:00:00Z', careInterval: null }),
+        summary({ lastVisit: '2026-01-01T00:00:00Z', careInterval: 30 }),
+        summary({ lastVisit: null })
+      ])
+    ).toBe(1)
+  })
+})
+
+describe('formatDuration and formatRhythm', () => {
+  it('uses days, then weeks, then months, then years', () => {
+    expect(formatDuration(1)).toBe('1 jour')
+    expect(formatDuration(10)).toBe('10 jours')
+    expect(formatDuration(21)).toBe('3 sem.')
+    expect(formatDuration(150)).toBe('5 mois')
+    expect(formatDuration(800)).toBe('2 ans')
+    expect(formatRhythm(10)).toBe('tous les 10 jours')
+    expect(formatRhythm(42)).toBe('toutes les 6 sem.')
+    expect(formatRhythm(91)).toBe('tous les 3 mois')
+  })
+})
+
+describe('telHref', () => {
+  it('keeps only digits and the plus sign', () => {
+    expect(telHref('0471 23 45 67')).toBe('tel:0471234567')
+    expect(telHref('+32 (0)471/23.45.67')).toBe('tel:+320471234567')
   })
 })

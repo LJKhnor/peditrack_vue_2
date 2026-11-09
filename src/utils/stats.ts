@@ -1,3 +1,4 @@
+import type { PatientSummary } from '@/services/PatientService'
 import type { DailyCount } from '@/services/StatsService'
 
 // Une colonne de graphique : valeur de la période et, en option, valeur de comparaison
@@ -154,3 +155,76 @@ export function activitySummary(counts: DailyCount[], today: Date): ActivitySumm
   }
   return summary
 }
+
+// Un patient est en retard quand son dernier soin date de plus de LATE_FACTOR fois son rythme habituel
+export const LATE_FACTOR = 1.5
+
+export interface LatePatient {
+  patient: PatientSummary
+  lastCare: Date
+  // Rythme habituel (careInterval), en jours
+  interval: number
+  // Jours écoulés depuis la date attendue du soin suivant (dernier soin + rythme habituel)
+  overdueDays: number
+  atRisk: boolean
+}
+
+const DAY = 86_400_000
+const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+// Nombre de jours entre deux dates (arrondi : un changement d'heure ne décale pas d'un jour)
+export const daysBetween = (from: Date, to: Date) =>
+  Math.round((startOfDay(to).getTime() - startOfDay(from).getTime()) / DAY)
+
+// Patient à risque : mêmes alertes que la liste « Données », sauf les allergies
+export const isAtRisk = (
+  patient: Pick<PatientSummary, 'diabeteType' | 'withBleedingDisorder' | 'withHeartDisorder'>
+) => Boolean(patient.diabeteType) || patient.withBleedingDisorder || patient.withHeartDisorder
+
+// Patients en retard sur leur rythme habituel, les plus récemment en retard en premier
+export function latePatients(
+  patients: PatientSummary[],
+  today: Date,
+  factor = LATE_FACTOR
+): LatePatient[] {
+  return patients
+    .flatMap((patient) => {
+      if (!patient.careInterval || !patient.lastVisit) return []
+      const lastCare = new Date(patient.lastVisit)
+      if (isNaN(lastCare.getTime())) return []
+      const elapsed = daysBetween(lastCare, today)
+      if (elapsed <= factor * patient.careInterval) return []
+      return [
+        {
+          patient,
+          lastCare,
+          interval: patient.careInterval,
+          overdueDays: elapsed - patient.careInterval,
+          atRisk: isAtRisk(patient)
+        }
+      ]
+    })
+    .sort((a, b) => a.overdueDays - b.overdueDays)
+}
+
+// Patients soignés une seule fois : rythme inconnu, ils ne peuvent pas être en retard
+export const unknownRhythmCount = (patients: PatientSummary[]) =>
+  patients.filter((patient) => patient.lastVisit && !patient.careInterval).length
+
+// Durée lisible : jours sous 2 semaines, semaines sous 2 mois, puis mois
+export function formatDuration(days: number): string {
+  if (days < 14) return `${days} jour${days > 1 ? 's' : ''}`
+  if (days < 60) return `${Math.round(days / 7)} sem.`
+  const months = Math.round(days / 30.4)
+  if (months < 24) return `${months} mois`
+  return `${Math.floor(months / 12)} ans`
+}
+
+export function formatRhythm(days: number): string {
+  if (days < 14) return days > 1 ? `tous les ${days} jours` : 'tous les jours'
+  if (days < 60) return `toutes les ${Math.round(days / 7)} sem.`
+  return `tous les ${Math.round(days / 30.4)} mois`
+}
+
+// Lien d'appel : chiffres et « + » seulement
+export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`
