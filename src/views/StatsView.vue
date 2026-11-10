@@ -36,7 +36,14 @@
         tabindex="0"
         class="stats-panel"
       >
-        <template v-if="tab.value === 'activite'">
+        <template v-if="tab.value === 'clinique'">
+          <p v-if="clinicalError" class="stats-status stats-error" role="alert">
+            {{ clinicalError }}
+          </p>
+          <ClinicalSection v-else-if="clinical" :clinical="clinical" />
+        </template>
+
+        <template v-else-if="tab.value === 'activite'">
           <p v-if="activityError" class="stats-status stats-error" role="alert">
             {{ activityError }}
           </p>
@@ -63,24 +70,32 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ActivitySection from '@/components/stats/ActivitySection.vue'
+import ClinicalSection from '@/components/stats/ClinicalSection.vue'
 import FollowUpSection from '@/components/stats/FollowUpSection.vue'
 import PatientsSection from '@/components/stats/PatientsSection.vue'
 import { getPatientSummaries, type PatientSummary } from '@/services/PatientService'
-import { getActivityStats, type ActivityStats } from '@/services/StatsService'
+import {
+  getActivityStats,
+  getClinicalStats,
+  type ActivityStats,
+  type ClinicalStats
+} from '@/services/StatsService'
 import { latePatients } from '@/utils/stats'
 
-type TabValue = 'patientele' | 'activite' | 'relances'
+type TabValue = 'patientele' | 'activite' | 'relances' | 'clinique'
 
 const route = useRoute()
 const router = useRouter()
 
 const today = new Date()
 const activity = ref<ActivityStats | null>(null)
+const clinical = ref<ClinicalStats | null>(null)
 // Liste des patients (GET /patients/summary) : dernier soin, rythme habituel, alertes, téléphones,
 // date de naissance, mutualité, médecin
 const patients = ref<PatientSummary[]>([])
 const loading = ref(true)
 const activityError = ref('')
+const clinicalError = ref('')
 const patientsError = ref('')
 
 const lateCount = computed(() =>
@@ -90,7 +105,8 @@ const lateCount = computed(() =>
 const tabs = computed<{ value: TabValue; label: string; count?: number }[]>(() => [
   { value: 'patientele', label: 'Patientèle' },
   { value: 'activite', label: 'Activité' },
-  { value: 'relances', label: 'Patients à relancer', count: lateCount.value }
+  { value: 'relances', label: 'Patients à relancer', count: lateCount.value },
+  { value: 'clinique', label: 'Profil clinique' }
 ])
 
 // Onglet actif dans l'URL (?onglet=…) : il est conservé au rechargement de la page
@@ -119,17 +135,23 @@ function onTabKeydown(event: KeyboardEvent, index: number) {
   tabButtons.value[target]?.focus()
 }
 
-// Chaque partie s'affiche même si l'autre requête échoue
+// Chaque onglet s'affiche même si la requête d'un autre échoue
 onMounted(async () => {
-  const [activityResult, patientsResult] = await Promise.allSettled([
+  const [activityResult, patientsResult, clinicalResult] = await Promise.allSettled([
     getActivityStats(),
-    getPatientSummaries()
+    getPatientSummaries(),
+    getClinicalStats()
   ])
   if (activityResult.status === 'fulfilled') activity.value = activityResult.value
   else activityError.value = "Impossible de charger l'activité. Réessayez dans quelques instants."
   if (patientsResult.status === 'fulfilled') patients.value = patientsResult.value
   else {
     patientsError.value = 'Impossible de charger les patients. Réessayez dans quelques instants.'
+  }
+  if (clinicalResult.status === 'fulfilled') clinical.value = clinicalResult.value
+  else {
+    clinicalError.value =
+      'Impossible de charger le profil clinique. Réessayez dans quelques instants.'
   }
   loading.value = false
 })

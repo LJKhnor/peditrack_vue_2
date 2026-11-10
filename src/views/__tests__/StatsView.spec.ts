@@ -5,7 +5,18 @@ import StatsView from '../StatsView.vue'
 import type { PatientSummary } from '@/services/PatientService'
 
 vi.mock('@/services/StatsService', () => ({
-  getActivityStats: vi.fn(async () => ({ cares: [], newPatients: [] }))
+  getActivityStats: vi.fn(async () => ({ cares: [], newPatients: [] })),
+  getClinicalStats: vi.fn(async () => ({
+    patients: 1,
+    diabetesType1: 0,
+    diabetesType2: 1,
+    diabeticsByGroup: [{ label: '2', count: 1 }],
+    bleedingDisorder: 0,
+    heartDisorder: 0,
+    nailConditions: [],
+    footDeformities: [],
+    remarks: []
+  }))
 }))
 
 // vi.mock est remonté en tête du fichier : la donnée de test doit l'être aussi
@@ -57,7 +68,8 @@ describe('StatsView', () => {
     expect(tabs.map((tab) => tab.text())).toEqual([
       'Patientèle',
       'Activité',
-      'Patients à relancer 1'
+      'Patients à relancer 1',
+      'Profil clinique'
     ])
     expect(tabs[0].attributes('aria-selected')).toBe('true')
     expect(visiblePanel(wrapper)).toEqual(['panel-patientele'])

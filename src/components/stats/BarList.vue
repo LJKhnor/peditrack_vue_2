@@ -2,7 +2,10 @@
   <!-- Classement en barres horizontales : le libellé, la barre, puis le nombre et la part du total -->
   <ol class="bar-list" :aria-label="label">
     <li v-for="item in items" :key="item.key" class="bar-row">
-      <span class="bar-label">{{ item.label }}</span>
+      <span class="bar-label">
+        {{ item.label }}
+        <span v-if="item.detail" class="bar-detail">{{ item.detail }}</span>
+      </span>
       <span class="bar-track" aria-hidden="true">
         <span class="bar" :style="{ width: `${(item.value / max) * 100}%` }"></span>
       </span>
@@ -28,6 +31,13 @@ const max = computed(() => Math.max(1, ...props.items.map((item) => item.value))
 </script>
 
 <style scoped>
+/* Précision sous le libellé (répartition pied gauche / pied droit) */
+.bar-detail {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
 .bar-list {
   --series-current: var(--color-series-current);
   list-style: none;

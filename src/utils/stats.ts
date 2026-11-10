@@ -1,6 +1,6 @@
 import type { PatientSummary } from '@/services/PatientService'
 import { computeAge } from '@/utils/patient'
-import type { DailyCount } from '@/services/StatsService'
+import type { DailyCount, FootConditionCount, LabelCount } from '@/services/StatsService'
 
 // Une colonne de graphique : valeur de la période et, en option, valeur de comparaison
 export interface Column {
@@ -237,6 +237,8 @@ export interface RankedItem {
   key: string
   label: string
   value: number
+  // Précision affichée sous le libellé (BarList)
+  detail?: string
 }
 
 export interface Ranking {
@@ -342,3 +344,39 @@ export function ageDistribution(
 // Part d'un total en pourcentage arrondi (« 16 % »)
 export const share = (value: number, total: number) =>
   total ? `${Math.round((value / total) * 100)} %` : '—'
+
+const byCountThenLabel = (a: RankedItem, b: RankedItem) =>
+  b.value - a.value || a.label.localeCompare(b.label, 'fr')
+
+// Remarques (ou autre liste de comptes) présentes chez au moins un patient, de la plus fréquente à la moins
+export function labelCountItems(counts: LabelCount[]): RankedItem[] {
+  return counts
+    .filter((count) => count.count > 0)
+    .map((count) => ({ key: count.label, label: count.label, value: count.count }))
+    .sort(byCountThenLabel)
+}
+
+// Affections unguéales / déformations présentes, avec la répartition par pied sous le libellé
+export function footConditionItems(counts: FootConditionCount[]): RankedItem[] {
+  return counts
+    .filter((count) => count.patients > 0)
+    .map((count) => ({
+      key: count.label,
+      label: count.label,
+      value: count.patients,
+      detail:
+        `Pied gauche : ${count.left} · pied droit : ${count.right}` +
+        (count.unknownSide ? ` · côté non précisé : ${count.unknownSide}` : '')
+    }))
+    .sort(byCountThenLabel)
+}
+
+// Diabétiques par groupe, dans l'ordre des groupes (1 à 4) ; « groupe non renseigné » en dernier, s'il y en a
+export function diabeticGroupItems(groups: LabelCount[]): RankedItem[] {
+  const items = groups
+    .filter((group) => group.label !== '0')
+    .map((group) => ({ key: group.label, label: `Groupe ${group.label}`, value: group.count }))
+  const withoutGroup = groups.find((group) => group.label === '0')?.count ?? 0
+  if (withoutGroup) items.push({ key: '0', label: 'Groupe non renseigné', value: withoutGroup })
+  return items
+}
