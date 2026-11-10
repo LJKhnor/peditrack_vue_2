@@ -211,7 +211,7 @@ const healthFields = computed(() => {
     { label: 'Groupe', value: h.groupType ? `Groupe ${h.groupType}` : '—' },
     { label: 'Allergies', value: displayContent(h.allergies) },
     { label: 'Médicaments', value: displayContent(h.drugs) },
-    { label: 'Problèmes sanguins', value: yesNo(h.withBleedingDisorder) },
+    { label: 'Troubles de la coagulation', value: yesNo(h.withBleedingDisorder) },
     { label: 'Problèmes cardiaques', value: yesNo(h.withHeartDisorder) },
     { label: 'Problèmes thyroïdiens', value: yesNo(h.withThyroideDisorder) },
     {

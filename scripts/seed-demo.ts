@@ -1,6 +1,6 @@
 /**
- * Compte de démonstration LOCAL : crée (ou réutilise) le compte « demo » et le remplit
- * d'environ 100 patients fictifs avec leur historique de soins.
+ * Comptes de démonstration LOCAUX : crée (ou réutilise) les comptes « demo1 » à « demo10 » et
+ * remplit chacun de 50 patients fictifs ayant 10 à 20 soins.
  *
  * Tout passe par l'API REST, comme le frontend : les champs sensibles sont donc chiffrés par
  * le backend exactement comme de vraies données.
@@ -8,11 +8,14 @@
  *   npm run seed:demo
  *
  * Variables d'environnement :
- *   DEMO_API_URL           défaut http://localhost:8085/api (refusé s'il ne pointe pas en local)
- *   DEMO_REGISTRATION_KEY  clé d'inscription libre, nécessaire seulement à la 1re exécution
+ *   DEMO_API_URL            défaut http://localhost:8085/api (refusé s'il ne pointe pas en local)
  *
- * Rejouable : les patients déjà présents sur le compte démo sont supprimés (suppression
- * logique côté backend) avant d'être recréés. Les données sont déterministes (graine fixe).
+ * Clés d'inscription : constante REGISTRATION_KEYS ci-dessous, une clé libre par compte qui n'existe
+ * pas encore (une inscription consomme sa clé). Inutiles quand les 10 comptes existent déjà.
+ *
+ * Rejouable : les patients déjà présents sur un compte démo sont supprimés (suppression
+ * logique côté backend) avant d'être recréés. Les données sont déterministes (une graine fixe
+ * par compte, chaque compte a donc ses propres patients).
  * Les positions sur la carte apparaissent après le passage du géocodage Nominatim (toutes les 4 h).
  */
 import {
@@ -29,17 +32,42 @@ import {
 } from '../src/constants/patientOptions'
 
 const API_URL = process.env.DEMO_API_URL ?? 'http://localhost:8085/api'
-const REGISTRATION_KEY = process.env.DEMO_REGISTRATION_KEY
 
-const DEMO_USER = {
-  username: 'demo',
-  mail: 'demo@example.com',
-  password: 'Demo2026!'
+// Clés d'inscription libres de la base LOCALE, une par compte démo à créer (une inscription consomme
+// sa clé). Inutiles une fois les comptes créés : le script se reconnecte alors avec leur mot de passe.
+const REGISTRATION_KEYS: string[] = [
+  '8B28-D8D1-C52C-061C',
+  '82EA-EAC9-1B81-EBED',
+  '25FB-3B1F-A359-4E65',
+  'D1F9-6A1B-7896-6155',
+  'F667-6EA2-1318-3EFC',
+  'F862-5FF0-1994-71E7',
+  '2813-FB7C-0DCF-97BB',
+  '11DA-A886-2F30-E3BC',
+  'FFDE-15E7-D362-38CD',
+  '8589-E1C4-1F8B-DE6F'
+]
+
+const ACCOUNT_COUNT = 10
+const DEMO_PASSWORD = 'Demo2026!'
+
+interface DemoUser {
+  username: string
+  mail: string
+  password: string
 }
+
+const demoUser = (number: number): DemoUser => ({
+  username: `demo${number}`,
+  mail: `demo${number}@example.com`,
+  password: DEMO_PASSWORD
+})
 // Adresse publique (hôtel de ville de Namur) : centre de la carte et des zones de chalandise
 const DEMO_ADDRESS = { street: "Place d'Armes 1", postalCode: '5000', locality: 'Namur' }
 
-const PATIENT_COUNT = 100
+const PATIENTS_PER_ACCOUNT = 50
+const MIN_CARES = 10
+const MAX_CARES = 20
 const CONCURRENCY = 4
 const SEED = 20261103
 
@@ -462,18 +490,19 @@ function buildCare(medical: Json, date: Date): Json {
 }
 
 function buildCares(medical: Json): Json[] {
-  // Premier soin entre il y a 2 ans et la semaine passée, puis un soin toutes les 5 à 10 semaines
-  let date = addDays(today, -int(7, 730))
-  const cares: Json[] = []
-  while (date < today && cares.length < 8) {
-    cares.push(buildCare(medical, date))
-    date = addDays(date, int(35, 70))
+  // Dernier soin récent pour la plupart des patients, plus ancien pour ~20 % d'entre eux (qui
+  // apparaissent dans « Patients à relancer »), puis en remontant un soin toutes les 5 à 10 semaines
+  let date = addDays(today, -(chance(0.8) ? int(3, 60) : int(61, 240)))
+  const dates: Date[] = []
+  for (let count = int(MIN_CARES, MAX_CARES); count > 0; count--) {
+    dates.unshift(date)
+    date = addDays(date, -int(35, 70))
   }
-  return cares
+  return dates.map((careDate) => buildCare(medical, careDate))
 }
 
 function buildPatients(): DemoPatient[] {
-  return Array.from({ length: PATIENT_COUNT }, (_, index) => {
+  return Array.from({ length: PATIENTS_PER_ACCOUNT }, (_, index) => {
     const personal = buildPersonal(index + 1)
     const age = today.getFullYear() - new Date(personal.birthdate as string).getFullYear()
     const medical = buildMedical(age)
@@ -513,29 +542,81 @@ async function api<T = unknown>(method: string, path: string, body?: unknown): P
   return data as T
 }
 
-async function login(): Promise<number> {
+async function login(user: DemoUser): Promise<number> {
+  token = ''
   const response = await api<{ token: string; id: number }>('POST', '/auth/signin', {
-    username: DEMO_USER.username,
-    password: DEMO_USER.password
+    username: user.username,
+    password: user.password
   })
   token = response.token
   return response.id
 }
 
-async function ensureAccount(): Promise<number> {
+// Le compte existe-t-il ? Un échec de connexion compte pour l'anti-brute-force du backend (5 échecs
+// par compte et par IP sur 15 min) : on ne teste donc chaque compte qu'une fois par exécution.
+async function accountExists(user: DemoUser): Promise<boolean> {
   try {
-    return await login()
+    await login(user)
+    return true
   } catch (error) {
-    if (!(error instanceof ApiError) || error.status !== 401) throw error
+    if (error instanceof ApiError && error.status === 401) return false
+    if (error instanceof ApiError && error.status === 429) {
+      throw new Error(
+        `${user.username} : trop d'échecs de connexion, le backend bloque ce compte 15 minutes. ` +
+          `Réessayez plus tard, ou videz les compteurs en local : ` +
+          `DELETE FROM login_attempt WHERE attempt_key LIKE '%:demo%';`
+      )
+    }
+    throw error
   }
-  if (!REGISTRATION_KEY) {
-    throw new Error(
-      "Le compte démo n'existe pas encore : relancez avec DEMO_REGISTRATION_KEY=<clé d'inscription libre>."
-    )
+}
+
+// Inscrit le compte avec la première clé acceptée : une clé déjà consommée (exécution précédente
+// interrompue), désactivée ou expirée est refusée (400) et on passe à la suivante.
+async function register(user: DemoUser, registrationKeys: string[]): Promise<number> {
+  console.log(`Création du compte ${user.username}…`)
+  for (let key = registrationKeys.shift(); key; key = registrationKeys.shift()) {
+    try {
+      await api('POST', '/users/register', { ...user, registrationKey: key })
+      return login(user)
+    } catch (error) {
+      if (!(error instanceof ApiError) || error.status !== 400) throw error
+      console.log(`  clé ${key.slice(0, 4)}… refusée (${error.message}), essai de la suivante`)
+    }
   }
-  console.log('Création du compte démo…')
-  await api('POST', '/users/register', { ...DEMO_USER, registrationKey: REGISTRATION_KEY })
-  return login()
+  throw new Error(
+    `Plus de clé d'inscription libre pour ${user.username} : ajoutez-en dans REGISTRATION_KEYS.`
+  )
+}
+
+async function seedAccount(number: number, exists: boolean, registrationKeys: string[]) {
+  const user = demoUser(number)
+  const userId = exists ? await login(user) : await register(user, registrationKeys)
+  await api('PUT', `/users/${userId}`, { username: user.username, ...DEMO_ADDRESS })
+
+  const existing = await api<{ id: number }[]>('GET', '/patients')
+  await inPool(existing, (patient) => api('DELETE', `/patients/${patient.id}`))
+
+  // Graine propre au compte : chacun a ses patients, toujours les mêmes d'une exécution à l'autre
+  state = SEED + number
+  const patients = buildPatients()
+  let careCount = 0
+  await inPool(patients, async ({ personal, medical, cares }) => {
+    // La création enregistre la première fiche santé : on y place directement le premier soin
+    const [first, ...others] = cares
+    const created = await api<{ id: number }>('POST', '/patients', {
+      ...personal,
+      ...medical,
+      ...first
+    })
+    for (const care of others) {
+      await api('POST', `/patients/${created.id}/health`, { ...medical, ...care })
+    }
+    careCount += cares.length
+  })
+
+  const replaced = existing.length ? ` (${existing.length} anciens patients supprimés)` : ''
+  console.log(`${user.username} : ${patients.length} patients, ${careCount} soins${replaced}`)
 }
 
 async function inPool<T>(items: T[], worker: (item: T) => Promise<void>) {
@@ -553,35 +634,24 @@ async function main() {
     throw new Error(`Refusé : ce script ne s'exécute qu'en local (DEMO_API_URL = ${API_URL}).`)
   }
 
-  const userId = await ensureAccount()
-  await api('PUT', `/users/${userId}`, { username: DEMO_USER.username, ...DEMO_ADDRESS })
+  const numbers = Array.from({ length: ACCOUNT_COUNT }, (_, index) => index + 1)
 
-  const existing = await api<{ id: number }[]>('GET', '/patients')
-  if (existing.length) console.log(`Suppression des ${existing.length} patients existants…`)
-  await inPool(existing, (patient) => api('DELETE', `/patients/${patient.id}`))
+  // Vérifie qu'il y a une clé par compte à créer avant de toucher à quoi que ce soit
+  const exists = new Map<number, boolean>()
+  for (const number of numbers) exists.set(number, await accountExists(demoUser(number)))
+  const missing = numbers.filter((number) => !exists.get(number)).map((n) => demoUser(n).username)
+  if (missing.length > REGISTRATION_KEYS.length) {
+    throw new Error(
+      `${missing.length} compte(s) à créer (${missing.join(', ')}) pour ${REGISTRATION_KEYS.length} clé(s) ` +
+        `d'inscription : ajoutez des clés libres dans REGISTRATION_KEYS (scripts/seed-demo.ts).`
+    )
+  }
 
-  const patients = buildPatients()
-  let careCount = 0
-  let done = 0
-  await inPool(patients, async ({ personal, medical, cares }) => {
-    // La création enregistre la première fiche santé : on y place directement le premier soin
-    const [first, ...others] = cares
-    const created = await api<{ id: number }>('POST', '/patients', {
-      ...personal,
-      ...medical,
-      ...first
-    })
-    for (const care of others) {
-      await api('POST', `/patients/${created.id}/health`, { ...medical, ...care })
-    }
-    careCount += cares.length
-    if (++done % 20 === 0) console.log(`${done}/${patients.length} patients créés`)
-  })
+  const registrationKeys = [...REGISTRATION_KEYS]
+  for (const number of numbers) await seedAccount(number, exists.get(number)!, registrationKeys)
 
   console.log(`
-Compte démo prêt : ${patients.length} patients, ${careCount} soins.
-  Identifiant : ${DEMO_USER.username}
-  Mot de passe : ${DEMO_USER.password}
+Comptes démo prêts : demo1 à demo${ACCOUNT_COUNT}, mot de passe ${DEMO_PASSWORD}
 Les positions sur la carte apparaîtront après le prochain passage du géocodage (toutes les 4 h).`)
 }
 
