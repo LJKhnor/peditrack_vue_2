@@ -69,7 +69,7 @@
       <p class="register-footer">
         Pas encore de clé ? Faites-en la demande par
         <a
-          href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed."
+          href="mailto:lejeune.joachim.dev@gmail.com?subject=Demande%20de%20clé%20d'activation pour Pedimed."
           >mail</a
         >.
       </p>

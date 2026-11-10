@@ -22,7 +22,7 @@
 
       <a
         class="btn-cta"
-        href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20d%27acc%C3%A8s%20PediMed&body=Bonjour%2C%0A%0AJe%20souhaite%20souscrire%20%C3%A0%20l%27abonnement%20PediMed%20Standard%20(35%E2%82%AC%2Fmois).%0A%0AMerci%20de%20m%27envoyer%20mon%20code%20d%27activation.%0A%0ACordialement"
+        href="mailto:lejeune.joachim.dev@gmail.com?subject=Demande%20d%27acc%C3%A8s%20PediMed&body=Bonjour%2C%0A%0AJe%20souhaite%20souscrire%20%C3%A0%20l%27abonnement%20PediMed%20Standard%20(35%E2%82%AC%2Fmois).%0A%0AMerci%20de%20m%27envoyer%20mon%20code%20d%27activation.%0A%0ACordialement"
       >
         Demander l'accès
       </a>
@@ -37,7 +37,7 @@
       </ol>
       <a
         class="btn-secondary"
-        href="mailto:joachim.lejeune.dev@gmail.com?subject=Demande%20d%27acc%C3%A8s%20PediMed&body=Bonjour%2C%0A%0AJe%20souhaite%20souscrire%20%C3%A0%20l%27abonnement%20PediMed%20Standard%20(35%E2%82%AC%2Fmois).%0A%0AMerci%20de%20m%27envoyer%20mon%20code%20d%27activation.%0A%0ACordialement"
+        href="mailto:lejeune.joachim.dev@gmail.com?subject=Demande%20d%27acc%C3%A8s%20PediMed&body=Bonjour%2C%0A%0AJe%20souhaite%20souscrire%20%C3%A0%20l%27abonnement%20PediMed%20Standard%20(35%E2%82%AC%2Fmois).%0A%0AMerci%20de%20m%27envoyer%20mon%20code%20d%27activation.%0A%0ACordialement"
       >
         Demander mon code d'activation
       </a>
