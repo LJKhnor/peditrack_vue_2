@@ -1,9 +1,7 @@
 <template>
-  <section class="follow-up" aria-labelledby="follow-up-title">
-    <header class="follow-up-header">
-      <h2 id="follow-up-title">Patients à relancer</h2>
-      <SegmentedControl v-model="view" :options="viewOptions" label="Patients à relancer" />
-    </header>
+  <!-- Contenu de l'onglet « Patients à relancer » de StatsView, qui en porte le titre -->
+  <div class="follow-up">
+    <SegmentedControl v-model="view" :options="viewOptions" label="Patients à relancer" />
     <p class="follow-up-intro">
       Patients dont le dernier soin date de plus de 1,5 fois leur rythme habituel. Les plus
       récemment en retard sont en premier.
@@ -68,7 +66,7 @@
       {{ unknownCount }} patient{{ unknownCount > 1 ? 's n’ont' : ' n’a' }} qu’un seul soin : rythme
       pas encore connu, non repris dans la liste.
     </p>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -116,21 +114,12 @@ const alerts = (item: LatePatient) =>
 .follow-up {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.75rem;
 }
 
-.follow-up-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-h2 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-heading);
+.follow-up > .late-list {
+  align-self: stretch;
 }
 
 .follow-up-intro,

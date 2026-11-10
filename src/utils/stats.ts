@@ -1,4 +1,5 @@
 import type { PatientSummary } from '@/services/PatientService'
+import { computeAge } from '@/utils/patient'
 import type { DailyCount } from '@/services/StatsService'
 
 // Une colonne de graphique : valeur de la période et, en option, valeur de comparaison
@@ -228,3 +229,116 @@ export function formatRhythm(days: number): string {
 
 // Lien d'appel : chiffres et « + » seulement
 export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`
+
+export const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1)
+
+// Une ligne d'un classement (mutualités, médecins) : nombre de patients par valeur
+export interface RankedItem {
+  key: string
+  label: string
+  value: number
+}
+
+export interface Ranking {
+  // Du plus fréquent au moins fréquent, puis par ordre alphabétique
+  items: RankedItem[]
+  // Patients sans valeur renseignée
+  missing: number
+}
+
+// Comparaison de textes libres : sans accents, majuscules, points ni espaces superflus
+export const normalizeText = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[.\s]+/g, ' ')
+    .trim()
+
+// « Dr Delhaye », « dr. Delhaye » et « Docteur Delhaye » désignent le même médecin
+export const doctorKey = (value: string) =>
+  normalizeText(value).replace(/^(dr|docteur|dokter)\s+/, '')
+
+// Regroupe des valeurs saisies librement ; chaque groupe prend l'écriture la plus fréquente
+export function ranking(
+  values: (string | null | undefined)[],
+  key: (value: string) => string = normalizeText
+): Ranking {
+  const groups = new Map<string, { value: number; spellings: Map<string, number> }>()
+  let missing = 0
+  for (const raw of values) {
+    const spelling = raw?.replace(/\s+/g, ' ').trim() ?? ''
+    const groupKey = spelling ? key(spelling) : ''
+    if (!groupKey) {
+      missing++
+      continue
+    }
+    const group = groups.get(groupKey) ?? { value: 0, spellings: new Map() }
+    group.value++
+    group.spellings.set(spelling, (group.spellings.get(spelling) ?? 0) + 1)
+    groups.set(groupKey, group)
+  }
+  const items = [...groups].map(([groupKey, group]) => ({
+    key: groupKey,
+    label: [...group.spellings].reduce((best, current) =>
+      current[1] > best[1] ? current : best
+    )[0],
+    value: group.value
+  }))
+  items.sort((a, b) => b.value - a.value || a.label.localeCompare(b.label, 'fr'))
+  return { items, missing }
+}
+
+// Valeurs ex aequo en tête d'un classement
+export function leaders(items: RankedItem[]): RankedItem[] {
+  return items.filter((item) => item.value === items[0]?.value)
+}
+
+export const AGE_GROUPS = [
+  { min: 0, label: '< 40', title: 'Moins de 40 ans' },
+  { min: 40, label: '40-59', title: '40 à 59 ans' },
+  { min: 60, label: '60-69', title: '60 à 69 ans' },
+  { min: 70, label: '70-79', title: '70 à 79 ans' },
+  { min: 80, label: '80-89', title: '80 à 89 ans' },
+  { min: 90, label: '90 +', title: '90 ans et plus' }
+]
+
+export interface AgeDistribution {
+  columns: Column[]
+  // Patients sans date de naissance valide
+  unknown: number
+  average: number | null
+  youngest: number | null
+  oldest: number | null
+}
+
+export function ageDistribution(
+  patients: Pick<PatientSummary, 'birthdate'>[],
+  today: Date
+): AgeDistribution {
+  const ages = patients
+    .map((patient) => computeAge(patient.birthdate, today))
+    .filter((age): age is number => age !== null)
+  const counts = new Array(AGE_GROUPS.length).fill(0)
+  for (const age of ages) {
+    let index = AGE_GROUPS.length - 1
+    while (age < AGE_GROUPS[index].min) index--
+    counts[index]++
+  }
+  return {
+    columns: AGE_GROUPS.map((group, index) => ({
+      key: group.label,
+      label: group.label,
+      title: group.title,
+      value: counts[index]
+    })),
+    unknown: patients.length - ages.length,
+    average: ages.length ? Math.round(ages.reduce((sum, age) => sum + age, 0) / ages.length) : null,
+    youngest: ages.length ? Math.min(...ages) : null,
+    oldest: ages.length ? Math.max(...ages) : null
+  }
+}
+
+// Part d'un total en pourcentage arrondi (« 16 % »)
+export const share = (value: number, total: number) =>
+  total ? `${Math.round((value / total) * 100)} %` : '—'

@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest'
 import type { PatientSummary } from '@/services/PatientService'
 import {
   activitySummary,
+  ageDistribution,
+  doctorKey,
+  leaders,
+  normalizeText,
+  ranking,
+  share,
   daysBetween,
   formatDuration,
   formatRhythm,
@@ -213,5 +219,92 @@ describe('telHref', () => {
   it('keeps only digits and the plus sign', () => {
     expect(telHref('0471 23 45 67')).toBe('tel:0471234567')
     expect(telHref('+32 (0)471/23.45.67')).toBe('tel:+320471234567')
+  })
+})
+
+describe('ranking', () => {
+  it('groups free text ignoring case, accents and spaces, with the most frequent spelling', () => {
+    const result = ranking([
+      'Mutualité chrétienne',
+      'mutualite  chretienne',
+      'Mutualité chrétienne ',
+      'Solidaris',
+      null,
+      '  '
+    ])
+    expect(result.items).toEqual([
+      { key: 'mutualite chretienne', label: 'Mutualité chrétienne', value: 3 },
+      { key: 'solidaris', label: 'Solidaris', value: 1 }
+    ])
+    expect(result.missing).toBe(2)
+  })
+
+  it('sorts equal counts alphabetically', () => {
+    const labels = ranking(['Solidaris', 'Helan', 'CAAMI']).items.map((item) => item.label)
+    expect(labels).toEqual(['CAAMI', 'Helan', 'Solidaris'])
+  })
+
+  it('treats « Dr », « dr. » and « Docteur » as the same doctor', () => {
+    const result = ranking(['Dr Delhaye', 'dr. Delhaye', 'Docteur Delhaye', 'Delhaye'], doctorKey)
+    expect(result.items).toHaveLength(1)
+    expect(result.items[0]).toMatchObject({ key: 'delhaye', value: 4 })
+  })
+})
+
+describe('normalizeText', () => {
+  it('removes accents, case, dots and extra spaces', () => {
+    expect(normalizeText('  Dr.  Hélène   DUSSART ')).toBe('dr helene dussart')
+  })
+})
+
+describe('leaders', () => {
+  it('keeps the tied first items', () => {
+    const items = [
+      { key: 'a', label: 'A', value: 3 },
+      { key: 'b', label: 'B', value: 3 },
+      { key: 'c', label: 'C', value: 1 }
+    ]
+    expect(leaders(items).map((item) => item.key)).toEqual(['a', 'b'])
+    expect(leaders([])).toEqual([])
+  })
+})
+
+describe('ageDistribution', () => {
+  it('counts the patients per age group, with average and extremes', () => {
+    const result = ageDistribution(
+      [
+        { birthdate: '1990-01-01' }, // 36 ans
+        { birthdate: '1966-11-09' }, // 60 ans le jour même
+        { birthdate: '1966-11-10' }, // 59 ans
+        { birthdate: '1936-01-01' }, // 90 ans
+        { birthdate: null }
+      ],
+      today
+    )
+    expect(result.columns.map((column) => [column.label, column.value])).toEqual([
+      ['< 40', 1],
+      ['40-59', 1],
+      ['60-69', 1],
+      ['70-79', 0],
+      ['80-89', 0],
+      ['90 +', 1]
+    ])
+    expect(result).toMatchObject({ unknown: 1, average: 61, youngest: 36, oldest: 90 })
+  })
+
+  it('has no average without birthdate', () => {
+    expect(ageDistribution([{ birthdate: null }], today)).toMatchObject({
+      unknown: 1,
+      average: null,
+      youngest: null
+    })
+  })
+})
+
+describe('share', () => {
+  it('gives a rounded percentage', () => {
+    expect(share(16, 100)).toBe('16 %')
+    expect(share(1, 3)).toBe('33 %')
+    expect(share(0, 0)).toBe('—')
   })
 })
