@@ -104,9 +104,9 @@ const lateCount = computed(() =>
 
 const tabs = computed<{ value: TabValue; label: string; count?: number }[]>(() => [
   { value: 'patientele', label: 'Patientèle' },
+  { value: 'clinique', label: 'Profil clinique' },
   { value: 'activite', label: 'Activité' },
-  { value: 'relances', label: 'Patients à relancer', count: lateCount.value },
-  { value: 'clinique', label: 'Profil clinique' }
+  { value: 'relances', label: 'Patients à relancer', count: lateCount.value }
 ])
 
 // Onglet actif dans l'URL (?onglet=…) : il est conservé au rechargement de la page

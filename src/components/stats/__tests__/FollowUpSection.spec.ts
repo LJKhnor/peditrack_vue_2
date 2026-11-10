@@ -41,11 +41,13 @@ describe('FollowUpSection', () => {
     const wrapper = mount(FollowUpSection, { props: { patients, today } })
 
     expect(names(wrapper)).toEqual(['Élise Dupont', 'Élise Martin'])
+    // Simple affichage : le téléphone n'est pas un lien cliquable
     const phone = wrapper.find('.phone')
-    expect(phone.attributes('href')).toBe('tel:0471234567')
+    expect(phone.element.tagName).toBe('SPAN')
+    expect(phone.attributes('href')).toBeUndefined()
     expect(phone.text()).toBe('0471 23 45 67')
     expect(wrapper.find('.contact').text()).toBe('Contact : Marc Dupont 0479 11 22 33')
-    expect(wrapper.find('.contact-phone').attributes('href')).toBe('tel:0479112233')
+    expect(wrapper.find('.contact-phone').element.tagName).toBe('SPAN')
     expect(wrapper.find('.no-phone').text()).toBe('Pas de téléphone')
     expect(wrapper.find('.follow-up-note').text()).toContain('1 patient n’a qu’un seul soin')
   })

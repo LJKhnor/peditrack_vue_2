@@ -67,9 +67,9 @@ describe('StatsView', () => {
     const tabs = wrapper.findAll('[role="tab"]')
     expect(tabs.map((tab) => tab.text())).toEqual([
       'Patientèle',
+      'Profil clinique',
       'Activité',
-      'Patients à relancer 1',
-      'Profil clinique'
+      'Patients à relancer 1'
     ])
     expect(tabs[0].attributes('aria-selected')).toBe('true')
     expect(visiblePanel(wrapper)).toEqual(['panel-patientele'])
@@ -78,7 +78,7 @@ describe('StatsView', () => {
   it('switches tab on click and keeps it in the URL', async () => {
     const { wrapper, router } = await mountAt('/stats')
 
-    await wrapper.findAll('[role="tab"]')[2].trigger('click')
+    await wrapper.findAll('[role="tab"]')[3].trigger('click')
     await flushPromises()
 
     expect(router.currentRoute.value.query.onglet).toBe('relances')
@@ -89,10 +89,10 @@ describe('StatsView', () => {
     const { wrapper, router } = await mountAt('/stats?onglet=activite')
     expect(visiblePanel(wrapper)).toEqual(['panel-activite'])
 
-    await wrapper.findAll('[role="tab"]')[1].trigger('keydown', { key: 'ArrowLeft' })
+    await wrapper.findAll('[role="tab"]')[2].trigger('keydown', { key: 'ArrowLeft' })
     await flushPromises()
 
-    expect(router.currentRoute.value.query.onglet).toBe('patientele')
+    expect(router.currentRoute.value.query.onglet).toBe('clinique')
   })
 
   it('falls back to the patient base for an unknown tab', async () => {

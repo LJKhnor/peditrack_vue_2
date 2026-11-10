@@ -31,23 +31,19 @@
         </div>
 
         <div class="late-contact">
-          <a v-if="late.patient.phoneNum" :href="telHref(late.patient.phoneNum)" class="phone">
+          <span v-if="late.patient.phoneNum" class="phone">
             <MdiComponent :mdiValue="mdiPhone" class="phone-icon" />
             {{ late.patient.phoneNum }}
-          </a>
+          </span>
           <span v-else class="no-phone">Pas de téléphone</span>
           <span
             v-if="late.patient.personOfContact || late.patient.personOfContactPhoneNumber"
             class="contact"
           >
             Contact : {{ late.patient.personOfContact || '—' }}
-            <a
-              v-if="late.patient.personOfContactPhoneNumber"
-              :href="telHref(late.patient.personOfContactPhoneNumber)"
-              class="contact-phone"
-            >
+            <span v-if="late.patient.personOfContactPhoneNumber" class="contact-phone">
               {{ late.patient.personOfContactPhoneNumber }}
-            </a>
+            </span>
           </span>
         </div>
       </li>
@@ -80,7 +76,6 @@ import {
   formatDuration,
   formatRhythm,
   latePatients,
-  telHref,
   unknownRhythmCount,
   type LatePatient
 } from '@/utils/stats'
@@ -213,10 +208,6 @@ const alerts = (item: LatePatient) =>
   font-weight: 600;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-}
-
-.phone:hover {
-  color: var(--color-theme-hover);
 }
 
 .phone-icon {
