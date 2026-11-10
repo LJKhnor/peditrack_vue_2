@@ -121,21 +121,14 @@ const describe = (column: Column) =>
 
 <style scoped>
 .chart {
-  --series-current: #2a7d4f;
-  --series-previous: #6b7fe0;
+  --series-current: var(--color-series-current);
+  --series-previous: var(--color-series-previous);
   --grid: var(--color-border);
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   min-width: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .chart {
-    --series-current: #3a9b63;
-    --series-previous: #6f84e8;
-  }
 }
 
 .chart-legend {

@@ -53,6 +53,17 @@
       <p v-if="feedback" class="update-feedback" :class="{ 'update-error': isError }" role="status">
         {{ feedback }}
       </p>
+      <div class="display-preference">
+        <span class="display-preference-label" aria-hidden="true">Affichage</span>
+        <SegmentedControl
+          v-model="theme"
+          :options="themeOptions"
+          label="Mode d'affichage"
+        />
+        <p class="display-preference-hint">
+          Appliqué tout de suite, sur cet appareil. « Automatique » suit le réglage de l'appareil.
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -63,9 +74,21 @@ import apiClient from '../axios'
 import { errorStatus } from '@/services/apiError'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
+import { watch } from 'vue'
+import SegmentedControl from '@/components/stats/SegmentedControl.vue'
+import { getThemePreference, setThemePreference, type ThemePreference } from '@/utils/theme'
 export default {
   name: 'UpdateUserVue',
+  components: { SegmentedControl },
   setup() {
+    const theme = ref<ThemePreference>(getThemePreference())
+    const themeOptions: { value: ThemePreference; label: string }[] = [
+      { value: 'light', label: 'Jour' },
+      { value: 'dark', label: 'Nuit' },
+      { value: 'system', label: 'Automatique' }
+    ]
+    watch(theme, setThemePreference)
+
     let form = ref({
       username: '',
       street: '',
@@ -136,7 +159,7 @@ export default {
         }
       } catch (_) {}
     }
-    return { form, updateUser, feedback, isError }
+    return { form, updateUser, feedback, isError, theme, themeOptions }
   }
 }
 </script>
@@ -202,5 +225,25 @@ label {
 
 .user-record-validation {
   align-self: flex-start;
+}
+
+.display-preference {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.display-preference-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.display-preference-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
 }
 </style>

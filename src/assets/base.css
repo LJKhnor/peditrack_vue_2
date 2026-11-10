@@ -43,14 +43,21 @@
 
   --color-shadow:          rgba(15, 23, 42, 0.06);
 
+  /* Séries des graphiques (validées pour le daltonisme) */
+  --color-series-current:  var(--_green-600);
+  --color-series-previous: #6b7fe0;
+
   --section-gap: 160px;
 }
 
 /* ═══════════════════════════════════════════════════
-   Thème sombre
+   Thème sombre : suit l'appareil, sauf si l'utilisateur
+   a forcé le mode jour ou nuit dans ses préférences
+   (data-theme sur <html>, voir src/utils/theme.ts).
+   Les deux blocs ci-dessous doivent rester identiques.
    ═══════════════════════════════════════════════════ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --color-background:      #0e1620;
     --color-surface:         #162030;
     --color-background-soft: #1c2d42;
@@ -68,7 +75,33 @@
     --color-theme-light:     rgba(134, 239, 172, 0.12);
 
     --color-shadow:          rgba(0, 0, 0, 0.3);
+
+    --color-series-current:  var(--_green-500);
+    --color-series-previous: #6f84e8;
   }
+}
+
+:root[data-theme='dark'] {
+  --color-background:      #0e1620;
+  --color-surface:         #162030;
+  --color-background-soft: #1c2d42;
+  --color-background-mute: #243550;
+
+  --color-border:          #243550;
+  --color-border-hover:    #2e4468;
+
+  --color-text:            #d4e1ef;
+  --color-text-secondary:  #8a9eb8;
+  --color-heading:         #eaf1f8;
+
+  --color-theme:           var(--_green-200);
+  --color-theme-hover:     #a7f3c0;
+  --color-theme-light:     rgba(134, 239, 172, 0.12);
+
+  --color-shadow:          rgba(0, 0, 0, 0.3);
+
+  --color-series-current:  var(--_green-500);
+  --color-series-previous: #6f84e8;
 }
 
 /* ═══════════════════════════════════════════════════

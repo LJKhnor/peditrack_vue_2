@@ -29,7 +29,7 @@ const max = computed(() => Math.max(1, ...props.items.map((item) => item.value))
 
 <style scoped>
 .bar-list {
-  --series-current: #2a7d4f;
+  --series-current: var(--color-series-current);
   list-style: none;
   padding: 0;
   margin: 0;
@@ -37,12 +37,6 @@ const max = computed(() => Math.max(1, ...props.items.map((item) => item.value))
   grid-template-columns: minmax(6rem, max-content) minmax(4rem, 1fr) max-content;
   gap: 0.5rem 0.75rem;
   align-items: center;
-}
-
-@media (prefers-color-scheme: dark) {
-  .bar-list {
-    --series-current: #3a9b63;
-  }
 }
 
 .bar-row {
