@@ -105,6 +105,19 @@ describe('PatientDetail', () => {
     expect(fields['Dermatoses']).toBe('—')
   })
 
+  it('follows the remarks with their location', () => {
+    const fields = mountDetail({
+      remarkTypes: ['Cors', 'Durillons'],
+      remarkLocation: ' sous R2 gauche '
+    })
+    expect(fields['Remarques']).toBe('Cors, Durillons — emplacement : sous R2 gauche')
+  })
+
+  it('shows no location without remark, nor an empty one', () => {
+    expect(mountDetail({ remarkTypes: [], remarkLocation: 'Talon' })['Remarques']).toBe('—')
+    expect(mountDetail({ remarkTypes: ['Cors'], remarkLocation: '  ' })['Remarques']).toBe('Cors')
+  })
+
   it('summarises the toes of each foot', () => {
     const fields = mountDetail({
       leftToeR1: 'Incarné bord interne',

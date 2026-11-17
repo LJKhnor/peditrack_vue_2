@@ -44,6 +44,8 @@ export interface MedicalFields {
   // FOOT_DEFORMITY_TYPES, NAIL_CONDITION_TYPES), dans l'ordre des options, liste vide si aucun
   sweatTypes: string[]
   remarkTypes: string[]
+  // Emplacement des remarques, texte libre (ignoré par l'API sans remarque cochée)
+  remarkLocation: string | null
   circulationTypes: string[]
   dermatosisTypes: string[]
   // Côté non précisé (fiches antérieures à la distinction gauche / droite) : une valeur aussi cochée

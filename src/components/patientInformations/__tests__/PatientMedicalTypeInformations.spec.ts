@@ -106,6 +106,29 @@ describe('PatientMedicalTypeInformations', () => {
     expect(checkedOptions(wrapper, 'dermatosisTypes')).toEqual([])
   })
 
+  it('asks for the location of the remarks while at least one remark is checked', async () => {
+    const { wrapper, formData } = mountForm()
+    expect(wrapper.find('#remarkLocation').exists()).toBe(false)
+
+    await checkbox(wrapper, 'remarkTypes', 'Cors').setValue(true)
+    expect(wrapper.find('label[for="remarkLocation"]').text()).toBe('Emplacement')
+    await wrapper.find('#remarkLocation').setValue('Cor sous R2 gauche')
+    expect(formData.remarkLocation).toBe('Cor sous R2 gauche')
+
+    await checkbox(wrapper, 'remarkTypes', 'Durillons').setValue(true)
+    await checkbox(wrapper, 'remarkTypes', 'Cors').setValue(false)
+    expect(wrapper.find('#remarkLocation').exists()).toBe(true)
+
+    await checkbox(wrapper, 'remarkTypes', 'Durillons').setValue(false)
+    expect(wrapper.find('#remarkLocation').exists()).toBe(false)
+  })
+
+  it('shows the location of the remarks recorded on the previous care', () => {
+    const { wrapper } = mountForm({ remarkTypes: ['Durillons'], remarkLocation: 'Talon droit' })
+    const input = wrapper.find<HTMLInputElement>('#remarkLocation')
+    expect(input.element.value).toBe('Talon droit')
+  })
+
   it('selects the foot deformities of each foot independently, in the order of the options', async () => {
     const { wrapper, formData } = mountForm()
 

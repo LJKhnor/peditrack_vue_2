@@ -21,9 +21,9 @@
       </select>
     </div>
 
-    <!-- Choix multiples : transpiration, remarques, circulation et dermatoses, puis (après le trait)
-         déformations du pied et affections unguéales, encodées par pied, dont l'option « Autres »
-         ouvre une précision -->
+    <!-- Choix multiples : transpiration, remarques (avec leur emplacement dès qu'une remarque est
+         cochée), circulation et dermatoses, puis (après le trait) déformations du pied et affections
+         unguéales, encodées par pied, dont l'option « Autres » ouvre une précision -->
     <template v-for="group in multiChoices" :key="group.id">
       <hr v-if="group.separatorBefore" />
       <div class="field-row multi-choice">
@@ -67,12 +67,13 @@
           </div>
         </div>
       </div>
-      <div v-if="group.commentField && hasOther(group)" class="field-row">
+      <div v-if="group.commentField && showComment(group)" class="field-row">
         <label class="field-label" :for="group.commentField">{{ group.commentLabel }}</label>
         <input
           class="info-block-input"
           type="text"
           :id="group.commentField"
+          :placeholder="group.commentPlaceholder"
           v-model="formData[group.commentField]"
         />
       </div>
@@ -175,6 +176,11 @@ export default {
         ? group.options.filter((option) => isSelected(row.field, option))
         : group.options
     const hasOther = (group) => group.rows.some((row) => isSelected(row.field, OTHER_OPTION))
+    const hasAny = (group) => group.rows.some((row) => selected(row.field).length > 0)
+    // Champ texte du groupe : précision de « Autres » (par défaut) ou, avec commentWhenAny,
+    // complément de n'importe quel choix (emplacement des remarques). L'API ignore ce champ
+    // quand la condition n'est pas remplie
+    const showComment = (group) => (group.commentWhenAny ? hasAny(group) : hasOther(group))
 
     // Remplace la liste (le champ peut être absent quand le patient n'a pas encore de fiche santé),
     // en gardant l'ordre des options. Une option exclusive (« Normale ») ne se combine avec aucune
@@ -196,11 +202,16 @@ export default {
       isSelected,
       visibleRows,
       rowOptions,
-      hasOther,
+      showComment,
       toggle,
       multiChoices: [
         single('sweatTypes', 'Transpiration', SWEAT_TYPES, { exclusive: [NORMAL_SWEAT] }),
-        single('remarkTypes', 'Remarques', REMARK_TYPES),
+        single('remarkTypes', 'Remarques', REMARK_TYPES, {
+          commentField: 'remarkLocation',
+          commentLabel: 'Emplacement',
+          commentPlaceholder: 'ex. cor sous R2 gauche, durillon talon droit',
+          commentWhenAny: true
+        }),
         single('circulationTypes', 'Circulation', CIRCULATION_TYPES),
         single('dermatosisTypes', 'Dermatoses', DERMATOSIS_TYPES),
         perFoot(

@@ -273,6 +273,13 @@ const TOE_COMMENTS = [
   'Orthoplastie conseillée',
   'Douleur au chaussage'
 ]
+const REMARK_LOCATIONS = [
+  'Sous R2 gauche',
+  'Talon droit',
+  'Plante, tête du 1er métatarsien',
+  'Face latérale R5 droit',
+  'Talons, des deux côtés'
+]
 const PRODUCTS = [
   'Chlorhexidine',
   'Alcool 70 %',
@@ -415,6 +422,7 @@ function buildMedical(age: number): Json {
     footType: maybe(0.6, () => pick(FOOT_TYPES)),
     sweatTypes,
     remarkTypes,
+    remarkLocation: remarkTypes.length && chance(0.7) ? pick(REMARK_LOCATIONS) : null,
     circulationTypes,
     dermatosisTypes,
     // Aucune valeur « côté non précisé » : réservé aux fiches antérieures à la distinction G / D

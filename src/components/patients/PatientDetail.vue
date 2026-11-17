@@ -169,6 +169,13 @@ function withOtherComment(
   return labels.length ? labels.join(', ') : '—'
 }
 
+// Remarques suivies de leur emplacement : « Cors, Durillons — emplacement : sous R2 gauche »
+function withLocation(types: string[] | null | undefined, location: string | null | undefined) {
+  const labels = withOtherComment(types)
+  const where = location?.trim()
+  return labels !== '—' && where ? `${labels} — emplacement : ${where}` : labels
+}
+
 // Déformations / affections par pied : « Gauche : … · Droit : … · Côté non précisé : … »,
 // « Autres » suivi de sa précision (commune aux deux pieds). unknownSide : fiche antérieure à la
 // distinction gauche / droite
@@ -249,7 +256,7 @@ const healthFields = computed(() => {
     { label: 'Orteils pied gauche', value: toesSummary(h, 'left') ?? '—' },
     { label: 'Orteils pied droit', value: toesSummary(h, 'right') ?? '—' },
     { label: 'Blessures possibles', value: displayContent(h.possibleWounds) },
-    { label: 'Remarques', value: withOtherComment(h.remarkTypes) },
+    { label: 'Remarques', value: withLocation(h.remarkTypes, h.remarkLocation) },
     { label: 'Type de peau', value: displayContent(h.skinType) },
     { label: 'Transpiration', value: withOtherComment(h.sweatTypes) }
   ]
