@@ -41,6 +41,46 @@ describe('PatientMedicalTypeInformations', () => {
     ])
   })
 
+  it('shows each piece of information in its own card, small cards side by side', () => {
+    const { wrapper } = mountForm()
+    const cards = wrapper.findAll('fieldset.exam-card')
+    // titre de la carte sans l'aide entre parenthèses (« Orteils (R1 = hallux …) »)
+    expect(cards.map((card) => card.find('legend').text().split(' (')[0])).toEqual([
+      'Peau et pieds',
+      'Transpiration',
+      'Circulation',
+      'Dermatoses',
+      'Remarques',
+      'Déformations du pied',
+      'Affections unguéales',
+      'Orteils'
+    ])
+    expect(cards.map((card) => card.classes('wide'))).toEqual([
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true
+    ])
+    expect(cards[0].find('#skinType').exists()).toBe(true)
+    expect(cards[0].find('#footType').exists()).toBe(true)
+  })
+
+  it('keeps the linked text field inside the card of its group', async () => {
+    const { wrapper } = mountForm()
+    await checkbox(wrapper, 'remarkTypes', 'Cors').setValue(true)
+    await checkbox(wrapper, 'rightFootDeformityTypes', 'Autres').setValue(true)
+    await checkbox(wrapper, 'leftNailConditionTypes', 'Autres').setValue(true)
+
+    const card = (group: string) => wrapper.find(`fieldset[data-group="${group}"]`)
+    expect(card('remarkTypes').find('#remarkLocation').exists()).toBe(true)
+    expect(card('footDeformities').find('#footDeformityComment').exists()).toBe(true)
+    expect(card('nailConditions').find('#nailConditionComment').exists()).toBe(true)
+  })
+
   it('offers every sweat, remark, circulation and dermatosis type as a checkbox', () => {
     const { wrapper } = mountForm()
     expect(wrapper.findAll('input[name="sweatTypes"]')).toHaveLength(4)

@@ -1,74 +1,90 @@
 <template>
-  <!-- Chaque ligne : intitulé dans une colonne étroite à gauche, champ à droite (au-dessus sur mobile) -->
-  <div class="medical-infos">
-    <div class="field-row">
-      <label class="field-label" for="skinType">Peau</label>
-      <select name="select-skin" class="info-block-input" id="skinType" v-model="formData.skinType">
-        <option></option>
-        <option v-for="skinType in skinTypes" :value="skinType" :key="skinType">
-          {{ skinType }}
-        </option>
-      </select>
-    </div>
+  <!-- Une carte (fieldset titré) par information. Les petites cartes vont par deux sur grand écran ;
+       les cartes « wide » (remarques et leur emplacement, encodages par pied, orteils) prennent
+       toute la largeur. Un champ lié (emplacement, précision « Autres ») reste dans la carte de son
+       groupe -->
+  <div class="exam-grid">
+    <fieldset class="exam-card">
+      <legend>Peau et pieds</legend>
+      <div class="field-row">
+        <label class="field-label" for="skinType">Peau</label>
+        <select
+          name="select-skin"
+          class="info-block-input"
+          id="skinType"
+          v-model="formData.skinType"
+        >
+          <option></option>
+          <option v-for="skinType in skinTypes" :value="skinType" :key="skinType">
+            {{ skinType }}
+          </option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label class="field-label" for="footType">Pieds</label>
+        <select
+          name="select-foot"
+          class="info-block-input"
+          id="footType"
+          v-model="formData.footType"
+        >
+          <option></option>
+          <option v-for="footType in footTypes" :value="footType" :key="footType">
+            {{ footType }}
+          </option>
+        </select>
+      </div>
+    </fieldset>
 
-    <div class="field-row">
-      <label class="field-label" for="footType">Pieds</label>
-      <select name="select-foot" class="info-block-input" id="footType" v-model="formData.footType">
-        <option></option>
-        <option v-for="footType in footTypes" :value="footType" :key="footType">
-          {{ footType }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Choix multiples : transpiration, remarques (avec leur emplacement dès qu'une remarque est
-         cochée), circulation et dermatoses, puis (après le trait) déformations du pied et affections
-         unguéales, encodées par pied, dont l'option « Autres » ouvre une précision -->
-    <template v-for="group in multiChoices" :key="group.id">
-      <hr v-if="group.separatorBefore" />
-      <div class="field-row multi-choice">
-        <p class="field-label" :id="`${group.id}-label`">{{ group.label }}</p>
-        <div class="choice-rows">
+    <!-- Choix multiples : transpiration, circulation, dermatoses, remarques (avec leur emplacement
+         dès qu'une remarque est cochée), puis déformations du pied et affections unguéales,
+         encodées par pied, dont l'option « Autres » ouvre une précision -->
+    <fieldset
+      v-for="group in multiChoices"
+      :key="group.id"
+      class="exam-card"
+      :class="{ wide: group.wide }"
+      :data-group="group.id"
+    >
+      <legend :id="`${group.id}-label`">{{ group.label }}</legend>
+      <div class="choice-rows">
+        <div
+          v-for="row in visibleRows(group)"
+          :key="row.field"
+          class="choice-row"
+          :class="{ 'with-side': row.side, 'unknown-side': row.unknownSide }"
+        >
+          <span v-if="row.side" class="choice-side" :id="`${row.field}-side`">{{ row.side }}</span>
+          <!-- Liste unique : le fieldset suffit à grouper ; par pied, chaque rangée est un groupe
+               « titre + côté » -->
           <div
-            v-for="row in visibleRows(group)"
-            :key="row.field"
-            class="choice-row"
-            :class="{ 'with-side': row.side, 'unknown-side': row.unknownSide }"
+            class="choices"
+            :role="row.side ? 'group' : undefined"
+            :aria-labelledby="row.side ? `${group.id}-label ${row.field}-side` : undefined"
           >
-            <span v-if="row.side" class="choice-side" :id="`${row.field}-side`">{{
-              row.side
-            }}</span>
-            <div
-              class="choices"
-              role="group"
-              :aria-labelledby="
-                row.side ? `${group.id}-label ${row.field}-side` : `${group.id}-label`
-              "
+            <!-- La case reste dans le DOM (clavier, lecteur d'écran) mais c'est le bouton qui s'affiche -->
+            <label
+              v-for="option in rowOptions(group, row)"
+              :key="option"
+              class="choice"
+              :class="{ selected: isSelected(row.field, option) }"
             >
-              <!-- La case reste dans le DOM (clavier, lecteur d'écran) mais c'est le bouton qui s'affiche -->
-              <label
-                v-for="option in rowOptions(group, row)"
-                :key="option"
-                class="choice"
-                :class="{ selected: isSelected(row.field, option) }"
-              >
-                <input
-                  type="checkbox"
-                  class="sr-only"
-                  :name="row.field"
-                  :value="option"
-                  :checked="isSelected(row.field, option)"
-                  @change="toggle(group, row, option)"
-                />
-                <span class="choice-check" aria-hidden="true">✓</span>
-                {{ option }}
-              </label>
-            </div>
+              <input
+                type="checkbox"
+                class="sr-only"
+                :name="row.field"
+                :value="option"
+                :checked="isSelected(row.field, option)"
+                @change="toggle(group, row, option)"
+              />
+              <span class="choice-check" aria-hidden="true">✓</span>
+              {{ option }}
+            </label>
           </div>
         </div>
       </div>
-      <div v-if="group.commentField && showComment(group)" class="field-row">
-        <label class="field-label" :for="group.commentField">{{ group.commentLabel }}</label>
+      <div v-if="group.commentField && showComment(group)" class="card-field">
+        <label :for="group.commentField">{{ group.commentLabel }}</label>
         <input
           class="info-block-input"
           type="text"
@@ -77,10 +93,10 @@
           v-model="formData[group.commentField]"
         />
       </div>
-    </template>
+    </fieldset>
 
     <!-- Observations par orteil, en tableau : une ligne par pied, une colonne par orteil -->
-    <fieldset class="toes">
+    <fieldset class="exam-card wide toes">
       <legend>Orteils <span class="toes-hint">(R1 = hallux … R5 = petit orteil)</span></legend>
       <div class="toes-row toes-header" aria-hidden="true">
         <span></span>
@@ -154,9 +170,10 @@ export default {
       rows: [{ field }],
       ...extra
     })
-    // Groupe encodé par pied. La liste sans côté (fiche antérieure à la distinction gauche / droite)
-    // n'apparaît que si elle contient encore des valeurs, et seulement celles-ci, pour pouvoir les
-    // décocher ; cocher une valeur pour un pied la retire de cette liste (comme le fait l'API)
+    // Groupe encodé par pied (carte pleine largeur). La liste sans côté (fiche antérieure à la
+    // distinction gauche / droite) n'apparaît que si elle contient encore des valeurs, et seulement
+    // celles-ci, pour pouvoir les décocher ; cocher une valeur pour un pied la retire de cette liste
+    // (comme le fait l'API)
     const perFoot = (id, label, options, { unknownSide, left, right }, extra = {}) => ({
       id,
       label,
@@ -166,6 +183,7 @@ export default {
         { field: right, side: 'Droit', clears: unknownSide },
         { field: unknownSide, side: 'Côté non précisé', unknownSide: true }
       ],
+      wide: true,
       ...extra
     })
 
@@ -204,16 +222,19 @@ export default {
       rowOptions,
       showComment,
       toggle,
+      // Ordre des cartes : les demi-cartes vont par paires (transpiration à côté de « Peau et
+      // pieds », circulation à côté des dermatoses), puis les cartes pleine largeur
       multiChoices: [
         single('sweatTypes', 'Transpiration', SWEAT_TYPES, { exclusive: [NORMAL_SWEAT] }),
+        single('circulationTypes', 'Circulation', CIRCULATION_TYPES),
+        single('dermatosisTypes', 'Dermatoses', DERMATOSIS_TYPES),
         single('remarkTypes', 'Remarques', REMARK_TYPES, {
+          wide: true,
           commentField: 'remarkLocation',
           commentLabel: 'Emplacement',
           commentPlaceholder: 'ex. cor sous R2 gauche, durillon talon droit',
           commentWhenAny: true
         }),
-        single('circulationTypes', 'Circulation', CIRCULATION_TYPES),
-        single('dermatosisTypes', 'Dermatoses', DERMATOSIS_TYPES),
         perFoot(
           'footDeformities',
           'Déformations du pied',
@@ -223,11 +244,7 @@ export default {
             left: 'leftFootDeformityTypes',
             right: 'rightFootDeformityTypes'
           },
-          {
-            commentField: 'footDeformityComment',
-            commentLabel: 'Précisez la déformation',
-            separatorBefore: true
-          }
+          { commentField: 'footDeformityComment', commentLabel: 'Précisez la déformation' }
         ),
         perFoot(
           'nailConditions',
@@ -254,17 +271,31 @@ export default {
 </script>
 
 <style scoped>
-.medical-infos {
-  --label-width: 11rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
+/* Grille de cartes : deux colonnes, les cartes « wide » sur toute la largeur */
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
 }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--color-border);
-  margin: 0.375rem 0;
+.exam-card {
+  min-width: 0;
+  margin: 0;
+  padding: 0.5rem 1rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background-soft);
+}
+
+.exam-card.wide {
+  grid-column: 1 / -1;
+}
+
+.exam-card legend {
+  padding: 0 0.375rem;
+  font-weight: 600;
+  color: var(--color-heading);
 }
 
 /* Masqué visuellement mais lu par les lecteurs d'écran (et focusable pour une case) */
@@ -280,18 +311,18 @@ hr {
   border: 0;
 }
 
-/* Ligne : intitulé dans une colonne étroite, champ sur le reste de la largeur */
+/* Carte « Peau et pieds » : intitulé court à gauche, liste déroulante à droite */
 .field-row {
   display: grid;
-  grid-template-columns: var(--label-width) minmax(0, 1fr);
+  grid-template-columns: 4rem minmax(0, 1fr);
   align-items: center;
-  column-gap: 1rem;
-  margin: 0 4px;
+  column-gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .field-label {
   font-weight: 600;
-  color: var(--color-heading);
+  color: var(--color-text-secondary);
 }
 
 .field-row .info-block-input {
@@ -299,13 +330,23 @@ hr {
   max-width: 24rem;
 }
 
-/* L'intitulé s'aligne sur la première rangée de boutons */
-.multi-choice {
-  align-items: start;
+/* Champ lié au groupe (emplacement, précision « Autres »), sous les boutons */
+.card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
 }
 
-.multi-choice .field-label {
-  padding-top: 0.45rem;
+.card-field label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.card-field .info-block-input {
+  width: 100%;
+  max-width: 24rem;
 }
 
 .choices {
@@ -314,12 +355,13 @@ hr {
   gap: 0.5rem;
 }
 
-/* Groupe encodé par pied : une rangée de boutons par côté, le côté en petite colonne */
+/* Rangées de boutons ; pour un groupe encodé par pied, le côté en petite colonne */
 .choice-rows {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   min-width: 0;
+  margin-top: 0.5rem;
 }
 
 .choice-row.with-side {
@@ -394,20 +436,6 @@ hr {
 }
 
 /* Orteils : tableau pied × orteil */
-.toes {
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem 0.75rem;
-  margin-top: 0.375rem;
-  min-width: 0;
-}
-
-.toes legend {
-  padding: 0 0.25rem;
-  font-weight: 600;
-  color: var(--color-heading);
-}
-
 .toes-hint {
   font-weight: 400;
   font-size: 0.85rem;
@@ -476,17 +504,19 @@ hr {
   resize: vertical;
 }
 
-@media (max-width: 640px) {
-  .field-row {
+@media (max-width: 900px) {
+  .exam-grid {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.375rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .exam-card {
+    padding: 0.5rem 0.75rem 0.75rem;
   }
 
-  .multi-choice .field-label {
-    padding-top: 0;
-  }
-
-  .field-row .info-block-input {
+  .field-row .info-block-input,
+  .card-field .info-block-input {
     max-width: none;
   }
 
